@@ -34,6 +34,10 @@ public class ScrollAdpter extends RecyclerView.Adapter<ScrollAdpter.ScrollViewHo
         notifyDataSetChanged();
     }
 
+    public void addData(List<String> strings) {
+        this.mStrings.addAll(strings);
+        notifyDataSetChanged();
+    }
 
     @Override
     public ScrollViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -53,8 +57,6 @@ public class ScrollAdpter extends RecyclerView.Adapter<ScrollAdpter.ScrollViewHo
                 }
             });
         }
-
-
     }
 
     @Override
