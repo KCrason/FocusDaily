@@ -64,7 +64,7 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (mViewHolderAdapter != null) {
             if (mHeaderView == null) {
-                if (position < getItemCount()) {
+                if (position < getItemCount()-1) {
                     mViewHolderAdapter.onBindViewHolder(holder, position);
                 }
             } else {

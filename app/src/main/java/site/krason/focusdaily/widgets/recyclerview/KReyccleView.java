@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
+import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
 
 /**
@@ -19,20 +20,27 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
 public class KReyccleView extends RecyclerView {
 
     private OnRecyclerLoadMoreLisener mOnRecyclerLoadMoreLisener;
-
-
     private KRecyclerAdapter mAdapter;
 
     private Context mContext;
 
     private FooterView mFooterView;
 
-
     private View mHeaderView = null;
 
     private boolean isLoading;
 
     private boolean isCanLoadMore = true;
+
+    private Status mStatus;
+
+    private RecyclerViewOnScroll mRecyclerViewOnScroll;
+
+
+    public enum Status {
+        NETWORL_ERROR, RELOAD
+    }
+
 
     public KReyccleView(Context context) {
         super(context);
@@ -51,7 +59,8 @@ public class KReyccleView extends RecyclerView {
 
     private void initRecycleView(Context context) {
         this.mContext = context;
-        this.addOnScrollListener(new RecyclerViewOnScroll());
+        mRecyclerViewOnScroll = new RecyclerViewOnScroll();
+        this.addOnScrollListener(mRecyclerViewOnScroll);
     }
 
 
@@ -85,6 +94,7 @@ public class KReyccleView extends RecyclerView {
      */
     public void reload() {
         if (mFooterView != null) {
+            mStatus = Status.RELOAD;
             mFooterView.resetFooterView();
         }
     }
@@ -95,7 +105,8 @@ public class KReyccleView extends RecyclerView {
      */
     public void setNetworkError() {
         if (mFooterView != null) {
-            mFooterView.setLoadAllCompleteText();
+            mStatus = Status.NETWORL_ERROR;
+            mFooterView.setNetworkErrorText();
             setCurrentLoadComplete();
         }
     }
@@ -113,6 +124,8 @@ public class KReyccleView extends RecyclerView {
         }
     }
 
+    private LayoutManager mLayoutManager;
+    private int mLastVisiblePosition;
 
     public final class RecyclerViewOnScroll extends OnScrollListener {
         @Override
@@ -123,24 +136,18 @@ public class KReyccleView extends RecyclerView {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            LayoutManager layoutManager = recyclerView.getLayoutManager();
-            int lastVisiblePosition = 0;
-            if (layoutManager instanceof LinearLayoutManager || layoutManager instanceof GridLayoutManager) {
-                lastVisiblePosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-            } else if (layoutManager instanceof GridLayoutManager) {
-                lastVisiblePosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-            } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-                int into[] = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
-                ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(into);
-                lastVisiblePosition = getLastPosition(into);
+            mLayoutManager = recyclerView.getLayoutManager();
+            if (mLayoutManager instanceof LinearLayoutManager || mLayoutManager instanceof GridLayoutManager) {
+                mLastVisiblePosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+            } else if (mLayoutManager instanceof GridLayoutManager) {
+                mLastVisiblePosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+            } else if (mLayoutManager instanceof StaggeredGridLayoutManager) {
+                int into[] = new int[((StaggeredGridLayoutManager) mLayoutManager).getSpanCount()];
+                ((StaggeredGridLayoutManager) mLayoutManager).findLastVisibleItemPositions(into);
+                mLastVisiblePosition = getLastPosition(into);
             }
-            if (layoutManager.getChildCount() > 0 && lastVisiblePosition >= layoutManager.getItemCount() - 1) {
-                if (mOnRecyclerLoadMoreLisener != null && !isLoading) {
-                    if (isCanLoadMore) {
-                        mOnRecyclerLoadMoreLisener.onRecyclerViewLoadMore();
-                        isLoading = true;
-                    }
-                }
+            if (mLayoutManager.getChildCount() > 0 && mLastVisiblePosition >= mLayoutManager.getItemCount() - 1) {
+                startOnLoadMore();
             }
         }
     }
@@ -168,5 +175,51 @@ public class KReyccleView extends RecyclerView {
         mAdapter.setFooterView(mFooterView);
         mAdapter.setHeaderView(mHeaderView);
         super.setAdapter(mAdapter);
+        adapter.registerAdapterDataObserver(new KAdapterDataObserver());
+    }
+
+    public void startOnLoadMore() {
+        if (mOnRecyclerLoadMoreLisener != null && !isLoading) {
+            if (isCanLoadMore) {
+                if (KUtils.Network.isExistNetwork() && mStatus == Status.NETWORL_ERROR) {
+                    reload();
+                }
+                isLoading = true;
+                mOnRecyclerLoadMoreLisener.onRecyclerViewLoadMore();
+            }
+        }
+    }
+
+
+    public final class KAdapterDataObserver extends AdapterDataObserver {
+        @Override
+        public void onChanged() {
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            mAdapter.notifyItemRangeChanged(positionStart, itemCount);
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            mAdapter.notifyItemRangeChanged(positionStart, itemCount, payload);
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            mAdapter.notifyItemRangeInserted(positionStart, itemCount);
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            mAdapter.notifyItemRangeRemoved(positionStart, itemCount);
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            mAdapter.notifyItemMoved(fromPosition, toPosition);
+        }
     }
 }

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     private List<Fragment> getFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 6; i++) {
             RecommendedFragment recommendedFragment = new RecommendedFragment();
             fragments.add(recommendedFragment);
         }
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
 
     private List<String> getTitles() {
         List<String> titles = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 6; i++) {
             titles.add("推荐");
         }
         return titles;
