@@ -6,5 +6,7 @@ package site.krason.focusdaily.common;
  */
 
 public class Constants {
-    public static final String BAES_URL = "http://www.krason.site:8080/News/";
+    public static final String BAES_URL_NEWS = "http://www.krason.site:8080/News/";
+
+    public static final String BAES_URL_TIANXING = "http://api.tianapi.com/";
 }

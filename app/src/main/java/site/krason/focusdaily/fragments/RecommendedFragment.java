@@ -1,16 +1,23 @@
 package site.krason.focusdaily.fragments;
 
-import android.os.Handler;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import site.krason.focusdaily.R;
+import site.krason.focusdaily.activities.NewsDetailActivity;
 import site.krason.focusdaily.adapters.ScrollAdpter;
+import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.common.Constants;
+import site.krason.focusdaily.internet.http.RetrofitApi;
+import site.krason.focusdaily.internet.http.RetrofitManage;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.KReyccleView;
+import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
 
 /**
@@ -18,7 +25,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  * @email 535089696@qq.com
  */
 
-public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener {
+public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener, OnRealItemClickCallBack<KNewBean.DataBean> {
 
     private KReyccleView mRecyclerView;
 
@@ -27,14 +34,31 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void LazyLoadDataToService() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mScrollAdpter.setData(getTitles());
-                isLoadComplete = true;
-                removeRootView();
-            }
-        }, 2000);
+        RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
+                .create(RetrofitApi.class)
+                .getNewsList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<KNewBean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("KCrason", e + "//");
+                    }
+
+                    @Override
+                    public void onNext(KNewBean kNewBean) {
+                        mScrollAdpter.setData(kNewBean.getData());
+                        isLoadComplete = true;
+                        removeRootView();
+                    }
+                });
+
+
     }
 
     @Override
@@ -47,7 +71,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
-        mScrollAdpter = new ScrollAdpter(getContext());
+        mScrollAdpter = new ScrollAdpter(getContext(), this);
         mRecyclerView.setAdapter(mScrollAdpter);
     }
 
@@ -56,38 +80,43 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         return R.layout.fragment_recommend;
     }
 
-    private List<String> getTitles() {
-        List<String> titles = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            titles.add("推荐");
-        }
-        return titles;
-    }
-
-    private int page;
 
     @Override
     public void onRecyclerViewLoadMore() {
         if (KUtils.Network.isExistNetwork()) {
-            if (page == 5) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.setAllLoadComplete();
-                    }
-                }, 2000);
-                return;
-            }
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    page++;
-                    mRecyclerView.setCurrentLoadComplete();
-                    mScrollAdpter.addData(getTitles());
-                }
-            }, 2000);
+            RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
+                    .create(RetrofitApi.class)
+                    .getNewsList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<KNewBean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.d("KCrason", e + "//");
+                        }
+
+                        @Override
+                        public void onNext(KNewBean kNewBean) {
+                            mRecyclerView.setCurrentLoadComplete();
+                            mScrollAdpter.addData(kNewBean.getData());
+                        }
+                    });
+
         } else {
             mRecyclerView.setNetworkError();
         }
+    }
+
+
+    @Override
+    public void onRealItemClick(View view, KNewBean.DataBean dataBean) {
+        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+        intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
+        startActivity(intent);
     }
 }

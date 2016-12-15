@@ -16,7 +16,6 @@ import site.krason.focusdaily.widgets.recyclerview.MultiStatusView;
 
 public abstract class BaseFragment extends Fragment {
 
-    private boolean isVisibleToUser;
 
     public boolean isLoadComplete;
 
@@ -24,7 +23,6 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        this.isVisibleToUser = isVisibleToUser;
         if (isVisibleToUser) {
             if (isLoadComplete) {
                 LazyLoadDataToLocal();

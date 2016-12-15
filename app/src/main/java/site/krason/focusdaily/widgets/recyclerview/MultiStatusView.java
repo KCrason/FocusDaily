@@ -53,8 +53,8 @@ public class MultiStatusView extends FrameLayout {
         mTextView1 = (TextView) view.findViewById(R.id.txt_1);
         mTextView2 = (TextView) view.findViewById(R.id.txt_2);
         addView(view);
-        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0.6f, 0.9f);
-        AlphaAnimation alphaAnimation2 = new AlphaAnimation(0.6f, 0.9f);
+        AlphaAnimation alphaAnimation1 = new AlphaAnimation(0.4f, 1.0f);
+        AlphaAnimation alphaAnimation2 = new AlphaAnimation(0.4f, 1.0f);
         alphaAnimation1.setDuration(700);
         alphaAnimation2.setDuration(900);
         alphaAnimation1.setRepeatCount(Animation.INFINITE);

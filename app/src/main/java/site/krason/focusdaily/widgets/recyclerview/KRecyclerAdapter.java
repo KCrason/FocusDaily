@@ -12,11 +12,12 @@ import android.view.ViewGroup;
 public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final static int VIEW_TYPE_HEADER = 0;
-    private final static int VIEW_TYPE_FOOTER = 1;
-    private final static int VIEW_TYPE_DEFAULT = 2;
+    private final static int VIEW_TYPE_FOOTER = -1;
+    private final static int VIEW_TYPE_DEFAULT = -2;
 
     private final static int VIEW_TYPE_COUNT_NO_HEADER = 1;
     private final static int VIEW_TYPE_COUNT = 2;
+
 
     private RecyclerView.Adapter<RecyclerView.ViewHolder> mViewHolderAdapter;
 
@@ -64,11 +65,11 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (mViewHolderAdapter != null) {
             if (mHeaderView == null) {
-                if (position < getItemCount()-1) {
+                if (position < getItemCount() - 1) {
                     mViewHolderAdapter.onBindViewHolder(holder, position);
                 }
             } else {
-                if (position > 0 && position < getItemCount()-1) {
+                if (position > 0 && position < getItemCount() - 1) {
                     mViewHolderAdapter.onBindViewHolder(holder, position - 1);
                 }
             }
@@ -85,7 +86,12 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             if (isFooter(position)) {
                 return VIEW_TYPE_FOOTER;
             } else {
-                return VIEW_TYPE_DEFAULT;
+                if (mViewHolderAdapter != null) {
+                    int count = mViewHolderAdapter.getItemCount();
+                    if (position < count) {
+                        return mViewHolderAdapter.getItemViewType(position);
+                    }
+                }
             }
         } else {
             if (position == 0) {
@@ -93,9 +99,16 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else if (isFooter(position)) {
                 return VIEW_TYPE_FOOTER;
             } else {
-                return VIEW_TYPE_DEFAULT;
+                if (mViewHolderAdapter != null) {
+                    int count = mViewHolderAdapter.getItemCount();
+                    if (position < count) {
+                        return mViewHolderAdapter.getItemViewType(position);
+                    }
+                }
             }
         }
+
+        return VIEW_TYPE_DEFAULT;
     }
 
 
@@ -107,4 +120,7 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         return mViewHolderAdapter.getItemCount() + VIEW_TYPE_COUNT;
     }
+
+
+
 }
