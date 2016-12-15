@@ -49,7 +49,7 @@ public class NewsDetailActivity extends BaseActivity {
         getSupportActionBar().setTitle("");
         mWebView = (WebView) findViewById(R.id.webview);
         if (getIntent() != null) {
-            KNewBean.DataBean dataBean = getIntent().getParcelableExtra(KEY_NEWS);
+            KNewBean.DataBean dataBean = (KNewBean.DataBean) getIntent().getSerializableExtra(KEY_NEWS);
             mWebView.setWebViewClient(new MyWebViewClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
             mWebView.loadUrl(dataBean.getNewsHtml());

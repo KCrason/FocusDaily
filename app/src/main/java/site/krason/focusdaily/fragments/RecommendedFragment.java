@@ -15,6 +15,7 @@ import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.common.Constants;
 import site.krason.focusdaily.internet.http.RetrofitApi;
 import site.krason.focusdaily.internet.http.RetrofitManage;
+import site.krason.focusdaily.utils.ACache;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.KReyccleView;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
@@ -47,11 +48,11 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("KCrason", e + "//");
                     }
 
                     @Override
                     public void onNext(KNewBean kNewBean) {
+                        ACache.get(getContext()).put("RECOMMEND", kNewBean);
                         mScrollAdpter.setData(kNewBean.getData());
                         isLoadComplete = true;
                         removeRootView();
@@ -63,7 +64,10 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void LazyLoadDataToLocal() {
-
+        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("RECOMMEND");
+        mScrollAdpter.setData(kNewBean.getData());
+        isLoadComplete = true;
+        removeRootView();
     }
 
     @Override
