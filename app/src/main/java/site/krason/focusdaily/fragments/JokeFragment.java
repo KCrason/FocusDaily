@@ -11,7 +11,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
-import site.krason.focusdaily.adapters.RecommendAdpter;
+import site.krason.focusdaily.adapters.JokeAdapter;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.common.Constants;
 import site.krason.focusdaily.internet.http.RetrofitApi;
@@ -23,16 +23,16 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCal
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
 
 /**
- * @author Created by KCrason on 2016/12/13.
+ * @author Created by KCrason on 2016/12/16.
  * @email 535089696@qq.com
  */
 
-public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
+public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
         , OnRealItemClickCallBack<KNewBean.DataBean>, SwipeRefreshLayout.OnRefreshListener {
 
     private KReyccleView mRecyclerView;
 
-    private RecommendAdpter mScrollAdpter;
+    private JokeAdapter mJokeAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -45,10 +45,9 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     }
 
     private void refreshData() {
-
         RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
                 .create(RetrofitApi.class)
-                .getNewsList("recommend")
+                .getNewsList("joke")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<KNewBean>() {
@@ -65,8 +64,8 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                     @Override
                     public void onNext(KNewBean kNewBean) {
-                        ACache.get(getContext()).put("RECOMMEND", kNewBean);
-                        mScrollAdpter.setData(kNewBean.getData());
+                        ACache.get(getContext()).put("JOKE", kNewBean);
+                        mJokeAdapter.setData(kNewBean.getData());
                         isLoadComplete = true;
                         removeRootView();
                         Snackbar.make(mRootView, "更新了10条", Snackbar.LENGTH_SHORT).show();
@@ -78,8 +77,8 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void LazyLoadDataToLocal() {
-        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("RECOMMEND");
-        mScrollAdpter.setData(kNewBean.getData());
+        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("JOKE");
+        mJokeAdapter.setData(kNewBean.getData());
         removeRootView();
     }
 
@@ -91,13 +90,13 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
-        mScrollAdpter = new RecommendAdpter(getContext(), this);
-        mRecyclerView.setAdapter(mScrollAdpter);
+        mJokeAdapter = new JokeAdapter(getContext(), this);
+        mRecyclerView.setAdapter(mJokeAdapter);
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_recommend;
+        return R.layout.fragment_joke;
     }
 
 
@@ -106,7 +105,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         if (KUtils.Network.isExistNetwork()) {
             RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
                     .create(RetrofitApi.class)
-                    .getNewsList("recommend")
+                    .getNewsList("joke")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<KNewBean>() {
@@ -123,7 +122,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                         @Override
                         public void onNext(KNewBean kNewBean) {
                             mRecyclerView.setCurrentLoadComplete();
-                            mScrollAdpter.addData(kNewBean.getData());
+                            mJokeAdapter.addData(kNewBean.getData());
                         }
                     });
 
@@ -135,9 +134,11 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void onRealItemClick(View view, KNewBean.DataBean dataBean) {
-        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
-        intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
-        startActivity(intent);
+        if (dataBean != null && dataBean.getImageCount() >= 1) {
+            Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+            intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
+            startActivity(intent);
+        }
     }
 
     @Override

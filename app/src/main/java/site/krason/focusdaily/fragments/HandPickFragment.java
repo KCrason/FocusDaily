@@ -11,7 +11,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
-import site.krason.focusdaily.adapters.RecommendAdpter;
+import site.krason.focusdaily.adapters.HandPickAdapter;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.common.Constants;
 import site.krason.focusdaily.internet.http.RetrofitApi;
@@ -23,16 +23,16 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCal
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
 
 /**
- * @author Created by KCrason on 2016/12/13.
+ * @author Created by KCrason on 2016/12/16.
  * @email 535089696@qq.com
  */
 
-public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
-        , OnRealItemClickCallBack<KNewBean.DataBean>, SwipeRefreshLayout.OnRefreshListener {
+public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
+        , OnRealItemClickCallBack<KNewBean.DataBean>,SwipeRefreshLayout.OnRefreshListener {
 
     private KReyccleView mRecyclerView;
 
-    private RecommendAdpter mScrollAdpter;
+    private HandPickAdapter mHandPickAdapter;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -44,11 +44,10 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         refreshData();
     }
 
-    private void refreshData() {
-
+    private void refreshData(){
         RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
                 .create(RetrofitApi.class)
-                .getNewsList("recommend")
+                .getNewsList("weixin")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<KNewBean>() {
@@ -59,17 +58,17 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                     @Override
                     public void onError(Throwable e) {
-                        Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(mRootView,"推荐失败！",Snackbar.LENGTH_SHORT).show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onNext(KNewBean kNewBean) {
-                        ACache.get(getContext()).put("RECOMMEND", kNewBean);
-                        mScrollAdpter.setData(kNewBean.getData());
+                        ACache.get(getContext()).put("HANDPICK", kNewBean);
+                        mHandPickAdapter.setData(kNewBean.getData());
                         isLoadComplete = true;
                         removeRootView();
-                        Snackbar.make(mRootView, "更新了10条", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(mRootView,"更新了10条",Snackbar.LENGTH_SHORT).show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -78,26 +77,26 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void LazyLoadDataToLocal() {
-        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("RECOMMEND");
-        mScrollAdpter.setData(kNewBean.getData());
+        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("HANDPICK");
+        mHandPickAdapter.setData(kNewBean.getData());
         removeRootView();
     }
 
     @Override
     public void initFragment(View view) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
-        mScrollAdpter = new RecommendAdpter(getContext(), this);
-        mRecyclerView.setAdapter(mScrollAdpter);
+        mHandPickAdapter = new HandPickAdapter(getContext(), this);
+        mRecyclerView.setAdapter(mHandPickAdapter);
     }
 
     @Override
     public int getLayoutId() {
-        return R.layout.fragment_recommend;
+        return R.layout.fragment_handpick;
     }
 
 
@@ -106,7 +105,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         if (KUtils.Network.isExistNetwork()) {
             RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
                     .create(RetrofitApi.class)
-                    .getNewsList("recommend")
+                    .getNewsList("weixin")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<KNewBean>() {
@@ -123,7 +122,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                         @Override
                         public void onNext(KNewBean kNewBean) {
                             mRecyclerView.setCurrentLoadComplete();
-                            mScrollAdpter.addData(kNewBean.getData());
+                            mHandPickAdapter.addData(kNewBean.getData());
                         }
                     });
 

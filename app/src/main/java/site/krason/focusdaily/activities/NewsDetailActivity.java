@@ -52,7 +52,22 @@ public class NewsDetailActivity extends BaseActivity {
             KNewBean.DataBean dataBean = (KNewBean.DataBean) getIntent().getSerializableExtra(KEY_NEWS);
             mWebView.setWebViewClient(new MyWebViewClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
-            mWebView.loadUrl(dataBean.getNewsHtml());
+            String newHtml = dataBean.getNewsHtml();
+            if (newHtml.endsWith("jpg") || newHtml.endsWith("gif") || newHtml.endsWith("png") || newHtml.endsWith("jpeg")) {
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append("<!DOCTYPE html>");
+                stringBuffer.append("<html>");
+                stringBuffer.append("<meta charset=\"utf-8\">");
+                stringBuffer.append("<meta name=\"viewport\"\n" +
+                        "      content=\"width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>");
+                stringBuffer.append("<body>");
+                stringBuffer.append("<img src=\"" + newHtml + "\" style=\"margin: 0 auto;display: block\">");
+                stringBuffer.append("</body>");
+                stringBuffer.append("</html>");
+                mWebView.loadData(stringBuffer.toString(), "text/html", "utf-8");
+            } else {
+                mWebView.loadUrl(dataBean.getNewsHtml());
+            }
         }
     }
 

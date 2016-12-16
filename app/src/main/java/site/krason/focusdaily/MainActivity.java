@@ -20,7 +20,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import site.krason.focusdaily.fragments.HandPickFragment;
+import site.krason.focusdaily.fragments.ImageFragment;
+import site.krason.focusdaily.fragments.JokeFragment;
 import site.krason.focusdaily.fragments.RecommendedFragment;
+import site.krason.focusdaily.fragments.VideoFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -59,24 +63,27 @@ public class MainActivity extends AppCompatActivity
         kFragmentPagerAdapter.setFragments(getFragments());
         kFragmentPagerAdapter.setTitles(getTitles());
         mViewPager.setAdapter(kFragmentPagerAdapter);
-        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     private List<Fragment> getFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            RecommendedFragment recommendedFragment = new RecommendedFragment();
-            fragments.add(recommendedFragment);
-        }
+        fragments.add(new RecommendedFragment());
+        fragments.add(new HandPickFragment());
+        fragments.add(new JokeFragment());
+        fragments.add(new VideoFragment());
+        fragments.add(new ImageFragment());
         return fragments;
     }
 
     private List<String> getTitles() {
         List<String> titles = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            titles.add("推荐");
-        }
+        titles.add("推荐");
+        titles.add("精选");
+        titles.add("笑话");
+        titles.add("视频");
+        titles.add("图片");
         return titles;
     }
 

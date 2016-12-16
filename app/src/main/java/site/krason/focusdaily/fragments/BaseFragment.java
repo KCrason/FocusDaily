@@ -21,16 +21,19 @@ public abstract class BaseFragment extends Fragment {
 
     public MultiStatusView mMultiStatusView;
 
+    public boolean isViewPrepare;
+
+    private boolean mIsVisibleToUser;
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            if (isLoadComplete) {
-                LazyLoadDataToLocal();
-            } else {
-                LazyLoadDataToService();
-            }
-        }
         super.setUserVisibleHint(isVisibleToUser);
+        if (getUserVisibleHint()) {
+            mIsVisibleToUser = true;
+            onVisible();
+        } else {
+            mIsVisibleToUser = false;
+        }
     }
 
     public void removeRootView() {
@@ -56,7 +59,19 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        isViewPrepare = true;
         initFragment(view);
+        onVisible();
+    }
+
+    private void onVisible() {
+        if (mIsVisibleToUser && isViewPrepare) {
+            if (isLoadComplete) {
+                LazyLoadDataToLocal();
+            } else {
+                LazyLoadDataToService();
+            }
+        }
     }
 
     public abstract void LazyLoadDataToService();

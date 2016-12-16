@@ -2,6 +2,7 @@ package site.krason.focusdaily.internet.http;
 
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.bean.StatementBean;
@@ -14,7 +15,7 @@ import site.krason.focusdaily.bean.StatementBean;
 public interface RetrofitApi {
 
     @POST("news/getNewList.html")
-    Observable<KNewBean> getNewsList();
+    Observable<KNewBean> getNewsList(@Query("type") String type);
 
 
     @GET("txapi/dictum/?key=e96c3b01eefaefa4497ff6ab7cceb719")

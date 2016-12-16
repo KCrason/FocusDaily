@@ -15,6 +15,7 @@ import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 
 /**
@@ -22,7 +23,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCal
  * @email 535089696@qq.com
  */
 
-public class ScrollAdpter extends RecyclerView.Adapter {
+public class RecommendAdpter extends RecyclerView.Adapter {
 
     private final static int VIEW_TYPE_NO_PIC = 0;
     private final static int VIEW_TYPE_1_PIC = 1;
@@ -36,12 +37,13 @@ public class ScrollAdpter extends RecyclerView.Adapter {
 
     private OnRealItemClickCallBack<KNewBean.DataBean> mDataBeanOnRealItemClickCallBack;
 
-    public ScrollAdpter(Context context, OnRealItemClickCallBack<KNewBean.DataBean> dataBeanOnRealItemClickCallBack) {
+    public RecommendAdpter(Context context, OnRealItemClickCallBack<KNewBean.DataBean> dataBeanOnRealItemClickCallBack) {
         this.mContext = context;
         this.mDataBeanOnRealItemClickCallBack = dataBeanOnRealItemClickCallBack;
     }
 
     public void setData(List<KNewBean.DataBean> strings) {
+        this.mStrings.clear();
         this.mStrings = strings;
         notifyDataSetChanged();
     }
@@ -92,18 +94,18 @@ public class ScrollAdpter extends RecyclerView.Adapter {
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + dataBean.getCTime());
+                    ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                 } else if (holder instanceof OnePicViewHolder) {
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + dataBean.getCTime());
+                    ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getCoverUrl()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + dataBean.getCTime());
+                    ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getCoverUrl()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + dataBean.getCTime());
+                    ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getImages().get(0).getImageUrl()).into(((ThreePicViewHolder) holder).imgOnePic);
                     Glide.with(mContext).load(dataBean.getImages().get(1).getImageUrl()).into(((ThreePicViewHolder) holder).imgTwoPic);
                     Glide.with(mContext).load(dataBean.getImages().get(2).getImageUrl()).into(((ThreePicViewHolder) holder).imgThreePic);
@@ -135,6 +137,9 @@ public class ScrollAdpter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+        if (mStrings == null) {
+            return 0;
+        }
         return mStrings.size();
     }
 
