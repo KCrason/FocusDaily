@@ -22,20 +22,20 @@ public class KUtils {
     private final static int SECONDS_OF_HOUR = 3600;
     private final static int SECONDS_OF_MIBUTE = 60;
 
+    public static int dip2px(int dipValue) {
+        float scale = KApplication.sContext.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
 
     public static String betweenOf2Days(String date) {
-
-
         try {
-            Log.d("KCrason", date.substring(0, date.length() - 2));
             Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date.substring(0, date.length() - 2));
-
             Date date2 = new Date();
             long ls = (date2.getTime() - date1.getTime()) / 1000;
             int days = (int) (ls / SECONDS_OF_DAY);
             int hour = (int) (ls - (days * SECONDS_OF_DAY)) / SECONDS_OF_HOUR;
             int minute = (int) ((ls - days * SECONDS_OF_DAY - hour * SECONDS_OF_HOUR) / SECONDS_OF_MIBUTE);
-            Log.d("KCrason", ls + "//" + days + "//" + hour + "//" + minute);
+
             if (days > 0) {
                 return days + "天前";
             } else if (hour > 0) {

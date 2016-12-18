@@ -1,11 +1,18 @@
 package site.krason.focusdaily.adapters;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -16,6 +23,7 @@ import java.util.List;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.utils.KUtils;
+import site.krason.focusdaily.widgets.DeletePopupWindow;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 
 /**
@@ -93,17 +101,21 @@ public class RecommendAdpter extends RecyclerView.Adapter {
             holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
+                    ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                 } else if (holder instanceof OnePicViewHolder) {
+                    ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getCoverUrl()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
+                    ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getCoverUrl()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
+                    ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
                     Glide.with(mContext).load(dataBean.getImages().get(0).getImageUrl()).into(((ThreePicViewHolder) holder).imgOnePic);
@@ -143,15 +155,36 @@ public class RecommendAdpter extends RecyclerView.Adapter {
         return mStrings.size();
     }
 
+    public class OnDeleteClickListener implements View.OnClickListener {
+
+        private int position;
+
+        public OnDeleteClickListener(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void onClick(View view) {
+            new DeletePopupWindow(mContext).showPopupWindow(view);
+//            if (position < mStrings.size()) {
+//                mStrings.remove(position);
+//                notifyItemRemoved(position);
+//                notifyItemRangeChanged(position, mStrings.size() - position);
+//            }
+        }
+    }
+
 
     public final static class NoPicViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle, mBaseInfo;
+        private ImageView mNoInterest;
 
         public NoPicViewHolder(View itemView) {
             super(itemView);
             mBaseInfo = (TextView) itemView.findViewById(R.id.txt_baseinfo);
             mTitle = (TextView) itemView.findViewById(R.id.txt_title);
+            mNoInterest = (ImageView) itemView.findViewById(R.id.img_no_interest);
         }
 
     }
@@ -160,12 +193,14 @@ public class RecommendAdpter extends RecyclerView.Adapter {
 
         public TextView mTitle, mBaseInfo;
         public ImageView imgOnePic;
+        private ImageView mNoInterest;
 
         public OnePicViewHolder(View itemView) {
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.txt_title);
             mBaseInfo = (TextView) itemView.findViewById(R.id.txt_baseinfo);
             imgOnePic = (ImageView) itemView.findViewById(R.id.img_pic);
+            mNoInterest = (ImageView) itemView.findViewById(R.id.img_no_interest);
         }
 
     }
@@ -174,12 +209,14 @@ public class RecommendAdpter extends RecyclerView.Adapter {
 
         public TextView mTitle, mBaseInfo;
         public ImageView imgBigPic;
+        private ImageView mNoInterest;
 
         public TwoPicViewHolder(View itemView) {
             super(itemView);
             mBaseInfo = (TextView) itemView.findViewById(R.id.txt_baseinfo);
             mTitle = (TextView) itemView.findViewById(R.id.txt_title);
             imgBigPic = (ImageView) itemView.findViewById(R.id.img_pic);
+            mNoInterest = (ImageView) itemView.findViewById(R.id.img_no_interest);
         }
 
     }
@@ -188,6 +225,7 @@ public class RecommendAdpter extends RecyclerView.Adapter {
     public final static class ThreePicViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitle, mBaseInfo;
+        private ImageView mNoInterest;
         public ImageView imgOnePic, imgTwoPic, imgThreePic;
 
         public ThreePicViewHolder(View itemView) {
@@ -197,6 +235,7 @@ public class RecommendAdpter extends RecyclerView.Adapter {
             imgOnePic = (ImageView) itemView.findViewById(R.id.img_pic_1);
             imgTwoPic = (ImageView) itemView.findViewById(R.id.img_pic_2);
             imgThreePic = (ImageView) itemView.findViewById(R.id.img_pic_3);
+            mNoInterest = (ImageView) itemView.findViewById(R.id.img_no_interest);
         }
 
     }

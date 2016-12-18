@@ -13,6 +13,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="popwin_anim_style">
+        <item name="android:windowEnterAnimation">@animator/animator_popup_delete</item>
+        <item name="android:windowExitAnimation">@animator/animator_popup_delete</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="elevation">@dimen/design_appbar_elevation</item>
     </style>

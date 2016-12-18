@@ -1,7 +1,9 @@
 package site.krason.focusdaily.activities;
 
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.util.Log;
 import android.view.Menu;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -51,6 +53,7 @@ public class NewsDetailActivity extends BaseActivity {
         if (getIntent() != null) {
             KNewBean.DataBean dataBean = (KNewBean.DataBean) getIntent().getSerializableExtra(KEY_NEWS);
             mWebView.setWebViewClient(new MyWebViewClient());
+            mWebView.setWebChromeClient(new MyWebChromeClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
             String newHtml = dataBean.getNewsHtml();
             if (newHtml.endsWith("jpg") || newHtml.endsWith("gif") || newHtml.endsWith("png") || newHtml.endsWith("jpeg")) {
@@ -61,7 +64,7 @@ public class NewsDetailActivity extends BaseActivity {
                 stringBuffer.append("<meta name=\"viewport\"\n" +
                         "      content=\"width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>");
                 stringBuffer.append("<body>");
-                stringBuffer.append("<img src=\"" + newHtml + "\" style=\"margin: 0 auto;display: block\">");
+                stringBuffer.append("<img src=\"" + newHtml + "\" style=\"margin: 0 auto;display: block\" width=\"100%\">");
                 stringBuffer.append("</body>");
                 stringBuffer.append("</html>");
                 mWebView.loadData(stringBuffer.toString(), "text/html", "utf-8");
@@ -97,6 +100,13 @@ public class NewsDetailActivity extends BaseActivity {
                 });
     }
 
+    public final class MyWebChromeClient extends WebChromeClient {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            Log.d("KCrason", "newProgress:" + newProgress);
+            super.onProgressChanged(view, newProgress);
+        }
+    }
 
     public final class MyWebViewClient extends WebViewClient {
         @Override
