@@ -1,23 +1,15 @@
 package site.krason.focusdaily.fragments;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
 import site.krason.focusdaily.adapters.HandPickAdapter;
 import site.krason.focusdaily.bean.KNewBean;
-import site.krason.focusdaily.common.Constants;
-import site.krason.focusdaily.internet.http.RetrofitApi;
-import site.krason.focusdaily.internet.http.RetrofitManage;
 import site.krason.focusdaily.utils.ACache;
-import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.KReyccleView;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
@@ -28,7 +20,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  */
 
 public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
-        , OnRealItemClickCallBack<KNewBean.DataBean>,SwipeRefreshLayout.OnRefreshListener {
+        , OnRealItemClickCallBack<KNewBean>,SwipeRefreshLayout.OnRefreshListener {
 
     private KReyccleView mRecyclerView;
 
@@ -45,40 +37,40 @@ public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMore
     }
 
     private void refreshData(){
-        RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
-                .create(RetrofitApi.class)
-                .getNewsList("weixin")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<KNewBean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Snackbar.make(mRootView,"推荐失败！",Snackbar.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onNext(KNewBean kNewBean) {
-                        ACache.get(getContext()).put("HANDPICK", kNewBean);
-                        mHandPickAdapter.setData(kNewBean.getData());
-                        isLoadComplete = true;
-                        removeRootView();
-                        Snackbar.make(mRootView,"更新了10条",Snackbar.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+//        RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
+//                .create(RetrofitApi.class)
+//                .getNewsList("weixin")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<KNewBean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Snackbar.make(mRootView,"推荐失败！",Snackbar.LENGTH_SHORT).show();
+//                        mSwipeRefreshLayout.setRefreshing(false);
+//                    }
+//
+//                    @Override
+//                    public void onNext(KNewBean kNewBean) {
+//                        ACache.get(getContext()).put("HANDPICK", kNewBean);
+//                        mHandPickAdapter.setData(kNewBean.getData());
+//                        isLoadComplete = true;
+//                        removeRootView();
+//                        Snackbar.make(mRootView,"更新了10条",Snackbar.LENGTH_SHORT).show();
+//                        mSwipeRefreshLayout.setRefreshing(false);
+//                    }
+//                });
 
     }
 
     @Override
     public void LazyLoadDataToLocal() {
         KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("HANDPICK");
-        mHandPickAdapter.setData(kNewBean.getData());
+//        mHandPickAdapter.setData(kNewBean.getData());
         removeRootView();
     }
 
@@ -102,38 +94,38 @@ public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMore
 
     @Override
     public void onRecyclerViewLoadMore() {
-        if (KUtils.Network.isExistNetwork()) {
-            RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
-                    .create(RetrofitApi.class)
-                    .getNewsList("weixin")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<KNewBean>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(KNewBean kNewBean) {
-                            mRecyclerView.setCurrentLoadComplete();
-                            mHandPickAdapter.addData(kNewBean.getData());
-                        }
-                    });
-
-        } else {
-            mRecyclerView.setNetworkError();
-        }
+//        if (KUtils.Network.isExistNetwork()) {
+//            RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
+//                    .create(RetrofitApi.class)
+//                    .getNewsList("weixin")
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<KNewBean>() {
+//                        @Override
+//                        public void onCompleted() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(KNewBean kNewBean) {
+//                            mRecyclerView.setCurrentLoadComplete();
+//                            mHandPickAdapter.addData(kNewBean.getData());
+//                        }
+//                    });
+//
+//        } else {
+//            mRecyclerView.setNetworkError();
+//        }
     }
 
 
     @Override
-    public void onRealItemClick(View view, KNewBean.DataBean dataBean) {
+    public void onRealItemClick(View view, KNewBean dataBean) {
         Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
         intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
         startActivity(intent);

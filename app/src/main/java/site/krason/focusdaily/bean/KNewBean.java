@@ -9,158 +9,359 @@ import java.util.List;
  */
 
 public class KNewBean implements Serializable {
-    private List<DataBean> data;
 
-    public List<DataBean> getData() {
-        return data;
+
+    /**
+     * thumbnail : http://d.ifengimg.com/w134_h96_q80/p3.ifengimg.com/yidian/2016_40/8c3501e26d3393e_w491_h418.jpg
+     * online : 1
+     * title : 拥有漂亮老婆却依旧偷腥的八大男星，最后一个遭报应了吧！
+     * showType : 0
+     * source : 娱乐螺创
+     * subscribe : {"cateid":"","type":"source","catename":"娱乐螺创","logo":null,"description":""}
+     * updateTime : 2016/12/18 17:09:50
+     * id : http://api.iclient.ifeng.com/ipadtestdoc?aid=imcp_116299977&perfectNew=1
+     * documentId : imcp_116299977
+     * type : doc
+     * style : {"type":"slides","images":["http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/109197f5f6aada9_w500_h606.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/322c74fb4c4c080_w435_h518.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/71c0f5e46c415d2_w640_h410.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/ec724afea17df05_w498_h711.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/0dbfa1a76913c2d_w630_h410.jpg"],"slideCount":7}
+     * hasSlide : true
+     * commentsUrl : http://t.ifeng.com/appshare/7374564.shtml
+     * comments : 7
+     * commentsall : 9
+     * link : {"type":"doc","url":"http://api.iclient.ifeng.com/ipadtestdoc?aid=imcp_116299977&perfectNew=1","weburl":"http://share.iclient.ifeng.com/sharenews.f?aid=116299977"}
+     * simId : clusterId_2611184
+     * reftype : remcommend
+     * recomToken : 14821371698976345
+     */
+
+    private String thumbnail;
+    private String online;
+    private String title;
+    private String showType;
+    private String source;
+    private SubscribeBean subscribe;
+    private String updateTime;
+    private String id;
+    private String documentId;
+    private String type;
+    private StyleBean style;
+    private boolean hasSlide;
+    private String commentsUrl;
+    private String comments;
+    private String commentsall;
+    private LinkBean link;
+
+    public PHVideoBean getPhvideo() {
+        return phvideo;
     }
 
-    public void setData(List<DataBean> data) {
-        this.data = data;
+    public void setPhvideo(PHVideoBean phvideo) {
+        this.phvideo = phvideo;
     }
 
-    public static class DataBean implements Serializable {
+    private PHVideoBean phvideo;
+    private String simId;
+    private String reftype;
+    private String recomToken;
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getOnline() {
+        return online;
+    }
+
+    public void setOnline(String online) {
+        this.online = online;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getShowType() {
+        return showType;
+    }
+
+    public void setShowType(String showType) {
+        this.showType = showType;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public SubscribeBean getSubscribe() {
+        return subscribe;
+    }
+
+    public void setSubscribe(SubscribeBean subscribe) {
+        this.subscribe = subscribe;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public StyleBean getStyle() {
+        return style;
+    }
+
+    public void setStyle(StyleBean style) {
+        this.style = style;
+    }
+
+    public boolean isHasSlide() {
+        return hasSlide;
+    }
+
+    public void setHasSlide(boolean hasSlide) {
+        this.hasSlide = hasSlide;
+    }
+
+    public String getCommentsUrl() {
+        return commentsUrl;
+    }
+
+    public void setCommentsUrl(String commentsUrl) {
+        this.commentsUrl = commentsUrl;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public String getCommentsall() {
+        return commentsall;
+    }
+
+    public void setCommentsall(String commentsall) {
+        this.commentsall = commentsall;
+    }
+
+    public LinkBean getLink() {
+        return link;
+    }
+
+    public void setLink(LinkBean link) {
+        this.link = link;
+    }
+
+    public String getSimId() {
+        return simId;
+    }
+
+    public void setSimId(String simId) {
+        this.simId = simId;
+    }
+
+    public String getReftype() {
+        return reftype;
+    }
+
+    public void setReftype(String reftype) {
+        this.reftype = reftype;
+    }
+
+    public String getRecomToken() {
+        return recomToken;
+    }
+
+    public void setRecomToken(String recomToken) {
+        this.recomToken = recomToken;
+    }
+
+    public static class SubscribeBean implements Serializable{
         /**
-         * newsId : 4250
-         * newsType : it
-         * source : 网易IT
-         * newsUrl : http://tech.163.com/16/1123/07/C6HPT8QJ00097U7T.html
-         * title : 超级高铁全尺寸模型开工建设 明年有望全面测试
-         * cTime : 2016-11-23 07:21:00.0
-         * newsHtml : http://www.krason.site/newshtml/e2e1f8f9-f3b4-47b9-bba4-fd028a4be03d.html
-         * coverUrl : http://cms-bucket.nosdn.127.net/fa25af780b51495b9012c114ee93724220161123080351.jpeg?imageView&thumbnail=550x0
-         * imageCount : 5
-         * images : [{"imageUrl":"http://cms-bucket.nosdn.127.net/fa25af780b51495b9012c114ee93724220161123080351.jpeg?imageView&thumbnail=550x0","imageId":7459,"newsId":4250},{"imageUrl":"http://cms-bucket.nosdn.127.net/916edacda86043d4b32f46b84aa2173b20161123080351.jpeg?imageView&thumbnail=550x0","imageId":7460,"newsId":4250},{"imageUrl":"http://cms-bucket.nosdn.127.net/cd07aaed83464fc49032a1e44d210ccf20161123080351.jpeg?imageView&thumbnail=550x0","imageId":7461,"newsId":4250},{"imageUrl":"http://cms-bucket.nosdn.127.net/7db7021eefc94c5897ef27b9b925b11420161123080351.jpeg?imageView&thumbnail=550x0","imageId":7462,"newsId":4250},{"imageUrl":"http://cms-bucket.nosdn.127.net/791323d39bb042cc94ecb1f4d56e4b3a20161123080351.jpeg?imageView&thumbnail=550x0","imageId":7463,"newsId":4250}]
+         * cateid :
+         * type : source
+         * catename : 娱乐螺创
+         * logo : null
+         * description :
          */
 
-        private int newsId;
-        private String newsType;
-        private String source;
-        private String newsUrl;
-        private String title;
-        private String cTime;
-        private String newsHtml;
-        private String coverUrl;
-        private int imageCount;
-        private List<ImagesBean> images;
+        private String cateid;
+        private String type;
+        private String catename;
+        private Object logo;
+        private String description;
 
-        public int getNewsId() {
-            return newsId;
+        public String getCateid() {
+            return cateid;
         }
 
-        public void setNewsId(int newsId) {
-            this.newsId = newsId;
+        public void setCateid(String cateid) {
+            this.cateid = cateid;
         }
 
-        public String getNewsType() {
-            return newsType;
+        public String getType() {
+            return type;
         }
 
-        public void setNewsType(String newsType) {
-            this.newsType = newsType;
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public String getSource() {
-            return source;
+        public String getCatename() {
+            return catename;
         }
 
-        public void setSource(String source) {
-            this.source = source;
+        public void setCatename(String catename) {
+            this.catename = catename;
         }
 
-        public String getNewsUrl() {
-            return newsUrl;
+        public Object getLogo() {
+            return logo;
         }
 
-        public void setNewsUrl(String newsUrl) {
-            this.newsUrl = newsUrl;
+        public void setLogo(Object logo) {
+            this.logo = logo;
         }
 
-        public String getTitle() {
-            return title;
+        public String getDescription() {
+            return description;
         }
 
-        public void setTitle(String title) {
-            this.title = title;
+        public void setDescription(String description) {
+            this.description = description;
+        }
+    }
+
+    public static class StyleBean implements Serializable{
+        /**
+         * type : slides
+         * images : ["http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/109197f5f6aada9_w500_h606.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/322c74fb4c4c080_w435_h518.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/71c0f5e46c415d2_w640_h410.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/ec724afea17df05_w498_h711.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/0dbfa1a76913c2d_w630_h410.jpg"]
+         * slideCount : 7
+         */
+
+        private String type;
+        private int slideCount;
+        private List<String> images;
+
+        public String getType() {
+            return type;
         }
 
-        public String getCTime() {
-            return cTime;
+        public void setType(String type) {
+            this.type = type;
         }
 
-        public void setCTime(String cTime) {
-            this.cTime = cTime;
+        public int getSlideCount() {
+            return slideCount;
         }
 
-        public String getNewsHtml() {
-            return newsHtml;
+        public void setSlideCount(int slideCount) {
+            this.slideCount = slideCount;
         }
 
-        public void setNewsHtml(String newsHtml) {
-            this.newsHtml = newsHtml;
-        }
-
-        public String getCoverUrl() {
-            return coverUrl;
-        }
-
-        public void setCoverUrl(String coverUrl) {
-            this.coverUrl = coverUrl;
-        }
-
-        public int getImageCount() {
-            return imageCount;
-        }
-
-        public void setImageCount(int imageCount) {
-            this.imageCount = imageCount;
-        }
-
-        public List<ImagesBean> getImages() {
+        public List<String> getImages() {
             return images;
         }
 
-        public void setImages(List<ImagesBean> images) {
+        public void setImages(List<String> images) {
             this.images = images;
         }
-
-        public static class ImagesBean implements Serializable {
-            /**
-             * imageUrl : http://cms-bucket.nosdn.127.net/fa25af780b51495b9012c114ee93724220161123080351.jpeg?imageView&thumbnail=550x0
-             * imageId : 7459
-             * newsId : 4250
-             */
-
-            private String imageUrl;
-            private int imageId;
-            private int newsId;
-
-            public String getImageUrl() {
-                return imageUrl;
-            }
-
-            public void setImageUrl(String imageUrl) {
-                this.imageUrl = imageUrl;
-            }
-
-            public int getImageId() {
-                return imageId;
-            }
-
-            public void setImageId(int imageId) {
-                this.imageId = imageId;
-            }
-
-            public int getNewsId() {
-                return newsId;
-            }
-
-            public void setNewsId(int newsId) {
-                this.newsId = newsId;
-            }
-
-        }
-
     }
 
+    public static class PHVideoBean implements Serializable{
+        public String getChannelName() {
+            return channelName;
+        }
+
+        public void setChannelName(String channelName) {
+            this.channelName = channelName;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public void setLength(int length) {
+            this.length = length;
+        }
+
+        private String channelName;
+        private int length;
+    }
+
+
+    public static class LinkBean implements Serializable{
+        /**
+         * type : doc
+         * url : http://api.iclient.ifeng.com/ipadtestdoc?aid=imcp_116299977&perfectNew=1
+         * weburl : http://share.iclient.ifeng.com/sharenews.f?aid=116299977
+         */
+
+        private String type;
+        private String url;
+        private String weburl;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getWeburl() {
+            return weburl;
+        }
+
+        public void setWeburl(String weburl) {
+            this.weburl = weburl;
+        }
+    }
 }

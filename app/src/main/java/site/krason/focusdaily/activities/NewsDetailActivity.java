@@ -9,15 +9,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
-import site.krason.focusdaily.bean.StatementBean;
-import site.krason.focusdaily.common.Constants;
-import site.krason.focusdaily.internet.http.RetrofitApi;
-import site.krason.focusdaily.internet.http.RetrofitManage;
 
 /**
  * @author Created by KCrason on 2016/12/13.
@@ -51,11 +44,14 @@ public class NewsDetailActivity extends BaseActivity {
         getSupportActionBar().setTitle("");
         mWebView = (WebView) findViewById(R.id.webview);
         if (getIntent() != null) {
-            KNewBean.DataBean dataBean = (KNewBean.DataBean) getIntent().getSerializableExtra(KEY_NEWS);
+            KNewBean dataBean = (KNewBean) getIntent().getSerializableExtra(KEY_NEWS);
             mWebView.setWebViewClient(new MyWebViewClient());
             mWebView.setWebChromeClient(new MyWebChromeClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
-            String newHtml = dataBean.getNewsHtml();
+            String newHtml = dataBean.getLink().getWeburl();
+
+            Log.d("KCrason",newHtml);
+
             if (newHtml.endsWith("jpg") || newHtml.endsWith("gif") || newHtml.endsWith("png") || newHtml.endsWith("jpeg")) {
                 StringBuffer stringBuffer = new StringBuffer();
                 stringBuffer.append("<!DOCTYPE html>");
@@ -69,7 +65,7 @@ public class NewsDetailActivity extends BaseActivity {
                 stringBuffer.append("</html>");
                 mWebView.loadData(stringBuffer.toString(), "text/html", "utf-8");
             } else {
-                mWebView.loadUrl(dataBean.getNewsHtml());
+                mWebView.loadUrl(dataBean.getLink().getWeburl());
             }
         }
     }
@@ -80,24 +76,7 @@ public class NewsDetailActivity extends BaseActivity {
     }
 
     private void createStatement() {
-        RetrofitManage.getRetrofit(Constants.BAES_URL_TIANXING).create(RetrofitApi.class).getStatement().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<StatementBean>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(StatementBean statementBean) {
-//                        txtStatement.setText(statementBean.getNewslist().get(0).getContent());
-                    }
-                });
     }
 
     public final class MyWebChromeClient extends WebChromeClient {

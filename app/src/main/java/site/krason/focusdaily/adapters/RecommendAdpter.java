@@ -1,18 +1,11 @@
 package site.krason.focusdaily.adapters;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -41,22 +34,22 @@ public class RecommendAdpter extends RecyclerView.Adapter {
 
     private Context mContext;
 
-    private List<KNewBean.DataBean> mStrings = new ArrayList<>();
+    private List<KNewBean> mStrings = new ArrayList<>();
 
-    private OnRealItemClickCallBack<KNewBean.DataBean> mDataBeanOnRealItemClickCallBack;
+    private OnRealItemClickCallBack<KNewBean> mDataBeanOnRealItemClickCallBack;
 
-    public RecommendAdpter(Context context, OnRealItemClickCallBack<KNewBean.DataBean> dataBeanOnRealItemClickCallBack) {
+    public RecommendAdpter(Context context, OnRealItemClickCallBack<KNewBean> dataBeanOnRealItemClickCallBack) {
         this.mContext = context;
         this.mDataBeanOnRealItemClickCallBack = dataBeanOnRealItemClickCallBack;
     }
 
-    public void setData(List<KNewBean.DataBean> strings) {
+    public void setData(List<KNewBean> strings) {
         this.mStrings.clear();
         this.mStrings = strings;
         notifyDataSetChanged();
     }
 
-    public void addData(List<KNewBean.DataBean> strings) {
+    public void addData(List<KNewBean> strings) {
         this.mStrings.addAll(strings);
         notifyDataSetChanged();
     }
@@ -64,9 +57,9 @@ public class RecommendAdpter extends RecyclerView.Adapter {
 
     public final class OnRecyclerItemClick implements View.OnClickListener {
 
-        private KNewBean.DataBean mDataBean;
+        private KNewBean mDataBean;
 
-        public OnRecyclerItemClick(KNewBean.DataBean dataBean) {
+        public OnRecyclerItemClick(KNewBean dataBean) {
             this.mDataBean = dataBean;
         }
 
@@ -97,30 +90,30 @@ public class RecommendAdpter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder != null) {
-            KNewBean.DataBean dataBean = mStrings.get(position);
+            KNewBean dataBean = mStrings.get(position);
             holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
                     ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
+                    ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                 } else if (holder instanceof OnePicViewHolder) {
                     ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
-                    Glide.with(mContext).load(dataBean.getCoverUrl()).into(((OnePicViewHolder) holder).imgOnePic);
+                    ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                    Glide.with(mContext).load(dataBean.getThumbnail()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
                     ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
-                    Glide.with(mContext).load(dataBean.getCoverUrl()).into(((TwoPicViewHolder) holder).imgBigPic);
+                    ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                    Glide.with(mContext).load(dataBean.getThumbnail()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
                     ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
-                    Glide.with(mContext).load(dataBean.getImages().get(0).getImageUrl()).into(((ThreePicViewHolder) holder).imgOnePic);
-                    Glide.with(mContext).load(dataBean.getImages().get(1).getImageUrl()).into(((ThreePicViewHolder) holder).imgTwoPic);
-                    Glide.with(mContext).load(dataBean.getImages().get(2).getImageUrl()).into(((ThreePicViewHolder) holder).imgThreePic);
+                    ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(0)).into(((ThreePicViewHolder) holder).imgOnePic);
+                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(1)).into(((ThreePicViewHolder) holder).imgTwoPic);
+                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
                 }
             }
         }
@@ -130,17 +123,30 @@ public class RecommendAdpter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         if (position < mStrings.size()) {
-            KNewBean.DataBean dataBean = mStrings.get(position);
+            KNewBean dataBean = mStrings.get(position);
             if (dataBean != null) {
-                int count = dataBean.getImageCount();
-                if (count <= 0) {
-                    return VIEW_TYPE_NO_PIC;
-                } else if (count == 1) {
-                    return VIEW_TYPE_1_PIC;
-                } else if (count == 2) {
-                    return VIEW_TYPE_2_PIC;
-                } else if (count >= 3) {
-                    return VIEW_TYPE_3_PIC;
+                String type = dataBean.getType();
+                KNewBean.StyleBean styleBean = dataBean.getStyle();
+                if (type != null) {
+                    if (type.equals("doc")) {
+                        if (styleBean == null) {
+                            return VIEW_TYPE_1_PIC;
+                        } else {
+                            if (styleBean.getSlideCount() >= 1) {
+                                return VIEW_TYPE_1_PIC;
+                            } else if (styleBean.getSlideCount() >= 2) {
+                                return VIEW_TYPE_2_PIC;
+                            } else if (styleBean.getSlideCount() >= 3) {
+                                return VIEW_TYPE_3_PIC;
+                            }
+                        }
+                    } else if (type.equals("slide")) {
+                        return VIEW_TYPE_2_PIC;
+                    } else if (type.equals("phvideo")) {
+                        return VIEW_TYPE_2_PIC;
+                    } else {
+                        return VIEW_TYPE_1_PIC;
+                    }
                 }
             }
         }

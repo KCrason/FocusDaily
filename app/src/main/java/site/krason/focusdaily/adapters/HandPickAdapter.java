@@ -8,14 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
-import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 
 /**
@@ -27,21 +24,21 @@ public class HandPickAdapter extends RecyclerView.Adapter<HandPickAdapter.HandPi
 
     private Context mContext;
 
-    private List<KNewBean.DataBean> mDataBeen = new ArrayList<>();
-    private OnRealItemClickCallBack<KNewBean.DataBean> mDataBeanOnRealItemClickCallBack;
+    private List<KNewBean> mDataBeen = new ArrayList<>();
+    private OnRealItemClickCallBack<KNewBean> mDataBeanOnRealItemClickCallBack;
 
     public HandPickAdapter(Context context, OnRealItemClickCallBack dataBeanOnRealItemClickCallBack) {
         this.mContext = context;
         this.mDataBeanOnRealItemClickCallBack = dataBeanOnRealItemClickCallBack;
     }
 
-    public void setData(List<KNewBean.DataBean> strings) {
+    public void setData(List<KNewBean> strings) {
         this.mDataBeen.clear();
         this.mDataBeen = strings;
         notifyDataSetChanged();
     }
 
-    public void addData(List<KNewBean.DataBean> strings) {
+    public void addData(List<KNewBean> strings) {
         this.mDataBeen.addAll(strings);
         notifyDataSetChanged();
     }
@@ -55,19 +52,19 @@ public class HandPickAdapter extends RecyclerView.Adapter<HandPickAdapter.HandPi
 
     @Override
     public void onBindViewHolder(HandPickViewHolder holder, int position) {
-        KNewBean.DataBean dataBean = mDataBeen.get(position);
-        holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
-        holder.mTextView.setText(dataBean.getTitle());
-        holder.mBaseInfo.setText(dataBean.getSource()+"  "+ KUtils.betweenOf2Days(dataBean.getCTime()));
-        Glide.with(mContext).load(dataBean.getCoverUrl()).into(holder.mImageView);
+//        KNewBean dataBean = mDataBeen.get(position);
+//        holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
+//        holder.mTextView.setText(dataBean.getTitle());
+//        holder.mBaseInfo.setText(dataBean.getSource()+"  "+ KUtils.betweenOf2Days(dataBean.getCTime()));
+//        Glide.with(mContext).load(dataBean.getCoverUrl()).into(holder.mImageView);
     }
 
 
     public final class OnRecyclerItemClick implements View.OnClickListener {
 
-        private KNewBean.DataBean mDataBean;
+        private KNewBean mDataBean;
 
-        public OnRecyclerItemClick(KNewBean.DataBean dataBean) {
+        public OnRecyclerItemClick(KNewBean dataBean) {
             this.mDataBean = dataBean;
         }
 

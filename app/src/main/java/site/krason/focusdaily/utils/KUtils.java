@@ -3,9 +3,7 @@ package site.krason.focusdaily.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,7 +27,8 @@ public class KUtils {
 
     public static String betweenOf2Days(String date) {
         try {
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date.substring(0, date.length() - 2));
+            String d = date.replace("/", "-");
+            Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(d);
             Date date2 = new Date();
             long ls = (date2.getTime() - date1.getTime()) / 1000;
             int days = (int) (ls / SECONDS_OF_DAY);
@@ -41,14 +40,14 @@ public class KUtils {
             } else if (hour > 0) {
                 return hour + "小时前";
             } else {
-                if (minute > 2) {
+                if (minute >= 1) {
                     return minute + "分钟前";
                 } else {
                     return "刚刚";
                 }
             }
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "刚刚";
