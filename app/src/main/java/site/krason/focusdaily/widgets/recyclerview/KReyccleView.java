@@ -95,6 +95,7 @@ public class KReyccleView extends RecyclerView {
     public void reload() {
         if (mFooterView != null) {
             mStatus = Status.RELOAD;
+            setCancleLoadMore(true);
             mFooterView.resetFooterView();
         }
     }

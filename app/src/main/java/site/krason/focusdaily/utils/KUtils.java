@@ -1,8 +1,11 @@
 package site.krason.focusdaily.utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,6 +54,13 @@ public class KUtils {
             e.printStackTrace();
         }
         return "刚刚";
+    }
+
+    public static void showSnackbar(String text, View parentView) {
+        Snackbar snackbar = Snackbar.make(parentView, text, Snackbar.LENGTH_SHORT);
+        View view = snackbar.getView();
+        view.setBackgroundColor(Color.parseColor("#7d000000"));
+        snackbar.show();
     }
 
     public final static class Network {

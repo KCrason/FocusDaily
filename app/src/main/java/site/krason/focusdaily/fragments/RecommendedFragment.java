@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -14,12 +13,12 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
+import site.krason.focusdaily.activities.SlidesActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.utils.ACache;
@@ -34,7 +33,8 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  */
 
 public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
-        , OnRealItemClickCallBack<KNewBean>, SwipeRefreshLayout.OnRefreshListener {
+        , OnRealItemClickCallBack<KNewBean.ItemBean>, SwipeRefreshLayout.OnRefreshListener {
+    public final static String KEY_NEWS = "key_news";
 
     private KReyccleView mRecyclerView;
 
@@ -47,57 +47,58 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void LazyLoadDataToService() {
-        refreshData();
+        defaultData();
     }
 
     private void refreshData() {
-
-//        RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
-//                .create(RetrofitApi.class)
-//                .getNewsList("recommend")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<KNewBean>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(KNewBean kNewBean) {
-//
-//                    }
-//                });
-
-
         OkHttpUtils.get().url("http://api.iclient.ifeng.com/ClientNews")
                 .params(getParams("down"))
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.d("KCrason", "onError:" + e);
+                        removeRootView();
                         Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        JSONArray jsonArray = JSON.parseArray(response);
-                        JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        List<KNewBean> kNewBeanList = JSON.parseArray(jsonObject.getString("item"), KNewBean.class);
-                        Log.d("KCrason", "Result:" + response);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        ACache.get(getContext()).put("RECOMMEND", response);
+                        KNewBean bannerBean = getKNewsBeanList(response, 0);
+                        if (bannerBean != null) {
+                            mScrollAdpter.setData(bannerBean);
+                            isLoadComplete = true;
+                            removeRootView();
+                            KUtils.showSnackbar("更新了" + bannerBean.getItem().size() + "条", mRootView);
+                        } else {
+                            KUtils.showSnackbar("暂无更新推荐", mRootView);
+                        }
+                    }
+                });
+    }
 
-//                        ACache.get(getContext()).put("RECOMMEND", response);
-                        mScrollAdpter.setData(kNewBeanList);
+
+    private void defaultData() {
+        OkHttpUtils.get().url("http://api.iclient.ifeng.com/ClientNews")
+                .params(getParams("default"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        ACache.get(getContext()).put("RECOMMEND", response);
+                        mScrollAdpter.setData(getKNewsBeanList(response, 1));
+                        mScrollAdpter.addData(getKNewsBeanList(response, 2));
+                        mScrollAdpter.addData(getKNewsBeanList(response, 0));
                         isLoadComplete = true;
                         removeRootView();
-                        Snackbar.make(mRootView, "更新了10条", Snackbar.LENGTH_SHORT).show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -124,11 +125,25 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         return stringMap;
     }
 
+
+    private KNewBean getKNewsBeanList(String result, int index) {
+        JSONArray jsonArray = JSON.parseArray(result);
+        if (jsonArray != null && jsonArray.size() > index) {
+            JSONObject jsonObject = jsonArray.getJSONObject(index);
+            KNewBean kNewBean = JSON.parseObject(jsonObject.toString(), KNewBean.class);
+            return kNewBean;
+        }
+        return null;
+    }
+
     @Override
     public void LazyLoadDataToLocal() {
-        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("RECOMMEND");
-//        mScrollAdpter.setData(kNewBean.getData());
-        removeRootView();
+        String result = ACache.get(getContext()).getAsString("RECOMMEND");
+        KNewBean kNewBean = getKNewsBeanList(result, 0);
+        if (kNewBean != null) {
+            mScrollAdpter.setData(kNewBean);
+            removeRootView();
+        }
     }
 
     @Override
@@ -162,11 +177,13 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                         @Override
                         public void onResponse(String response, int id) {
-                            JSONArray jsonArray = JSON.parseArray(response);
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            List<KNewBean> kNewBeanList = JSON.parseArray(jsonObject.getString("item"), KNewBean.class);
-                            mRecyclerView.setCurrentLoadComplete();
-                            mScrollAdpter.addData(kNewBeanList);
+                            KNewBean kNewBean = getKNewsBeanList(response, 0);
+                            if (kNewBean == null) {
+                                mRecyclerView.setAllLoadComplete();
+                            } else {
+                                mRecyclerView.setCurrentLoadComplete();
+                                mScrollAdpter.addData(kNewBean);
+                            }
                         }
                     });
         } else {
@@ -176,14 +193,28 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
 
     @Override
-    public void onRealItemClick(View view, KNewBean dataBean) {
-        Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
-        intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
-        startActivity(intent);
+    public void onRealItemClick(View view, KNewBean.ItemBean dataBean) {
+        String type = dataBean.getType();
+        if (type != null) {
+            if (type.equals("doc")) {
+                Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
+                intent.putExtra(KEY_NEWS, dataBean);
+                startActivity(intent);
+            } else if (type.equals("phvideo")) {
+
+            } else if (type.equals("slide")) {
+                Intent intent = new Intent(getActivity(), SlidesActivity.class);
+                intent.putExtra(KEY_NEWS, dataBean);
+                startActivity(intent);
+            } else if (type.equals("topic2")) {
+
+            }
+        }
     }
 
     @Override
     public void onRefresh() {
+        mRecyclerView.reload();
         refreshData();
     }
 }

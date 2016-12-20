@@ -1,7 +1,6 @@
 package site.krason.focusdaily.activities;
 
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -11,6 +10,10 @@ import android.widget.TextView;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.fragments.RecommendedFragment;
+import site.krason.focusdaily.utils.HtmlUtils;
+
+import static site.krason.focusdaily.R.id.webview;
 
 /**
  * @author Created by KCrason on 2016/12/13.
@@ -19,7 +22,6 @@ import site.krason.focusdaily.bean.KNewBean;
 
 public class NewsDetailActivity extends BaseActivity {
 
-    public final static String KEY_NEWS = "key_news";
 
     CollapsingToolbarLayout collapsingToolbarLayout;
 
@@ -42,30 +44,16 @@ public class NewsDetailActivity extends BaseActivity {
     public void initViews() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        mWebView = (WebView) findViewById(R.id.webview);
+        mWebView = (WebView) findViewById(webview);
         if (getIntent() != null) {
-            KNewBean dataBean = (KNewBean) getIntent().getSerializableExtra(KEY_NEWS);
+            KNewBean.ItemBean dataBean = (KNewBean.ItemBean) getIntent().getSerializableExtra(RecommendedFragment.KEY_NEWS);
             mWebView.setWebViewClient(new MyWebViewClient());
             mWebView.setWebChromeClient(new MyWebChromeClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
-            String newHtml = dataBean.getLink().getWeburl();
-
-            Log.d("KCrason",newHtml);
-
-            if (newHtml.endsWith("jpg") || newHtml.endsWith("gif") || newHtml.endsWith("png") || newHtml.endsWith("jpeg")) {
-                StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append("<!DOCTYPE html>");
-                stringBuffer.append("<html>");
-                stringBuffer.append("<meta charset=\"utf-8\">");
-                stringBuffer.append("<meta name=\"viewport\"\n" +
-                        "      content=\"width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>");
-                stringBuffer.append("<body>");
-                stringBuffer.append("<img src=\"" + newHtml + "\" style=\"margin: 0 auto;display: block\" width=\"100%\">");
-                stringBuffer.append("</body>");
-                stringBuffer.append("</html>");
-                mWebView.loadData(stringBuffer.toString(), "text/html", "utf-8");
-            } else {
-                mWebView.loadUrl(dataBean.getLink().getWeburl());
+            String url = dataBean.getLink().getUrl();
+            String type = dataBean.getType();
+            if (type != null && type.equals("doc")) {
+                HtmlUtils.createNewsOfIFeng(url, mWebView);
             }
         }
     }
@@ -75,14 +63,10 @@ public class NewsDetailActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void createStatement() {
-
-    }
 
     public final class MyWebChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            Log.d("KCrason", "newProgress:" + newProgress);
             super.onProgressChanged(view, newProgress);
         }
     }

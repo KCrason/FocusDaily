@@ -26,6 +26,8 @@
 
         <activity
             android:name=".activities.NewsDetailActivity"></activity>
+        <activity android:name=".activities.SlidesActivity"
+            android:theme="@style/AppThemeBlack"></activity>
     </application>
 
 </manifest>

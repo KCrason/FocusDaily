@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="10dip">
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#333333"
+            android:textSize="17sp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dip">
+
+            <ImageView
+                android:id="@+id/img_pic"
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:layout_marginTop="10dip"
+                android:background="#E5E5E5"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:layout_centerInParent="true"
+                android:src="@drawable/play"/>
+
+            <TextView
+                android:id="@+id/txt_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="12dip"
+                android:layout_marginRight="12dip"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"/>
+        </RelativeLayout>
+
+        <include layout="@layout/include_view_news_baseinfo"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:background="#d9d9d9"
+        />
+</LinearLayout>

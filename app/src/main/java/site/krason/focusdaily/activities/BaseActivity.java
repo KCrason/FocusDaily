@@ -29,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (isExistToolbar()) {
                 setToolbar();
             }
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             initViews();
         }
     }
@@ -42,7 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

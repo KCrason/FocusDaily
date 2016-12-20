@@ -127,7 +127,7 @@ public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMore
     @Override
     public void onRealItemClick(View view, KNewBean dataBean) {
         Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
-        intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);
+        intent.putExtra(RecommendedFragment.KEY_NEWS, dataBean);
         startActivity(intent);
     }
 
