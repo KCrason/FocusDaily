@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent">
 
-    <TextView
+    </android.support.v4.view.ViewPager>
+
+    <site.krason.focusdaily.widgets.GalleryDescriptionTextView
         android:id="@+id/txt_description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="170dip"
         android:layout_alignParentBottom="true"
-        android:layout_margin="12dip"
+        android:background="#64000000"
+        android:clickable="false"
+        android:focusable="false"
+        android:lineSpacingExtra="4dip"
+        android:padding="12dip"
         android:textColor="@android:color/white"
         android:textSize="16sp"/>
 

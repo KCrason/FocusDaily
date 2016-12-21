@@ -100,20 +100,20 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                 if (holder instanceof NoPicViewHolder) {
                     ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((NoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                    ((NoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                 } else if (holder instanceof OnePicViewHolder) {
                     ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     if (dataBean.getType().equals("topic2")) {
                         ((OnePicViewHolder) holder).mBaseInfo.setText("专题");
                     } else {
-                        ((OnePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                        ((OnePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                     }
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
                     ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((TwoPicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
+                    ((TwoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
                     ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
@@ -121,43 +121,34 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                     String time = dataBean.getUpdateTime();
                     if (dataBean.getType().equals("slide")) {
                         if (TextUtils.isEmpty(time)) {
-                            ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  图集");
+                            ((ThreePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  图集");
                         } else {
-                            ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  图集  " + KUtils.betweenOf2Days(time));
+                            ((ThreePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  图集  " + KUtils.betweenOf2Days(time));
                         }
                     } else {
                         if (TextUtils.isEmpty(time)) {
-                            ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource());
+                            ((ThreePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()));
                         } else {
-                            ((ThreePicViewHolder) holder).mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(time));
+                            ((ThreePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(time));
                         }
                     }
-                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(0)).into(((ThreePicViewHolder) holder).imgOnePic);
-                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(1)).into(((ThreePicViewHolder) holder).imgTwoPic);
-                    Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
+                    if (dataBean.getStyle().getImages().size() >= 3) {
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(0)).into(((ThreePicViewHolder) holder).imgOnePic);
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(1)).into(((ThreePicViewHolder) holder).imgTwoPic);
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
+                    }
                 } else if (holder instanceof VideoViewHolder) {
                     ((VideoViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((VideoViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((VideoViewHolder) holder).mBaseInfo.setText(dataBean.getPhvideo().getChannelName());
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((VideoViewHolder) holder).imgBigPic);
-                    int minute = dataBean.getPhvideo().getLength() / 60;
-                    int seconds = dataBean.getPhvideo().getLength() % 60;
-                    ((VideoViewHolder) holder).mLength.setText(add0(minute) + ":" + add0(seconds));
+                    ((VideoViewHolder) holder).mLength.setText(KUtils.formatVideoDuration(dataBean.getPhvideo().getLength()));
                 }
             }
         }
     }
 
 
-    private String add0(int value) {
-        if (value < 0) {
-            value = 0;
-        }
-        if (value <= 9) {
-            return "0" + value;
-        }
-        return String.valueOf(value);
-    }
 
 
     @Override

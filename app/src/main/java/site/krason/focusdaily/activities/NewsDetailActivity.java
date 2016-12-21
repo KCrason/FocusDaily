@@ -52,8 +52,8 @@ public class NewsDetailActivity extends BaseActivity {
             mWebView.getSettings().setJavaScriptEnabled(true);
             String url = dataBean.getLink().getUrl();
             String type = dataBean.getType();
-            if (type != null && type.equals("doc")) {
-                HtmlUtils.createNewsOfIFeng(url, mWebView);
+            if (type != null) {
+                HtmlUtils.createNewsOfIFeng(url, mWebView, type);
             }
         }
     }

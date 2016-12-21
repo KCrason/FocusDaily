@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -21,7 +23,7 @@ import okhttp3.Call;
 public class HtmlUtils {
 
 
-    public static void createNewsOfIFeng(final String url, final WebView webView) {
+    public static void createNewsOfIFeng(final String url, final WebView webView, final String type) {
         OkHttpUtils.get().url(url).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -30,7 +32,20 @@ public class HtmlUtils {
 
             @Override
             public void onResponse(String response, int id) {
-                webView.loadData(createHtml(response), "text/html; charset=UTF-8", null);
+                if (type != null) {
+                    if (type.equals("doc")) {
+                        webView.loadData(createHtml(response), "text/html; charset=UTF-8", null);
+                    } else if (type.equals("web")) {
+                        Document document = Jsoup.parse(response);
+                        HtmlUtils.removeElementOfId(document, "header-wrap");
+                        HtmlUtils.removeElementOfId(document, "recommend_area");
+                        HtmlUtils.removeElementOfId(document, "comment_count");
+                        HtmlUtils.removeElementOfId(document, "related_area");
+                        HtmlUtils.removeElementOfClass(document, "footer_fixed");
+                        HtmlUtils.removeElementOfClass(document, "hotcomment");
+                        webView.loadData(document.toString(), "text/html; charset=UTF-8", null);
+                    }
+                }
             }
         });
     }

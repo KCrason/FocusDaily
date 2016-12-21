@@ -5,12 +5,15 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import site.krason.focusdaily.KApplication;
+
+import static site.krason.focusdaily.common.Constants.DECIMAL_FORMAT;
 
 /**
  * @author Created by KCrason on 2016/12/14.
@@ -63,11 +66,54 @@ public class KUtils {
         snackbar.show();
     }
 
+
+    public static String filterStringValue(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return "";
+        } else {
+            return value;
+        }
+    }
+
+    public static String formatVideoDuration(int duration) {
+        int minute = duration / 60;
+        int seconds = duration % 60;
+        return add0(minute) + ":" + add0(seconds);
+    }
+
+    private static String add0(int value) {
+        if (value < 0) {
+            value = 0;
+        }
+        if (value <= 9) {
+            return "0" + value;
+        }
+        return String.valueOf(value);
+    }
+
+    public static String transformPlayCount(String playCount) {
+        try {
+            int curPlayCount = Integer.parseInt(playCount);
+            if (curPlayCount >= 10000) {
+                float value = (curPlayCount / 10000f);
+                return DECIMAL_FORMAT.format(value) + "万次播放";
+            } else {
+                return playCount + "次播放";
+            }
+        } catch (Exception e) {
+        }
+        return "0";
+    }
+
     public final static class Network {
 
-        public static boolean isExistNetwork() {
+        public static ConnectivityManager getConnectivityManager() {
             Context context = KApplication.sContext;
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+
+        public static boolean isExistNetwork() {
+            ConnectivityManager connectivityManager = getConnectivityManager();
             if (connectivityManager != null) {
                 NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                 if (networkInfo != null && networkInfo.isConnected()) {
@@ -76,6 +122,30 @@ public class KUtils {
                         // 当前所连接的网络可用
                         return true;
                     }
+                }
+            }
+            return false;
+        }
+
+        //判断WiFi是否打开
+        public static boolean isWiFi() {
+            ConnectivityManager connectivityManager = getConnectivityManager();
+            if (connectivityManager != null) {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //判断移动数据是否打开
+        public static boolean isMobile() {
+            ConnectivityManager connectivityManager = getConnectivityManager();
+            if (connectivityManager != null) {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                    return true;
                 }
             }
             return false;

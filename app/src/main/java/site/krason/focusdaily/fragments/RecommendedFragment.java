@@ -19,6 +19,7 @@ import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
 import site.krason.focusdaily.activities.SlidesActivity;
+import site.krason.focusdaily.activities.VideoActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.utils.ACache;
@@ -195,20 +196,21 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void onRealItemClick(View view, KNewBean.ItemBean dataBean) {
         String type = dataBean.getType();
+        Intent intent = null;
         if (type != null) {
-            if (type.equals("doc")) {
-                Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
-                intent.putExtra(KEY_NEWS, dataBean);
-                startActivity(intent);
+            if (type.equals("doc")||type.equals("web")) {
+                intent = new Intent(getActivity(), NewsDetailActivity.class);
             } else if (type.equals("phvideo")) {
-
+                intent = new Intent(getActivity(), VideoActivity.class);
             } else if (type.equals("slide")) {
-                Intent intent = new Intent(getActivity(), SlidesActivity.class);
-                intent.putExtra(KEY_NEWS, dataBean);
-                startActivity(intent);
+                intent = new Intent(getActivity(), SlidesActivity.class);
             } else if (type.equals("topic2")) {
 
             }
+        }
+        if (intent != null) {
+            intent.putExtra(KEY_NEWS, dataBean);
+            startActivity(intent);
         }
     }
 

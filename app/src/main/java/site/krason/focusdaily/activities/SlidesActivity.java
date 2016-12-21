@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.widget.TextView;
+import android.text.method.ScrollingMovementMethod;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -20,6 +20,7 @@ import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.bean.SlidesBean;
 import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.fragments.SlidesFragment;
+import site.krason.focusdaily.widgets.GalleryDescriptionTextView;
 
 /**
  * @author Created by KCrason on 2016/12/20.
@@ -28,7 +29,7 @@ import site.krason.focusdaily.fragments.SlidesFragment;
 
 public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
     private ViewPager mViewPager;
-    private TextView mTxtDescription;
+    private GalleryDescriptionTextView mTxtDescription;
     private List<SlidesBean> mSlidesBeen;
 
     @Override
@@ -45,9 +46,12 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
 
     @Override
     public void initViews() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(" ");
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.addOnPageChangeListener(this);
-        mTxtDescription = (TextView) findViewById(R.id.txt_description);
+        mTxtDescription = (GalleryDescriptionTextView) findViewById(R.id.txt_description);
+        mTxtDescription.setMovementMethod(ScrollingMovementMethod.getInstance());
         mSlidesFragmentPagerAdapter = new SlidesFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSlidesFragmentPagerAdapter);
         if (getIntent() != null) {
@@ -102,6 +106,7 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
         int sildesSize = mSlidesBeen.size();
         if (mSlidesBeen != null && position < sildesSize) {
             int curIndex = position + 1;
+            mTxtDescription.setScrollToTop();
             mTxtDescription.setText(curIndex + "/" + sildesSize + "  " + mSlidesBeen.get(position).getDescription());
         }
     }
