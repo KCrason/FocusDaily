@@ -45,7 +45,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="12dip"
                 android:layout_marginRight="12dip"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:background="@drawable/shape_video_time"
                 android:textColor="@android:color/white"/>
         </RelativeLayout>
@@ -60,6 +60,6 @@
         android:layout_height="0.5dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
-        android:background="#d9d9d9"
+        android:background="#f2f2f2"
         />
 </LinearLayout>

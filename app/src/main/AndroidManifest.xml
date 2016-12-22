@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:name=".KApplication"
@@ -26,13 +26,19 @@
 
         <activity
             android:name=".activities.NewsDetailActivity"></activity>
-        <activity android:name=".activities.SlidesActivity"
-            android:theme="@style/AppThemeBlack"></activity>
-        <activity android:name=".activities.VideoActivity"
+        <activity
+            android:name=".activities.SlidesActivity"
+            android:theme="@style/AppThemeBlack.NoActionBar"></activity>
+        <activity
+            android:name=".activities.VideoActivity"
             android:theme="@style/AppThemeBlack.NoActionBar"></activity>
 
-        <activity android:name=".activities.FullScreenPlayVideoActivity"
+        <activity
+            android:name=".activities.FullScreenPlayVideoActivity"
+            android:theme="@style/FullScreenWindowStyle"
             android:screenOrientation="landscape"></activity>
+
+
     </application>
 
 </manifest>

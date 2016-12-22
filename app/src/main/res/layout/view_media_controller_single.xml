@@ -5,6 +5,13 @@
                 android:background="@android:color/transparent"
                 android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:padding="8dip"
+        android:src="@drawable/moments_back"
+        />
+
 
     <ImageView
         android:id="@+id/img_play_control"
@@ -14,11 +21,11 @@
         android:src="@drawable/playing"/>
 
     <LinearLayout
+        android:id="@+id/llayout_control"
         android:layout_width="match_parent"
         android:layout_height="40dip"
         android:layout_alignParentBottom="true"
         android:background="#64000000"
-        android:id="@+id/llayout_control"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -33,17 +40,17 @@
 
         <SeekBar
             android:id="@+id/pb_video_progress"
-            android:layout_width="match_parent"
             style="?android:attr/progressBarStyleHorizontal"
-            android:progressDrawable="@drawable/progressbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="18dip"
-            android:paddingBottom="18dip"
-            android:thumb="@null"
+            android:layout_weight="1"
             android:max="100"
+            android:paddingBottom="18dip"
+            android:paddingTop="18dip"
             android:progress="20"
+            android:progressDrawable="@drawable/progressbar"
             android:secondaryProgress="30"
-            android:layout_weight="1"/>
+            android:thumb="@null"/>
 
         <TextView
             android:id="@+id/txt_right_time"

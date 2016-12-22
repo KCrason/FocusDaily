@@ -5,6 +5,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -20,6 +27,7 @@ import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.bean.SlidesBean;
 import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.fragments.SlidesFragment;
+import site.krason.focusdaily.interfaces.OnImageClickListener;
 import site.krason.focusdaily.widgets.GalleryDescriptionTextView;
 
 /**
@@ -27,10 +35,16 @@ import site.krason.focusdaily.widgets.GalleryDescriptionTextView;
  * @email 535089696@qq.com
  */
 
-public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChangeListener, OnImageClickListener, View.OnClickListener {
+
     private ViewPager mViewPager;
     private GalleryDescriptionTextView mTxtDescription;
     private List<SlidesBean> mSlidesBeen;
+
+    private ImageView mImageBack, mImageMore;
+    private TextView mTxtTitle;
+
+    private RelativeLayout mRelativeLayoutTitleBar;
 
     @Override
     protected boolean isExistToolbar() {
@@ -46,9 +60,14 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
 
     @Override
     public void initViews() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(" ");
+        mRelativeLayoutTitleBar = (RelativeLayout) findViewById(R.id.rlayout_title_bar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mTxtTitle = (TextView) findViewById(R.id.txt_title);
+        mImageBack = (ImageView) findViewById(R.id.img_back);
+        mImageMore = (ImageView) findViewById(R.id.img_more);
+        mImageBack.setOnClickListener(this);
+        mImageMore.setOnClickListener(this);
+
         mViewPager.addOnPageChangeListener(this);
         mTxtDescription = (GalleryDescriptionTextView) findViewById(R.id.txt_description);
         mTxtDescription.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -61,6 +80,7 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
                 getSlidesImages(url);
             }
         }
+
     }
 
     private void getSlidesImages(String url) {
@@ -76,7 +96,9 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
                     JSONObject jsonObject = JSON.parseObject(response);
                     JSONObject jsonObjectBody = jsonObject.getJSONObject("body");
                     String title = jsonObjectBody.getString("title");
-                    getSupportActionBar().setTitle(title);
+                    if (mTxtTitle != null) {
+                        mTxtTitle.setText(title);
+                    }
                     mSlidesBeen = JSON.parseArray(jsonObjectBody.getString("slides"), SlidesBean.class);
                     if (mSlidesBeen != null) {
                         mSlidesFragmentPagerAdapter.setFragments(getFragments(mSlidesBeen.size(), mSlidesBeen));
@@ -114,6 +136,62 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onImageClick(View view) {
+        if (mRelativeLayoutTitleBar.getVisibility() == View.VISIBLE) {
+            visible(mRelativeLayoutTitleBar, 0, -mRelativeLayoutTitleBar.getHeight(), false);
+        } else {
+            visible(mRelativeLayoutTitleBar, -mRelativeLayoutTitleBar.getHeight(), 0, true);
+        }
+        if (mTxtDescription.getVisibility() == View.VISIBLE) {
+            visible(mTxtDescription, 0, mTxtDescription.getHeight(), false);
+        } else {
+            visible(mTxtDescription, mTxtDescription.getHeight(), 0, true);
+        }
+    }
+
+
+    private void visible(final View view, int startY, int endY, final boolean isVisible) {
+        TranslateAnimation translateAnimation;
+        translateAnimation = new TranslateAnimation(0, 0, startY, endY);
+        translateAnimation.setDuration(300);
+        translateAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                if (isVisible) {
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (!isVisible) {
+                    view.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(translateAnimation);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_back:
+                finish();
+                break;
+            case R.id.img_more:
+                ShareDialog shareDialog = new ShareDialog();
+                shareDialog.show(getSupportFragmentManager());
+                break;
+        }
     }
 
 

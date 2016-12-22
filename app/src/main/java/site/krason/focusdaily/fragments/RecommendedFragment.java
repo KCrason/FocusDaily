@@ -198,10 +198,13 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         String type = dataBean.getType();
         Intent intent = null;
         if (type != null) {
-            if (type.equals("doc")||type.equals("web")) {
+            if (type.equals("doc") || type.equals("web")) {
                 intent = new Intent(getActivity(), NewsDetailActivity.class);
             } else if (type.equals("phvideo")) {
                 intent = new Intent(getActivity(), VideoActivity.class);
+                intent.putExtra(KEY_NEWS, dataBean.getLink().getUrl());
+                startActivity(intent);
+                return;
             } else if (type.equals("slide")) {
                 intent = new Intent(getActivity(), SlidesActivity.class);
             } else if (type.equals("topic2")) {

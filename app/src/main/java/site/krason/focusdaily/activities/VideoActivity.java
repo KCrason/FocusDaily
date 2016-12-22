@@ -1,18 +1,15 @@
 package site.krason.focusdaily.activities;
 
-import android.text.TextUtils;
+import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bumptech.glide.Glide;
+import com.kcrason.randomtransforview.OnTransformItemClickListener;
 import com.kcrason.randomtransforview.RandomTransformView;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -25,21 +22,22 @@ import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.RecommendVideoTransformAdpter;
 import site.krason.focusdaily.adapters.VideoCommentAdapter;
-import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.bean.RelativeVideoInfo;
 import site.krason.focusdaily.bean.SingleVideoInfo;
 import site.krason.focusdaily.common.UrlUtils;
 import site.krason.focusdaily.fragments.RecommendedFragment;
+import site.krason.focusdaily.interfaces.PlayCallBack;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.viewholders.RecommendVideoTransformViewHolder;
 import site.krason.focusdaily.widgets.MediaController;
+import site.krason.focusdaily.widgets.MutilStatusVideoView;
 
 /**
  * @author Created by KCrason on 2016/12/20.
  * @email 535089696@qq.com
  */
 
-public class VideoActivity extends BaseActivity implements View.OnClickListener {
+public class VideoActivity extends BaseActivity implements PlayCallBack, OnTransformItemClickListener {
 
     private PLVideoView mPLVideoView;
     private MediaController mMediaController;
@@ -50,6 +48,9 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
     private String mGuid;
 
     private String mVideoPath;
+
+    private MutilStatusVideoView mMutilStatusVideoView;
+
 
     @Override
     protected boolean isExistToolbar() {
@@ -63,10 +64,15 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void initViews() {
-        KNewBean.ItemBean itemBean = (KNewBean.ItemBean) getIntent().getSerializableExtra(RecommendedFragment.KEY_NEWS);
+        mGuid = getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
+        processExtraData();
+    }
+
+    private void processExtraData() {
         mPLVideoView = (PLVideoView) findViewById(R.id.pl_video_view);
-        RelativeLayout videoParent = (RelativeLayout) findViewById(R.id.rlayout_video_parent);
-        setLoadingView(videoParent, itemBean);
+        mMutilStatusVideoView = (MutilStatusVideoView) findViewById(R.id.mutil_status_video_view);
+        mMutilStatusVideoView.setPlayCallBack(this);
+        setCurLoadingView();
 
         mListView = (ListView) findViewById(R.id.list_view);
         setHeaderVideoInfo(mListView);
@@ -76,39 +82,37 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
         mMediaController = new MediaController(this);
         mMediaController.setVideoType(MediaController.VIDEO_TYPE_SINGLE);
         mPLVideoView.setMediaController(mMediaController);
-
-        mGuid = itemBean.getLink().getUrl();
         getVideoDetailInfo(mGuid);
     }
 
-    private View mMobileNetworkLoadingView, mNormalLoadingView;
-
-    private void setLoadingView(RelativeLayout videoParent, KNewBean.ItemBean itemBean) {
-        if (KUtils.Network.isMobile()) {
-            mMobileNetworkLoadingView = getLayoutInflater().inflate(R.layout.include_loading_view_not_network, null);
-            initMobileNetworkView(mMobileNetworkLoadingView, itemBean);
-            videoParent.addView(mMobileNetworkLoadingView);
-        } else {
-            mNormalLoadingView = getLayoutInflater().inflate(R.layout.include_loading_view, null);
-            videoParent.addView(mNormalLoadingView);
+    private void setCurLoadingView() {
+        if (mMutilStatusVideoView != null) {
+            if (KUtils.Network.isMobile()) {
+                mMutilStatusVideoView.addMobileLoadingView();
+            } else if (!KUtils.Network.isExistNetwork()) {
+                mMutilStatusVideoView.addNotNetworkLoadingView();
+            } else {
+                mMutilStatusVideoView.addNormalLoadingView(mPLVideoView);
+            }
         }
-        View loadingView = findViewById(R.id.llayout_loading_view);
-        ImageView backImageView = (ImageView) loadingView.findViewById(R.id.img_pic);
-        Glide.with(this).load(itemBean.getThumbnail()).into(backImageView);
-        mPLVideoView.setBufferingIndicator(loadingView);
     }
 
-    private TextView mVideoLenth, mVideoMB;
-    private Button mBtnStartPlay;
 
-    private void initMobileNetworkView(View view, KNewBean.ItemBean itemBean) {
-        mVideoLenth = (TextView) view.findViewById(R.id.txt_time);
-        mVideoMB = (TextView) view.findViewById(R.id.txt_size);
-        mBtnStartPlay = (Button) view.findViewById(R.id.btn_start_play);
-        mVideoLenth.setText(KUtils.formatVideoDuration(itemBean.getPhvideo().getLength()));
-        mBtnStartPlay.setOnClickListener(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPLVideoView != null && !mPLVideoView.isPlaying()) {
+            mPLVideoView.start();
+        }
     }
 
+    @Override
+    protected void onPause() {
+        super.onStop();
+        if (mPLVideoView != null) {
+            mPLVideoView.pause();
+        }
+    }
 
     private TextView mVideoTitle, mVideoTime, mVideoPraise, mVideoTread, mPlayCount;
     private LinearLayout mLinearLayoutRoot;
@@ -132,6 +136,8 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
+    private SingleVideoInfo mSingleVideoInfo;
+
     private void getVideoDetailInfo(String guid) {
         OkHttpUtils.get().url(UrlUtils.IFENG.API_PHOENIXTV_DETAILS)
                 .params(getParams(guid))
@@ -144,15 +150,18 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onResponse(String response, int id) {
                 JSONObject jsonObject = JSON.parseObject(response);
+                if (!jsonObject.containsKey("singleVideoInfo")) {
+                    return;
+                }
                 JSONArray jsonArray = jsonObject.getJSONArray("singleVideoInfo");
                 JSONObject singleVideoInfoObject = jsonArray.getJSONObject(0);
-                SingleVideoInfo singleVideoInfo = JSON.parseObject(singleVideoInfoObject.toString(), SingleVideoInfo.class);
-                if (mMediaController != null && mPLVideoView != null && singleVideoInfo != null) {
-                    mMediaController.setVideoTitle(singleVideoInfo.getTitle());
-                    mMediaController.setVideoPath(mPLVideoView, singleVideoInfo.getVideoURLHigh());
+                mSingleVideoInfo = JSON.parseObject(singleVideoInfoObject.toString(), SingleVideoInfo.class);
+                if (mMediaController != null && mPLVideoView != null && mSingleVideoInfo != null) {
+                    mMediaController.setVideoTitle(mSingleVideoInfo.getTitle());
+                    mMediaController.setVideoPath(mPLVideoView, mSingleVideoInfo.getVideoURLHigh());
                     mPLVideoView.setDisplayAspectRatio(PLVideoView.ASPECT_RATIO_PAVED_PARENT);
-                    setSingleVideoBaseData(singleVideoInfo);
-                    mVideoPath = singleVideoInfo.getVideoURLHigh();
+                    setSingleVideoBaseData(mSingleVideoInfo);
+                    mVideoPath = mSingleVideoInfo.getVideoURLHigh();
                     if (!KUtils.Network.isMobile()) {
                         mPLVideoView.setVideoPath(mVideoPath);
                     }
@@ -163,6 +172,12 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
 
 
     private void setSingleVideoBaseData(SingleVideoInfo singleVideoInfo) {
+        if (KUtils.Network.isMobile() && mMutilStatusVideoView != null) {
+            mMutilStatusVideoView.setVideoBackground(singleVideoInfo.getLargeImgURL())
+                    .setVideoDuration(singleVideoInfo.getVideoLength())
+                    .setVideoSize(singleVideoInfo.getVideoSizeHigh());
+        }
+
         if (mLinearLayoutRoot != null) {
             mLinearLayoutRoot.setVisibility(View.VISIBLE);
         }
@@ -199,12 +214,15 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
     private void setRecommendVideoListView() {
         View view = getLayoutInflater().inflate(R.layout.header_list_recommend_video, null);
         mRandomTransformView = (RandomTransformView) view.findViewById(R.id.random_transform_view);
+        mRandomTransformView.setOnTransformItemClickListener(this);
         mRecommendVideoTransformViewHolder = new RecommendVideoTransformViewHolder();
         mRecommendVideoTransformAdpter = new RecommendVideoTransformAdpter(mRecommendVideoTransformViewHolder, this);
         mRandomTransformView.setAdapter(mRecommendVideoTransformAdpter);
         mListView.addHeaderView(view);
         getGuidRelativeVideoDetailInfo();
     }
+
+    private RelativeVideoInfo mRelativeVideoInfo;
 
     private void getGuidRelativeVideoDetailInfo() {
         OkHttpUtils.get().url(UrlUtils.IFENG.GET_GUID_RELATIVE_VIDEO_LIST)
@@ -217,9 +235,9 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
 
             @Override
             public void onResponse(String response, int id) {
-                RelativeVideoInfo relativeVideoInfo = JSON.parseObject(response, RelativeVideoInfo.class);
+                mRelativeVideoInfo = JSON.parseObject(response, RelativeVideoInfo.class);
                 if (mRecommendVideoTransformAdpter != null) {
-                    mRecommendVideoTransformAdpter.setData(relativeVideoInfo.getGuidRelativeVideoInfo());
+                    mRecommendVideoTransformAdpter.setData(mRelativeVideoInfo.getGuidRelativeVideoInfo());
                 }
             }
         });
@@ -243,19 +261,30 @@ public class VideoActivity extends BaseActivity implements View.OnClickListener 
         return stringMap;
     }
 
+
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_start_play:
-                if (mPLVideoView != null && !TextUtils.isEmpty(mVideoPath)) {
-                    if (mNormalLoadingView == null) {
-                        //如果继续播放，设置正常的view
-                        mNormalLoadingView = getLayoutInflater().inflate(R.layout.include_loading_view, null);
-                    }
-                    mPLVideoView.setBufferingIndicator(mNormalLoadingView);
-                    mPLVideoView.setVideoPath(mVideoPath);
-                }
-                break;
+    public void onPlayCallBack() {
+        if (mMutilStatusVideoView != null && mPLVideoView != null) {
+            mMutilStatusVideoView.addNormalLoadingView(mPLVideoView);
+            mMutilStatusVideoView.setVideoBackground(mSingleVideoInfo.getLargeImgURL());
+            mPLVideoView.setVideoPath(mVideoPath);
+        }
+    }
+
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        mGuid = intent.getStringExtra("key_guid");
+//        processExtraData();
+//    }
+
+    @Override
+    public void onItemClickListener(View view, int position) {
+        if (mRelativeVideoInfo != null) {
+            Intent intent = new Intent(this, VideoActivity.class);
+            String guid = mRelativeVideoInfo.getGuidRelativeVideoInfo().get(position).getGuid();
+            intent.putExtra(RecommendedFragment.KEY_NEWS, guid);
+            startActivity(intent);
         }
     }
 }

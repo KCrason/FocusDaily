@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="250dip"
+              android:orientation="vertical">
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="#ffffffff"
+        android:text="分享放大师傅的师傅师傅方法方法对付对付对付的第三方丰富的师傅师傅师傅的师傅的说法是的发生的发生放松放松放松放松放松放松的放松放松"/>
+
+
+</FrameLayout>

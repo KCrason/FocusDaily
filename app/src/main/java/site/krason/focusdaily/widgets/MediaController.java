@@ -61,6 +61,8 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
 
     private int mVideoType = VIDEO_TYPE_SINGLE;
 
+    private boolean mDefaultShowMediaController = false;
+
     public MediaController(Context context) {
         super(context);
         this.mContext = context;
@@ -141,6 +143,10 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
 
     @Override
     public void show() {
+        if (!mDefaultShowMediaController) {
+            mDefaultShowMediaController = true;
+            return;
+        }
         if (!isShowing()) {
             show(mDefaultTimeOut);
         }

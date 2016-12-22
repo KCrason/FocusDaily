@@ -14,13 +14,17 @@
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabTextColor="@android:color/white"
-        app:tabIndicatorColor="#EEE5DE"
-        app:tabSelectedTextColor="@android:color/white"
+        android:layout_height="44dip"
+        app:tabTextColor="@android:color/black"
+        app:tabIndicatorColor="#ed4040"
+        app:tabSelectedTextColor="#ed4040"
         app:tabIndicatorHeight="2dip"
-        android:background="@color/accent_material_light"
+        android:background="@android:color/white"
         ></android.support.design.widget.TabLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:background="#f2f2f2"></View>
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

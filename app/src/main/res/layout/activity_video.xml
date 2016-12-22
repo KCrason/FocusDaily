@@ -4,8 +4,8 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rlayout_video_parent"
+    <site.krason.focusdaily.widgets.MutilStatusVideoView
+        android:id="@+id/mutil_status_video_view"
         android:layout_width="match_parent"
         android:layout_height="200dip">
 
@@ -18,13 +18,14 @@
         </com.pili.pldroid.player.widget.PLVideoView>
 
 
-    </RelativeLayout>
+    </site.krason.focusdaily.widgets.MutilStatusVideoView>
 
 
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"></ListView>
 
 
 </LinearLayout>

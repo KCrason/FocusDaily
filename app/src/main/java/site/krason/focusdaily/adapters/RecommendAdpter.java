@@ -140,15 +140,20 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                 } else if (holder instanceof VideoViewHolder) {
                     ((VideoViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
                     ((VideoViewHolder) holder).mTitle.setText(dataBean.getTitle());
-                    ((VideoViewHolder) holder).mBaseInfo.setText(dataBean.getPhvideo().getChannelName());
+                    if (dataBean.getPhvideo() != null) {
+                        if (dataBean.getPhvideo().getChannelName() != null) {
+                            ((VideoViewHolder) holder).mBaseInfo.setText(dataBean.getPhvideo().getChannelName());
+                        }
+                        ((VideoViewHolder) holder).mLength.setText(KUtils.formatVideoDuration(dataBean.getPhvideo().getLength()));
+                    }
+
+
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((VideoViewHolder) holder).imgBigPic);
-                    ((VideoViewHolder) holder).mLength.setText(KUtils.formatVideoDuration(dataBean.getPhvideo().getLength()));
+
                 }
             }
         }
     }
-
-
 
 
     @Override
