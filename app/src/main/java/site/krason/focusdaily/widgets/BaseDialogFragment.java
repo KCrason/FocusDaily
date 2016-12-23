@@ -13,8 +13,6 @@ import android.view.ViewGroup;
  */
 
 public abstract class BaseDialogFragment extends DialogFragment {
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

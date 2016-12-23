@@ -24,20 +24,22 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.NewsDetailActivity"></activity>
-        <activity
-            android:name=".activities.SlidesActivity"
+        <activity android:name=".activities.NewsDetailActivity"
+                  android:theme="@style/AppThemeBlack.NoActionBar"
+            ></activity>
+
+        <activity android:name=".activities.SlidesActivity"
             android:theme="@style/AppThemeBlack.NoActionBar"></activity>
+
         <activity
             android:name=".activities.VideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppThemeBlack.NoActionBar"></activity>
 
         <activity
             android:name=".activities.FullScreenPlayVideoActivity"
-            android:theme="@style/FullScreenWindowStyle"
-            android:screenOrientation="landscape"></activity>
-
+            android:screenOrientation="landscape"
+            android:theme="@style/FullScreenWindowStyle"></activity>
 
     </application>
 

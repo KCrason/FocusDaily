@@ -76,8 +76,8 @@ public class HtmlUtils {
         stringBuffer.append(" p {  line-height: 1.5;  letter-spacing: 1px; color:#030303; font-size:18px; }");
         stringBuffer.append(
                 " .k-title {  line-height: 1.5;  letter-spacing: 1px; color:#000000; font-size:22px; }");
-        stringBuffer.append(" .k-time{  line-height: 1.5;  letter-spacing: 1px;  color: #757575;  }");
-        stringBuffer.append(" #k-source{  color: #009688;  }");
+        stringBuffer.append(" .k-time{  line-height: 1.5;  letter-spacing: 1px;  color: #757575;font-size:13px;  }");
+        stringBuffer.append(" #k-source{  color: #757575; font-size:13px; }");
         stringBuffer.append("body {  margin: 14px;  }");
         stringBuffer.append(" img {  display: block;  width: 100%;  height: auto;  margin: auto 0;  }");
         stringBuffer.append("a { text-decoration:none; }");
@@ -86,6 +86,7 @@ public class HtmlUtils {
         stringBuffer.append("<body>");
         stringBuffer.append("<p class=\"k-title\">" + title + "</p>");
         stringBuffer.append("<div><span id=\"k-source\">" + source + "</span>" + "&nbsp;&nbsp;&nbsp;" + "<span class=\"k-time\">" + editTime + "</span></div>");
+        stringBuffer.append("<div style=\"width:100%; height:8px;\"></div>");
         stringBuffer.append(text);
         stringBuffer.append("</body>");
         stringBuffer.append("</html>");

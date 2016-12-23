@@ -1,12 +1,10 @@
 package site.krason.focusdaily.activities;
 
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
@@ -23,16 +21,11 @@ import static site.krason.focusdaily.R.id.webview;
 public class NewsDetailActivity extends BaseActivity {
 
 
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    ImageView iv;
-
-    private TextView txtStatement;
     private WebView mWebView;
 
     @Override
     protected boolean isExistToolbar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -41,9 +34,13 @@ public class NewsDetailActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public void initViews() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
         mWebView = (WebView) findViewById(webview);
         if (getIntent() != null) {
             KNewBean.ItemBean dataBean = (KNewBean.ItemBean) getIntent().getSerializableExtra(RecommendedFragment.KEY_NEWS);
@@ -58,9 +55,11 @@ public class NewsDetailActivity extends BaseActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
 

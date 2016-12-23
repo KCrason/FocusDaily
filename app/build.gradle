@@ -42,5 +42,5 @@ dependencies {
     compile 'com.github.chrisbanes:PhotoView:1.2.6'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'
     compile 'com.kcrason:randomtransformview:1.0.0'
-    compile 'me.shaohui:bottomdialog:1.1.9'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }

@@ -1,17 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="250dip"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
               android:orientation="vertical">
 
-
-
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="#ffffffff"
-        android:text="分享放大师傅的师傅师傅方法方法对付对付对付的第三方丰富的师傅师傅师傅的师傅的说法是的发生的发生放松放松放松放松放松放松的放松放松"/>
+        android:layout_height="100dip"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dip"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
 
 
-</FrameLayout>
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="100dip"
+                android:layout_height="100dip"
+                android:orientation="vertical"
+                android:padding="20dip">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="haha1"
+                    android:textColor="@android:color/black"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        android:background="@android:color/white"
+        android:text="取消"
+        android:textColor="@android:color/black"
+        android:textSize="17sp"/>
+
+
+</LinearLayout>

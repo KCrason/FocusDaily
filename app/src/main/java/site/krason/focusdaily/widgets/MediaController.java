@@ -1,11 +1,13 @@
 package site.krason.focusdaily.widgets;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +18,20 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pili.pldroid.player.IMediaController;
+import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoView;
 
 import java.util.Locale;
 
 import site.krason.focusdaily.R;
-import site.krason.focusdaily.activities.FullScreenPlayVideoActivity;
 
 /**
  * @author Created by KCrason on 2016/10/27.
  * @email 535089696@qq.com
  */
 
-public class MediaController extends FrameLayout implements IMediaController, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+public class MediaController extends FrameLayout implements IMediaController, View.OnClickListener, SeekBar.OnSeekBarChangeListener
+        , PLMediaPlayer.OnCompletionListener, PLMediaPlayer.OnErrorListener {
 
     private MediaPlayerControl mMediaPlayerControl;
 
@@ -42,6 +45,8 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
     private TextView mRightTime;
     private SeekBar mVideoProgress;
     private ImageView mExpand;
+
+    private ImageView mBack;
 
     /**
      * 用于判断ControlView是否已经显示
@@ -123,6 +128,10 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
     private void initControllerView(View view) {
         if (mVideoType == VIDEO_TYPE_LIST) {
             mVideoTitle = (TextView) view.findViewById(R.id.txt_video_name);
+        }
+        if (mVideoType == VIDEO_TYPE_SINGLE) {
+            mBack = (ImageView) view.findViewById(R.id.img_back);
+            mBack.setOnClickListener(this);
         }
         mVideoProgress = (SeekBar) view.findViewById(R.id.pb_video_progress);
         mVideoProgress.setOnSeekBarChangeListener(this);
@@ -284,7 +293,6 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
         return isControlViewShowing;
     }
 
-
     private View mAnchorView;
 
     @Override
@@ -294,14 +302,28 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
 
     @Override
     public void onClick(View view) {
+        Configuration mConfiguration = getResources().getConfiguration(); //获取设置的配置信息
+        Activity activity = (Activity) mContext;
         switch (view.getId()) {
             case R.id.img_play_control:
                 playControl();
                 break;
+            case R.id.img_back:
+                if (mConfiguration.orientation == mConfiguration.ORIENTATION_PORTRAIT) {
+                    //如果是竖屏，则关闭当前页面
+                    activity.finish();
+                } else {
+                    //如果是横屏，则返回为竖屏
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+                break;
             case R.id.img_landscape:
-                if (mMediaPlayerControl != null && !TextUtils.isEmpty(mVideoPath)) {
-                    FullScreenPlayVideoActivity.actionStart(mContext, mVideoPath,
-                            mMediaPlayerControl.getCurrentPosition());
+                if (mMediaPlayerControl != null) {
+                    if (mConfiguration.orientation == mConfiguration.ORIENTATION_PORTRAIT) {
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    } else {
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    }
                 }
                 break;
         }
@@ -360,5 +382,15 @@ public class MediaController extends FrameLayout implements IMediaController, Vi
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public void onCompletion(PLMediaPlayer plMediaPlayer) {
+
+    }
+
+    @Override
+    public boolean onError(PLMediaPlayer plMediaPlayer, int i) {
+        return false;
     }
 }

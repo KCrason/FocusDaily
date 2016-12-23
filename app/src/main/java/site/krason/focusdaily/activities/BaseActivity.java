@@ -35,7 +35,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract boolean isExistToolbar();
 
-
     /**
      * 注意在设置toolbar时，toolbar的id必须设置成toolbar，否则报空
      */

@@ -1,9 +1,13 @@
 package site.krason.focusdaily.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -11,6 +15,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +30,7 @@ import site.krason.focusdaily.activities.SlidesActivity;
 import site.krason.focusdaily.activities.VideoActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
 import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.events.RefreshEvent;
 import site.krason.focusdaily.utils.ACache;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.KReyccleView;
@@ -105,6 +114,28 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 });
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshDataOfEvent(RefreshEvent refreshEvent) {
+        if (refreshEvent.getEventCode() == 0 && refreshEvent.getData() == 0) {
+            mRecyclerView.scrollToPosition(0);
+            if (mSwipeRefreshLayout != null) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                });
+            }
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onRefresh();
+                }
+            }, 1000);
+        }
+    }
+
     private Map<String, String> getParams(String action) {
         Map<String, String> stringMap = new HashMap<>();
         stringMap.put("id", "SYLB10,SYDT10,SYRECOMMEND");
@@ -149,7 +180,9 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     @Override
     public void initFragment(View view) {
+        EventBus.getDefault().register(this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
@@ -157,6 +190,12 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
         mScrollAdpter = new RecommendAdpter(getContext(), this);
         mRecyclerView.setAdapter(mScrollAdpter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -207,8 +246,13 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 return;
             } else if (type.equals("slide")) {
                 intent = new Intent(getActivity(), SlidesActivity.class);
+                intent.putExtra(KEY_NEWS, dataBean.getLink().getUrl());
+                startActivity(intent);
+                return;
             } else if (type.equals("topic2")) {
-
+                Log.d("KCrason", "你点击了专题");
+            } else {
+                Log.d("KCrason", "你点击了其他");
             }
         }
         if (intent != null) {

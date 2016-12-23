@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -23,8 +24,9 @@ import java.util.List;
 
 import okhttp3.Call;
 import site.krason.focusdaily.R;
-import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.bean.RecommendSlideBean;
 import site.krason.focusdaily.bean.SlidesBean;
+import site.krason.focusdaily.fragments.GalleryRecommendFragment;
 import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.fragments.SlidesFragment;
 import site.krason.focusdaily.interfaces.OnImageClickListener;
@@ -35,16 +37,26 @@ import site.krason.focusdaily.widgets.GalleryDescriptionTextView;
  * @email 535089696@qq.com
  */
 
-public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChangeListener, OnImageClickListener, View.OnClickListener {
+public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChangeListener,
+        OnImageClickListener, View.OnClickListener {
 
     private ViewPager mViewPager;
     private GalleryDescriptionTextView mTxtDescription;
     private List<SlidesBean> mSlidesBeen;
+    private List<RecommendSlideBean> mRecommendSlideBeen;
 
     private ImageView mImageBack, mImageMore;
     private TextView mTxtTitle;
 
     private RelativeLayout mRelativeLayoutTitleBar;
+
+    private String mGalleryTitle;
+
+    private boolean isShowTiltleAndDescrition = true;
+
+
+
+    private SlidesFragmentPagerAdapter mSlidesFragmentPagerAdapter;
 
     @Override
     protected boolean isExistToolbar() {
@@ -55,8 +67,6 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
     public int getLayoutId() {
         return R.layout.activity_slides;
     }
-
-    private SlidesFragmentPagerAdapter mSlidesFragmentPagerAdapter;
 
     @Override
     public void initViews() {
@@ -74,13 +84,11 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
         mSlidesFragmentPagerAdapter = new SlidesFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSlidesFragmentPagerAdapter);
         if (getIntent() != null) {
-            KNewBean.ItemBean kNewBean = (KNewBean.ItemBean) getIntent().getSerializableExtra(RecommendedFragment.KEY_NEWS);
-            if (kNewBean != null && kNewBean.getLink() != null) {
-                String url = kNewBean.getLink().getUrl();
+            String url =  getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
+            if (!TextUtils.isEmpty(url)) {
                 getSlidesImages(url);
             }
         }
-
     }
 
     private void getSlidesImages(String url) {
@@ -95,11 +103,13 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
                 if (mSlidesFragmentPagerAdapter != null) {
                     JSONObject jsonObject = JSON.parseObject(response);
                     JSONObject jsonObjectBody = jsonObject.getJSONObject("body");
-                    String title = jsonObjectBody.getString("title");
+                    mGalleryTitle = jsonObjectBody.getString("title");
                     if (mTxtTitle != null) {
-                        mTxtTitle.setText(title);
+                        mTxtTitle.setText(mGalleryTitle);
                     }
                     mSlidesBeen = JSON.parseArray(jsonObjectBody.getString("slides"), SlidesBean.class);
+                    mRecommendSlideBeen = JSON.parseArray(jsonObjectBody.getString("recommend"), RecommendSlideBean.class);
+
                     if (mSlidesBeen != null) {
                         mSlidesFragmentPagerAdapter.setFragments(getFragments(mSlidesBeen.size(), mSlidesBeen));
                         mSlidesFragmentPagerAdapter.notifyDataSetChanged();
@@ -115,12 +125,15 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
         for (int i = 0; i < size; i++) {
             fragments.add(SlidesFragment.instantce(slidesBeen.get(i)));
         }
+        fragments.add(GalleryRecommendFragment.instantce(mRecommendSlideBeen));
         return fragments;
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if (position == mSlidesBeen.size() - 1) {
 
+        }
     }
 
     @Override
@@ -131,7 +144,38 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
             mTxtDescription.setScrollToTop();
             mTxtDescription.setText(curIndex + "/" + sildesSize + "  " + mSlidesBeen.get(position).getDescription());
         }
+
+        if (position >= sildesSize) {
+            mTxtTitle.setText("推荐图片");
+            mImageMore.setVisibility(View.GONE);
+            if (mRelativeLayoutTitleBar.getVisibility() == View.GONE) {
+                visible(mRelativeLayoutTitleBar, -mRelativeLayoutTitleBar.getHeight(), 0, true);
+            }
+            if (mTxtDescription.getVisibility() == View.VISIBLE) {
+                visible(mTxtDescription, 0, mTxtDescription.getHeight(), false);
+            }
+        } else {
+            mImageMore.setVisibility(View.VISIBLE);
+            mTxtTitle.setText(mGalleryTitle);
+            if (isShowTiltleAndDescrition) {
+                if (mRelativeLayoutTitleBar.getVisibility() == View.GONE) {
+                    visible(mRelativeLayoutTitleBar, -mRelativeLayoutTitleBar.getHeight(), 0, true);
+                }
+                if (mTxtDescription.getVisibility() == View.GONE) {
+                    visible(mTxtDescription, mTxtDescription.getHeight(), 0, true);
+                }
+            } else {
+                if (mRelativeLayoutTitleBar.getVisibility()==View.VISIBLE){
+                    visible(mRelativeLayoutTitleBar, 0, -mRelativeLayoutTitleBar.getHeight(), false);
+                }
+
+                if (mTxtDescription.getVisibility()==View.VISIBLE){
+                    visible(mTxtDescription, 0, mTxtDescription.getHeight(), false);
+                }
+            }
+        }
     }
+
 
     @Override
     public void onPageScrollStateChanged(int state) {
@@ -141,8 +185,10 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     public void onImageClick(View view) {
         if (mRelativeLayoutTitleBar.getVisibility() == View.VISIBLE) {
+            isShowTiltleAndDescrition = false;
             visible(mRelativeLayoutTitleBar, 0, -mRelativeLayoutTitleBar.getHeight(), false);
         } else {
+            isShowTiltleAndDescrition = true;
             visible(mRelativeLayoutTitleBar, -mRelativeLayoutTitleBar.getHeight(), 0, true);
         }
         if (mTxtDescription.getVisibility() == View.VISIBLE) {
@@ -188,8 +234,6 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
                 finish();
                 break;
             case R.id.img_more:
-                ShareDialog shareDialog = new ShareDialog();
-                shareDialog.show(getSupportFragmentManager());
                 break;
         }
     }

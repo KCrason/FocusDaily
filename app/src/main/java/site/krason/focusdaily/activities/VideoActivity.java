@@ -1,7 +1,15 @@
 package site.krason.focusdaily.activities;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewParent;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,7 +76,13 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         processExtraData();
     }
 
+    private int mScreenWidth, mScreenHeight, mDefaultHeight;
+
     private void processExtraData() {
+        mScreenWidth = KUtils.getScreenWidth();
+        mScreenHeight = KUtils.getScreenHeight();
+        mDefaultHeight = KUtils.dip2px(200);
+
         mPLVideoView = (PLVideoView) findViewById(R.id.pl_video_view);
         mMutilStatusVideoView = (MutilStatusVideoView) findViewById(R.id.mutil_status_video_view);
         mMutilStatusVideoView.setPlayCallBack(this);
@@ -134,6 +148,70 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         if (mPLVideoView != null) {
             mPLVideoView.stopPlayback();
         }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
+        int ori = mConfiguration.orientation; //获取屏幕方向
+        Log.d("KCrason", mScreenHeight + "//" + mScreenWidth);
+        if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
+            //横屏
+            if (mListView != null && mMutilStatusVideoView != null) {
+//                LinearLayout.LayoutParams layoutParams
+//                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
+//                layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+//                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+//                mMutilStatusVideoView.setLayoutParams(layoutParams);
+                ainimation(mScreenWidth, mScreenHeight, mDefaultHeight, mScreenWidth);
+
+                ViewParent viewParent = mMutilStatusVideoView.getParent();
+
+                RotateAnimation rotateAnimation = new RotateAnimation(0,90, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
+                rotateAnimation.setDuration(5000);
+                ((View)viewParent).setAnimation(rotateAnimation);
+
+
+                mListView.setVisibility(View.GONE);
+            }
+        } else {
+            //竖屏
+            if (mListView != null && mMutilStatusVideoView != null) {
+//                LinearLayout.LayoutParams layoutParams
+//                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
+//                layoutParams.height = KUtils.dip2px(200);
+//                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+//                mMutilStatusVideoView.setLayoutParams(layoutParams);
+                ainimation(mScreenHeight, mScreenWidth, mScreenWidth, mDefaultHeight);
+
+
+
+                mListView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+
+    private void ainimation(int startWidth, int endWidth, int startHeight, final int endHeight) {
+        PropertyValuesHolder propertyValuesHolderWidth = PropertyValuesHolder.ofInt("width", startWidth, endWidth);
+        PropertyValuesHolder propertyValuesHolderHeight = PropertyValuesHolder.ofInt("height", startHeight, endHeight);
+        ValueAnimator valueAnimator = ObjectAnimator.ofPropertyValuesHolder(propertyValuesHolderWidth, propertyValuesHolderHeight);
+        valueAnimator.setDuration(5000);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int width = (int) valueAnimator.getAnimatedValue("width");
+                int height = (int) valueAnimator.getAnimatedValue("height");
+                LinearLayout.LayoutParams layoutParams
+                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
+                layoutParams.height = height;
+                layoutParams.width = width;
+                mMutilStatusVideoView.setLayoutParams(layoutParams);
+            }
+        });
+        valueAnimator.start();
     }
 
     private SingleVideoInfo mSingleVideoInfo;

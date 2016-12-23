@@ -3,7 +3,6 @@ package site.krason.focusdaily;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,9 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import site.krason.focusdaily.events.RefreshEvent;
 import site.krason.focusdaily.fragments.HandPickFragment;
 import site.krason.focusdaily.fragments.ImageFragment;
 import site.krason.focusdaily.fragments.JokeFragment;
@@ -27,14 +29,23 @@ import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.fragments.VideoFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
 
+    private int mCurPosition;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,8 +54,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                EventBus.getDefault().post(new RefreshEvent(0, mCurPosition));
             }
         });
 
@@ -59,6 +69,7 @@ public class MainActivity extends AppCompatActivity
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mViewPager.addOnPageChangeListener(this);
         KFragmentPagerAdapter kFragmentPagerAdapter = new KFragmentPagerAdapter(getSupportFragmentManager());
         kFragmentPagerAdapter.setFragments(getFragments());
         kFragmentPagerAdapter.setTitles(getTitles());
@@ -85,6 +96,21 @@ public class MainActivity extends AppCompatActivity
         titles.add("视频");
         titles.add("图片");
         return titles;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        this.mCurPosition = position;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
 
@@ -155,9 +181,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        }  else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 

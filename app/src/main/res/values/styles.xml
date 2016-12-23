@@ -44,10 +44,23 @@
         <item name="elevation">@dimen/design_appbar_elevation</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppThemeBlack.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="elevation">@dimen/design_appbar_elevation</item>
+    </style>
 
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppThemeBlack.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="BackgroundStyle">
         <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+
+
+    <style name="SlideTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>

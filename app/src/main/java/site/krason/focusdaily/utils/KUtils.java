@@ -59,10 +59,19 @@ public class KUtils {
         return "刚刚";
     }
 
+
+    public static int getScreenHeight() {
+        return KApplication.sContext.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    public static int getScreenWidth() {
+        return KApplication.sContext.getResources().getDisplayMetrics().widthPixels;
+    }
+
     public static void showSnackbar(String text, View parentView) {
         Snackbar snackbar = Snackbar.make(parentView, text, Snackbar.LENGTH_SHORT);
         View view = snackbar.getView();
-        view.setBackgroundColor(Color.parseColor("#7d000000"));
+        view.setBackgroundColor(Color.parseColor("#c8000000"));
         snackbar.show();
     }
 
