@@ -32,20 +32,14 @@
                 android:background="#E5E5E5"
                 android:scaleType="centerCrop"/>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
 
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="48dip"
-                    android:layout_height="48dip"
-                    android:padding="4dip"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/play"
-                    />
-            </RelativeLayout>
+            <ImageView
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:layout_centerInParent="true"
+                android:padding="4dip"
+                android:src="@drawable/play"
+                />
 
 
             <TextView
