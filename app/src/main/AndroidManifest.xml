@@ -41,6 +41,8 @@
             android:screenOrientation="landscape"
             android:theme="@style/FullScreenWindowStyle"></activity>
 
+        <activity android:name=".activities.ProjectActivity"></activity>
+
     </application>
 
 </manifest>

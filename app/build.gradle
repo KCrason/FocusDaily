@@ -43,4 +43,5 @@ dependencies {
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'
     compile 'com.kcrason:randomtransformview:1.0.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.youth.banner:banner:1.4.5'  //最新版本
 }

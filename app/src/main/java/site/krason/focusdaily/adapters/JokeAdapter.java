@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.R;
-import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.bean.ShortNewsBean;
+import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 
 /**
@@ -24,21 +27,21 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
 
     private Context mContext;
 
-    private List<KNewBean> mDataBeen = new ArrayList<>();
-    private OnRealItemClickCallBack<KNewBean> mDataBeanOnRealItemClickCallBack;
+    private List<ShortNewsBean> mDataBeen = new ArrayList<>();
+    private OnRealItemClickCallBack<ShortNewsBean> mDataBeanOnRealItemClickCallBack;
 
     public JokeAdapter(Context context, OnRealItemClickCallBack dataBeanOnRealItemClickCallBack) {
         this.mContext = context;
         this.mDataBeanOnRealItemClickCallBack = dataBeanOnRealItemClickCallBack;
     }
 
-    public void setData(List<KNewBean> strings) {
+    public void setData(List<ShortNewsBean> strings) {
         this.mDataBeen.clear();
         this.mDataBeen = strings;
         notifyDataSetChanged();
     }
 
-    public void addData(List<KNewBean> strings) {
+    public void addData(List<ShortNewsBean> strings) {
         this.mDataBeen.addAll(strings);
         notifyDataSetChanged();
     }
@@ -52,24 +55,35 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
 
     @Override
     public void onBindViewHolder(HandPickViewHolder holder, int position) {
-//        KNewBean dataBean = mDataBeen.get(position);
-//        holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
-//        holder.mTextView.setText(dataBean.getTitle());
-//        holder.mBaseInfo.setText(dataBean.getSource() + "  " + KUtils.betweenOf2Days(dataBean.getCTime()));
-//        if (dataBean.getImageCount() >= 1) {
-//            holder.mImageView.setVisibility(View.VISIBLE);
-//            Glide.with(mContext).load(dataBean.getCoverUrl()).asBitmap().into(holder.mImageView);
-//        } else {
-//            holder.mImageView.setVisibility(View.GONE);
-//        }
+        ShortNewsBean dataBean = mDataBeen.get(position);
+        holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
+        holder.mTextView.setText(dataBean.getContent());
+
+        holder.mTxtPraise.setText(dataBean.getPraise());
+        holder.mTxtTread.setText(dataBean.getTread());
+        if (dataBean.getImg() == null || dataBean.getImg().size() <= 0) {
+            holder.mImageView.setVisibility(View.GONE);
+        } else {
+            holder.mImageView.setVisibility(View.VISIBLE);
+            setImageSize(holder.mImageView, dataBean.getImg().get(0).getSize().getWidth(), dataBean.getImg().get(0).getSize().getHeight());
+            Glide.with(mContext).load(dataBean.getImg().get(0).getUrl()).into(holder.mImageView);
+        }
+    }
+
+    private void setImageSize(ImageView imageView, String width, String height) {
+        float scal = Integer.parseInt(height) / Float.parseFloat(width);
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = (int) (scal * KUtils.getScreenWidth());
+        imageView.setLayoutParams(layoutParams);
     }
 
 
     public final class OnRecyclerItemClick implements View.OnClickListener {
 
-        private KNewBean mDataBean;
+        private ShortNewsBean mDataBean;
 
-        public OnRecyclerItemClick(KNewBean dataBean) {
+        public OnRecyclerItemClick(ShortNewsBean dataBean) {
             this.mDataBean = dataBean;
         }
 
@@ -90,13 +104,15 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
     }
 
     public final class HandPickViewHolder extends RecyclerView.ViewHolder {
-        public TextView mBaseInfo;
         private TextView mTextView;
         private ImageView mImageView;
+        private TextView mTxtPraise;
+        private TextView mTxtTread;
 
         public HandPickViewHolder(View itemView) {
             super(itemView);
-            mBaseInfo = (TextView) itemView.findViewById(R.id.txt_baseinfo);
+            mTxtPraise = (TextView) itemView.findViewById(R.id.txt_praise);
+            mTxtTread = (TextView) itemView.findViewById(R.id.txt_tread);
             mTextView = (TextView) itemView.findViewById(R.id.txt_title);
             mImageView = (ImageView) itemView.findViewById(R.id.img_pic);
         }

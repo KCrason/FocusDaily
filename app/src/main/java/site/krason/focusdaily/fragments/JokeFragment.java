@@ -1,13 +1,26 @@
 package site.krason.focusdaily.fragments;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.JokeAdapter;
-import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.bean.ShortNewsBean;
+import site.krason.focusdaily.common.UrlUtils;
 import site.krason.focusdaily.utils.ACache;
+import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.KReyccleView;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
@@ -18,7 +31,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  */
 
 public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
-        , OnRealItemClickCallBack<KNewBean>, SwipeRefreshLayout.OnRefreshListener {
+        , OnRealItemClickCallBack<ShortNewsBean>, SwipeRefreshLayout.OnRefreshListener {
 
     private KReyccleView mRecyclerView;
 
@@ -34,41 +47,60 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         refreshData();
     }
 
+    private Map<String, String> getParams(int page) {
+        Map<String, String> stringMap = new HashMap<>();
+        stringMap.put("type", "joke");
+        stringMap.put("page", String.valueOf(page));
+        stringMap.put("ltime", String.valueOf(0));
+        stringMap.put("gv", "5.4.0");
+        stringMap.put("av", "5.4.0");
+        stringMap.put("uid", "863055036432979");
+        stringMap.put("deviceid", "863055036432979");
+        stringMap.put("proid", "ifengnews");
+        stringMap.put("os", "android_22");
+        stringMap.put("df", "androidphone");
+        stringMap.put("vt", "5");
+        stringMap.put("screen", "1080x1920");
+        stringMap.put("publishid", "6102");
+        stringMap.put("nw", "wifi");
+        return stringMap;
+    }
+
+    private int mPageNow = 1;
+
     private void refreshData() {
-//        RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
-//                .create(RetrofitApi.class)
-//                .getNewsList("joke")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<KNewBean>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
-//                        mSwipeRefreshLayout.setRefreshing(false);
-//                    }
-//
-//                    @Override
-//                    public void onNext(KNewBean kNewBean) {
-//                        ACache.get(getContext()).put("JOKE", kNewBean);
-//                        mJokeAdapter.setData(kNewBean.getData());
-//                        isLoadComplete = true;
-//                        removeRootView();
-//                        Snackbar.make(mRootView, "更新了10条", Snackbar.LENGTH_SHORT).show();
-//                        mSwipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
+        OkHttpUtils.get().params(getParams(mPageNow)).url(UrlUtils.IFENG.CLIENT_SHORT_NEWS).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                ACache.get(getContext()).put("JOKE", response);
+                JSONObject jsonObject = JSON.parseObject(response);
+                if (jsonObject.containsKey("body")) {
+                    List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
+                    mJokeAdapter.setData(shortNewsBeen);
+                    isLoadComplete = true;
+                    removeRootView();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
 
     }
 
     @Override
     public void LazyLoadDataToLocal() {
-        KNewBean kNewBean = (KNewBean) ACache.get(getContext()).getAsObject("JOKE");
-//        mJokeAdapter.setData(kNewBean.getData());
+        String cache = ACache.get(getContext()).getAsString("JOKE");
+        JSONObject jsonObject = JSON.parseObject(cache);
+        if (jsonObject.containsKey("body")) {
+            List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
+            mJokeAdapter.setData(shortNewsBeen);
+        }
         removeRootView();
     }
 
@@ -92,38 +124,32 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
     @Override
     public void onRecyclerViewLoadMore() {
-//        if (KUtils.Network.isExistNetwork()) {
-//            RetrofitManage.getRetrofit(Constants.BAES_URL_NEWS)
-//                    .create(RetrofitApi.class)
-//                    .getNewsList("joke")
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<KNewBean>() {
-//                        @Override
-//                        public void onCompleted() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(KNewBean kNewBean) {
-//                            mRecyclerView.setCurrentLoadComplete();
-//                            mJokeAdapter.addData(kNewBean.getData());
-//                        }
-//                    });
-//
-//        } else {
-//            mRecyclerView.setNetworkError();
-//        }
+        if (KUtils.Network.isExistNetwork()) {
+            mPageNow++;
+            OkHttpUtils.get().params(getParams(mPageNow)).url(UrlUtils.IFENG.CLIENT_SHORT_NEWS).build().execute(new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                }
+
+                @Override
+                public void onResponse(String response, int id) {
+                    mRecyclerView.setCurrentLoadComplete();
+                    JSONObject jsonObject = JSON.parseObject(response);
+                    if (jsonObject.containsKey("body")) {
+                        List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
+                        mJokeAdapter.addData(shortNewsBeen);
+                    }
+                }
+            });
+
+        } else {
+            mRecyclerView.setNetworkError();
+        }
     }
 
 
     @Override
-    public void onRealItemClick(View view, KNewBean dataBean) {
+    public void onRealItemClick(View view, ShortNewsBean dataBean) {
 //        if (dataBean != null && dataBean.getImageCount() >= 1) {
 //            Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
 //            intent.putExtra(NewsDetailActivity.KEY_NEWS, dataBean);

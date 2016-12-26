@@ -26,6 +26,7 @@ import java.util.Map;
 import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
+import site.krason.focusdaily.activities.ProjectActivity;
 import site.krason.focusdaily.activities.SlidesActivity;
 import site.krason.focusdaily.activities.VideoActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
@@ -239,24 +240,22 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         if (type != null) {
             if (type.equals("doc") || type.equals("web")) {
                 intent = new Intent(getActivity(), NewsDetailActivity.class);
+                intent.putExtra(KEY_NEWS, dataBean);
+                startActivity(intent);
+                return;
             } else if (type.equals("phvideo")) {
                 intent = new Intent(getActivity(), VideoActivity.class);
-                intent.putExtra(KEY_NEWS, dataBean.getLink().getUrl());
-                startActivity(intent);
-                return;
             } else if (type.equals("slide")) {
                 intent = new Intent(getActivity(), SlidesActivity.class);
-                intent.putExtra(KEY_NEWS, dataBean.getLink().getUrl());
-                startActivity(intent);
-                return;
             } else if (type.equals("topic2")) {
-                Log.d("KCrason", "你点击了专题");
+                intent = new Intent(getActivity(), ProjectActivity.class);
             } else {
+                //text_live直播
                 Log.d("KCrason", "你点击了其他");
             }
         }
         if (intent != null) {
-            intent.putExtra(KEY_NEWS, dataBean);
+            intent.putExtra(KEY_NEWS, dataBean.getLink().getUrl());
             startActivity(intent);
         }
     }

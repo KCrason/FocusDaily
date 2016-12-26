@@ -15,7 +15,6 @@ import site.krason.focusdaily.widgets.MediaController;
 
 public class FullScreenPlayVideoActivity extends BaseActivity {
 
-    private static final String KEY_CURRENT_DURATION = "key_current_duration";
     private PLVideoView mPLVideoView;
 
     public final static String KEY_PATH = "key_video_path";
@@ -26,10 +25,9 @@ public class FullScreenPlayVideoActivity extends BaseActivity {
         return false;
     }
 
-    public static void actionStart(Context context, String videoPath, long currentDuration) {
+    public static void actionStart(Context context, String videoPath) {
         Intent intent = new Intent(context, FullScreenPlayVideoActivity.class);
         intent.putExtra(KEY_PATH, videoPath);
-        intent.putExtra(KEY_CURRENT_DURATION, currentDuration);
         context.startActivity(intent);
     }
 
@@ -52,7 +50,6 @@ public class FullScreenPlayVideoActivity extends BaseActivity {
         mPLVideoView.setMediaController(new MediaController(this));
         if (getIntent() != null) {
             mPLVideoView.setVideoPath(getIntent().getStringExtra(KEY_PATH));
-            mPLVideoView.seekTo(getIntent().getLongExtra(KEY_CURRENT_DURATION, 0));
         }
     }
 }

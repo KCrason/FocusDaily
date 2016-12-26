@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -160,34 +158,21 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
             //横屏
             if (mListView != null && mMutilStatusVideoView != null) {
-//                LinearLayout.LayoutParams layoutParams
-//                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
-//                layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
-//                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-//                mMutilStatusVideoView.setLayoutParams(layoutParams);
-                ainimation(mScreenWidth, mScreenHeight, mDefaultHeight, mScreenWidth);
-
-                ViewParent viewParent = mMutilStatusVideoView.getParent();
-
-                RotateAnimation rotateAnimation = new RotateAnimation(0,90, Animation.RELATIVE_TO_SELF,Animation.RELATIVE_TO_SELF);
-                rotateAnimation.setDuration(5000);
-                ((View)viewParent).setAnimation(rotateAnimation);
-
-
+                LinearLayout.LayoutParams layoutParams
+                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
+                layoutParams.height = FrameLayout.LayoutParams.MATCH_PARENT;
+                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+                mMutilStatusVideoView.setLayoutParams(layoutParams);
                 mListView.setVisibility(View.GONE);
             }
         } else {
             //竖屏
             if (mListView != null && mMutilStatusVideoView != null) {
-//                LinearLayout.LayoutParams layoutParams
-//                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
-//                layoutParams.height = KUtils.dip2px(200);
-//                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-//                mMutilStatusVideoView.setLayoutParams(layoutParams);
-                ainimation(mScreenHeight, mScreenWidth, mScreenWidth, mDefaultHeight);
-
-
-
+                LinearLayout.LayoutParams layoutParams
+                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
+                layoutParams.height = KUtils.dip2px(200);
+                layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+                mMutilStatusVideoView.setLayoutParams(layoutParams);
                 mListView.setVisibility(View.VISIBLE);
             }
         }
