@@ -1,5 +1,6 @@
 package site.krason.focusdaily.activities;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -12,6 +13,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerClickListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -23,8 +26,9 @@ import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.ProjectAdapter;
 import site.krason.focusdaily.adapters.ProjectFooterAblumAdapter;
 import site.krason.focusdaily.bean.ProjectBean;
-import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.utils.GlideImageLoader;
+
+import static site.krason.focusdaily.fragments.RecommendedFragment.KEY_NEWS;
 
 /**
  * @author Created by KCrason on 2016/12/26.
@@ -124,7 +128,7 @@ public class ProjectActivity extends BaseActivity {
     }
 
     private void setHeaderSlides(List<ProjectBean> projectBeen) {
-        ProjectBean projectBean = getProjectBean(projectBeen, "slider");
+        final ProjectBean projectBean = getProjectBean(projectBeen, "slider");
         if (projectBean != null) {
             View headerSlideView = LayoutInflater.from(this).inflate(R.layout.header_list_project_slide, null);
             Banner banner = (Banner) headerSlideView.findViewById(R.id.banner);
@@ -134,7 +138,16 @@ public class ProjectActivity extends BaseActivity {
                         .setDelayTime(4000)
                         .setBannerTitles(getTitles(projectBean.getPodItems()))
                         .setImageLoader(new GlideImageLoader())
+                        .setBannerAnimation(Transformer.Accordion)
                         .start();
+                banner.setOnBannerClickListener(new OnBannerClickListener() {
+                    @Override
+                    public void OnBannerClick(int position) {
+                        Intent intent = new Intent(ProjectActivity.this, SlidesActivity.class);
+                        intent.putExtra(KEY_NEWS, projectBean.getPodItems().get(position-1).getLinks().get(0).getUrl());
+                        startActivity(intent);
+                    }
+                });
             }
             mListView.addHeaderView(headerSlideView);
         }
@@ -174,7 +187,7 @@ public class ProjectActivity extends BaseActivity {
 
     @Override
     public void initViews() {
-        String url = getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
+        String url = getIntent().getStringExtra(KEY_NEWS);
         mListView = (ListView) findViewById(R.id.list_view);
         getData(url);
     }

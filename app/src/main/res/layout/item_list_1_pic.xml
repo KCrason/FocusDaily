@@ -32,7 +32,6 @@
                 android:textColor="#333333"
                 android:textSize="17sp"/>
 
-            <include layout="@layout/include_view_news_baseinfo"/>
         </LinearLayout>
 
 
