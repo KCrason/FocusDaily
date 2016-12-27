@@ -1,5 +1,7 @@
 package site.krason.focusdaily.fragments;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,7 +51,15 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
     private Map<String, String> getParams(int page) {
         Map<String, String> stringMap = new HashMap<>();
-        stringMap.put("type", "joke");
+        String type = "joke";
+        if (mType != null) {
+            if (mType.equals("joke")) {
+                type = "joke";
+            } else if (mType.equals("yulu")) {
+                type = "phil";
+            }
+        }
+        stringMap.put("type", type);
         stringMap.put("page", String.valueOf(page));
         stringMap.put("ltime", String.valueOf(0));
         stringMap.put("gv", "5.4.0");
@@ -66,6 +76,35 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         return stringMap;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mType = getArguments().getString(KEY_TYPE);
+    }
+
+    private final static String KEY_TYPE = "key_type";
+    private String mType;
+
+    public static JokeFragment instance(String type) {
+        JokeFragment jokeFragment = new JokeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TYPE, type);
+        jokeFragment.setArguments(bundle);
+        return jokeFragment;
+    }
+
+    private String getKey() {
+        String key = "KEY_JOKE";
+        if (mType != null) {
+            if (mType.equals("joke")) {
+                key = "KEY_JOKE";
+            } else if (mType.equals("yulu")) {
+                key = "KEY_YULU";
+            }
+        }
+        return key;
+    }
+
     private int mPageNow = 1;
 
     private void refreshData() {
@@ -78,7 +117,7 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
             @Override
             public void onResponse(String response, int id) {
-                ACache.get(getContext()).put("JOKE", response);
+                ACache.get(getContext()).put(getKey(), response);
                 JSONObject jsonObject = JSON.parseObject(response);
                 if (jsonObject.containsKey("body")) {
                     List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
@@ -95,7 +134,7 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
     @Override
     public void LazyLoadDataToLocal() {
-        String cache = ACache.get(getContext()).getAsString("JOKE");
+        String cache = ACache.get(getContext()).getAsString(getKey());
         JSONObject jsonObject = JSON.parseObject(cache);
         if (jsonObject.containsKey("body")) {
             List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
@@ -159,6 +198,7 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
     @Override
     public void onRefresh() {
+        mPageNow = 1;
         refreshData();
     }
 }

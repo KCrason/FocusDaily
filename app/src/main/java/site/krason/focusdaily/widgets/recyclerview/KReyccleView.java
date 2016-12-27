@@ -9,7 +9,9 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
+import site.krason.focusdaily.adapters.VideoListAdapter;
 import site.krason.focusdaily.utils.KUtils;
+import site.krason.focusdaily.utils.ViewHolderManage;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
 
 /**
@@ -20,6 +22,9 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
 public class KReyccleView extends RecyclerView {
 
     private OnRecyclerLoadMoreLisener mOnRecyclerLoadMoreLisener;
+
+    private RecyclerView.Adapter mOriginalAdapter;
+
     private KRecyclerAdapter mAdapter;
 
     private Context mContext;
@@ -132,6 +137,21 @@ public class KReyccleView extends RecyclerView {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            if (recyclerView != null) {
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (layoutManager instanceof LinearLayoutManager && mOriginalAdapter instanceof VideoListAdapter) {
+                    int firstVisiblePosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+                    int lastVisiblePosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                    int currentPlayPosition = ((VideoListAdapter) mOriginalAdapter).getCurPlayPosition();
+                    if (currentPlayPosition != -1 && currentPlayPosition != firstVisiblePosition) {
+                        if (dy > 0 && firstVisiblePosition > currentPlayPosition) {
+                            ViewHolderManage.create().createVideoPlay();
+                        } else if (dy < 0 && lastVisiblePosition < currentPlayPosition) {
+                            ViewHolderManage.create().createVideoPlay();
+                        }
+                    }
+                }
+            }
         }
 
         @Override
@@ -171,6 +191,7 @@ public class KReyccleView extends RecyclerView {
 
     @Override
     public void setAdapter(Adapter adapter) {
+        this.mOriginalAdapter = adapter;
         this.mAdapter = new KRecyclerAdapter(adapter);
         this.mFooterView = new FooterView(mContext);
         mAdapter.setFooterView(mFooterView);

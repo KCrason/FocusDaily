@@ -1,6 +1,8 @@
 package site.krason.focusdaily.widgets.recyclerview;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,6 +21,7 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private final static int VIEW_TYPE_COUNT = 2;
 
 
+
     private RecyclerView.Adapter<RecyclerView.ViewHolder> mViewHolderAdapter;
 
     private View mFooterView = null;
@@ -26,6 +29,35 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public KRecyclerAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> viewHolderAdapter) {
         this.mViewHolderAdapter = viewHolderAdapter;
+    }
+
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        if (manager instanceof GridLayoutManager) {
+            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
+            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return (getItemViewType(position) == RecyclerView.INVALID_TYPE || getItemViewType(position) == RecyclerView.INVALID_TYPE - 1)
+                            ? gridManager.getSpanCount() : 1;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        if (lp != null
+                && lp instanceof StaggeredGridLayoutManager.LayoutParams
+                && isFooter(holder.getLayoutPosition())) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+            p.setFullSpan(true);
+        }
     }
 
     public void setFooterView(View footerView) {

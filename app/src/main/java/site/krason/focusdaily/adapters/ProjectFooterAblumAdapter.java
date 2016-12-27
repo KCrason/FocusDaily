@@ -87,7 +87,7 @@ public class ProjectFooterAblumAdapter extends BaseAdapter {
             albumViewHolder.mTextView.setText(podItemsBean.getTitle());
             ViewGroup.LayoutParams layoutParams = albumViewHolder.mImageView.getLayoutParams();
             layoutParams.width = KUtils.getScreenWidth() / 2 - 2 * KUtils.dip2px(10);
-            layoutParams.height = KUtils.getScreenWidth() / 2 - 2 * KUtils.dip2px(10);
+            layoutParams.height = KUtils.getScreenWidth() / 2 - 8 * KUtils.dip2px(10);
             albumViewHolder.mImageView.setLayoutParams(layoutParams);
             Glide.with(mContext).load(podItemsBean.getThumbnail()).into(albumViewHolder.mImageView);
         }

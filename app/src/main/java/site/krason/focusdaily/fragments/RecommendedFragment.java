@@ -2,11 +2,14 @@ package site.krason.focusdaily.fragments;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -55,10 +58,33 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     private View mRootView;
 
+    private final static String KEY_TYPE = "key_type";
+
+    public static RecommendedFragment instance(String type) {
+        RecommendedFragment recommendedFragment = new RecommendedFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TYPE, type);
+        recommendedFragment.setArguments(bundle);
+        return recommendedFragment;
+    }
+
+    private String mType;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mType = getArguments().getString(KEY_TYPE);
+    }
 
     @Override
     public void LazyLoadDataToService() {
-        defaultData();
+        if (!TextUtils.isEmpty(mType)) {
+            if (mType.equals("focus")) {
+                defaultData();
+            } else {
+                refreshData();
+            }
+        }
     }
 
     private void refreshData() {
@@ -76,7 +102,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                     @Override
                     public void onResponse(String response, int id) {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        ACache.get(getContext()).put("RECOMMEND", response);
+                        ACache.get(getContext()).put(getKey(), response);
                         KNewBean bannerBean = getKNewsBeanList(response, 0);
                         if (bannerBean != null) {
                             mScrollAdpter.setData(bannerBean);
@@ -104,7 +130,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                     @Override
                     public void onResponse(String response, int id) {
-                        ACache.get(getContext()).put("RECOMMEND", response);
+                        ACache.get(getContext()).put(getKey(), response);
                         mScrollAdpter.setData(getKNewsBeanList(response, 1));
                         mScrollAdpter.addData(getKNewsBeanList(response, 2));
                         mScrollAdpter.addData(getKNewsBeanList(response, 0));
@@ -138,8 +164,26 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     }
 
     private Map<String, String> getParams(String action) {
+        String id = "SYLB10,SYDT10,SYRECOMMEND";
         Map<String, String> stringMap = new HashMap<>();
-        stringMap.put("id", "SYLB10,SYDT10,SYRECOMMEND");
+        if (mType != null) {
+            if (mType.equals("focus")) {
+                id = "SYLB10,SYDT10,SYRECOMMEND";
+            } else if (mType.equals("world")) {
+                id = "GJPD";
+            } else if (mType.equals("social")) {
+                id = "SH133,FOCUSSH133";
+            } else if (mType.equals("digital")) {
+                id = "SM66,FOCUSSM66";
+            } else if (mType.equals("nba")) {
+                id = "NBAPD";
+            } else if (mType.equals("movie")) {
+                id = "DYPD";
+            } else if (mType.equals("game")) {
+                id = "YX11,FOCUSYX11";
+            }
+        }
+        stringMap.put("id", id);
         stringMap.put("action", action);
         stringMap.put("province", "%E5%B9%BF%E4%B8%9C%E7%9C%81");
         stringMap.put("city", "%E6%B7%B1%E5%9C%B3%E5%B8%82");
@@ -169,9 +213,31 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         return null;
     }
 
+    private String getKey() {
+        String key = "KEY_FOCUS";
+        if (mType != null) {
+            if (mType.equals("focus")) {
+                key = "KEY_FOCUS";
+            } else if (mType.equals("world")) {
+                key = "KEY_WORLD";
+            } else if (mType.equals("social")) {
+                key = "KEY_SOCIAL";
+            } else if (mType.equals("ditigal")) {
+                key = "KEY_DITIGAL";
+            } else if (mType.equals("nba")) {
+                key = "KEY_NBA";
+            } else if (mType.equals("movie")) {
+                key = "KEY_MOVIE";
+            } else if (mType.equals("game")) {
+                key = "KEY_GAME";
+            }
+        }
+        return key;
+    }
+
     @Override
     public void LazyLoadDataToLocal() {
-        String result = ACache.get(getContext()).getAsString("RECOMMEND");
+        String result = ACache.get(getContext()).getAsString(getKey());
         KNewBean kNewBean = getKNewsBeanList(result, 0);
         if (kNewBean != null) {
             mScrollAdpter.setData(kNewBean);

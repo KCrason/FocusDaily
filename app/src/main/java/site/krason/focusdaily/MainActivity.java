@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.events.RefreshEvent;
-import site.krason.focusdaily.fragments.HandPickFragment;
 import site.krason.focusdaily.fragments.ImageFragment;
 import site.krason.focusdaily.fragments.JokeFragment;
 import site.krason.focusdaily.fragments.RecommendedFragment;
 import site.krason.focusdaily.fragments.VideoFragment;
+import site.krason.focusdaily.utils.ViewHolderManage;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        ViewHolderManage.create().createVideoPlay();
     }
 
     @Override
@@ -74,29 +75,43 @@ public class MainActivity extends AppCompatActivity
         kFragmentPagerAdapter.setFragments(getFragments());
         kFragmentPagerAdapter.setTitles(getTitles());
         mViewPager.setAdapter(kFragmentPagerAdapter);
-        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     private List<Fragment> getFragments() {
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new RecommendedFragment());
-        fragments.add(new HandPickFragment());
-        fragments.add(new JokeFragment());
+        fragments.add(RecommendedFragment.instance("focus"));
         fragments.add(new VideoFragment());
+        fragments.add(RecommendedFragment.instance("world"));
+        fragments.add(RecommendedFragment.instance("social"));
+        fragments.add(RecommendedFragment.instance("digital"));
+        fragments.add(RecommendedFragment.instance("nba"));
+        fragments.add(RecommendedFragment.instance("movie"));
+        fragments.add(RecommendedFragment.instance("game"));
+        fragments.add(JokeFragment.instance("joke"));
+        fragments.add(JokeFragment.instance("yulu"));
         fragments.add(new ImageFragment());
         return fragments;
     }
 
     private List<String> getTitles() {
         List<String> titles = new ArrayList<>();
-        titles.add("推荐");
-        titles.add("精选");
-        titles.add("笑话");
+        titles.add("焦点");
         titles.add("视频");
+        titles.add("国际");
+        titles.add("社会");
+        titles.add("数码");
+        titles.add("NBA");
+        titles.add("电影");
+        titles.add("游戏");
+        titles.add("笑话");
+        titles.add("语录");
         titles.add("图片");
         return titles;
     }
+
+
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

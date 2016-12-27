@@ -92,7 +92,6 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         mListView.setAdapter(mVideoCommentAdapter);
 
         mMediaController = new MediaController(this);
-        mMediaController.setVideoType(MediaController.VIDEO_TYPE_SINGLE);
         mPLVideoView.setMediaController(mMediaController);
         getVideoDetailInfo(mGuid);
     }
@@ -198,6 +197,8 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         });
         valueAnimator.start();
     }
+
+
 
     private SingleVideoInfo mSingleVideoInfo;
 
@@ -333,13 +334,6 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
             mPLVideoView.setVideoPath(mVideoPath);
         }
     }
-
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//        mGuid = intent.getStringExtra("key_guid");
-//        processExtraData();
-//    }
 
     @Override
     public void onItemClickListener(View view, int position) {

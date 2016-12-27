@@ -41,12 +41,12 @@
                 android:layout_height="40dip"
                 android:orientation="horizontal">
 
-                <ImageView android:padding="8dip"
+                <ImageView android:padding="10dip"
                     android:layout_width="40dip"
                     android:layout_height="wrap_content"
                     android:src="@drawable/essay_image_list_digg_icon_normal"/>
 
-                <TextView
+                <TextView android:textColor="@android:color/darker_gray"
                     android:id="@+id/txt_praise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,12 +64,12 @@
                 android:layout_toRightOf="@id/llayout_parise"
                 android:orientation="horizontal">
 
-                <ImageView android:padding="8dip"
+                <ImageView android:padding="10dip"
                     android:layout_width="40dip"
                     android:layout_height="wrap_content"
                     android:src="@drawable/essay_image_list_bury_icon_normal"/>
 
-                <TextView
+                <TextView android:textColor="@android:color/darker_gray"
                     android:id="@+id/txt_tread"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="12dip"
+        android:layout_height="8dip"
         android:background="#E5E5E5"></View>
 
 </LinearLayout>

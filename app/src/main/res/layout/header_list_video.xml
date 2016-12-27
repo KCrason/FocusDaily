@@ -6,7 +6,7 @@
               android:id="@+id/llayout_root"
               android:visibility="invisible"
               android:background="@android:color/white"
-              android:padding="10dip">
+              android:padding="8dip">
 
     <TextView
         android:id="@+id/txt_title"
