@@ -91,7 +91,6 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void initFragment(View view) {
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
