@@ -1,5 +1,6 @@
 package site.krason.focusdaily.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -146,6 +147,7 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
     @Override
     public void initFragment(View view) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);

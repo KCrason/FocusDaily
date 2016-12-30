@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.pili.pldroid.player.AVOptions;
+import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoView;
 
@@ -28,7 +30,8 @@ import site.krason.focusdaily.widgets.MediaControllerOfList;
  * @email 535089696@qq.co
  */
 
-public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> {
+public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> implements
+        PLMediaPlayer.OnSeekCompleteListener, PLMediaPlayer.OnErrorListener, PLMediaPlayer.OnBufferingUpdateListener {
 
     private Context mContext;
 
@@ -65,12 +68,47 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     public void onBindViewHolder(final VideoListAdapter.VideoViewHolder holder, int position) {
         final VideoListBean.ItemBean dataBean = mDataBeen.get(position);
         holder.mTextView.setText(dataBean.getTitle());
+        holder.mPLVideoTextureView.setOnPreparedListener(new VideoListOnPreparedListener(holder));
+        holder.mPLVideoTextureView.setOnBufferingUpdateListener(this);
+        holder.mPLVideoTextureView.setOnErrorListener(this);
+        holder.mPLVideoTextureView.setOnSeekCompleteListener(this);
         Glide.with(mContext).load(dataBean.getImage()).into(holder.mImageView);
         holder.mTxtLength.setText(KUtils.formatVideoDuration(dataBean.getDuration()));
         holder.itemView.setOnClickListener(new VideoItemClick(position, dataBean.getVideo_url(), dataBean.getTitle(), holder));
     }
 
     private int mCurPlayPosition = -1;
+
+
+    class VideoListOnPreparedListener implements PLMediaPlayer.OnPreparedListener {
+        private VideoViewHolder mVideoViewHolder;
+
+        public VideoListOnPreparedListener(VideoViewHolder videoViewHolder) {
+            this.mVideoViewHolder = videoViewHolder;
+        }
+
+        @Override
+        public void onPrepared(PLMediaPlayer plMediaPlayer) {
+            mVideoViewHolder.getCoverView().setVisibility(View.GONE);
+            plMediaPlayer.start();
+        }
+    }
+
+
+    @Override
+    public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
+
+    }
+
+    @Override
+    public boolean onError(PLMediaPlayer plMediaPlayer, int i) {
+        return false;
+    }
+
+    @Override
+    public void onBufferingUpdate(PLMediaPlayer plMediaPlayer, int i) {
+
+    }
 
     public final class VideoItemClick implements View.OnClickListener {
 
@@ -94,7 +132,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
                     if (mCurPlayPosition != mPosition) {
                         ViewHolderManage.create().createVideoPlay();
                         mCurPlayPosition = mPosition;
-                        mVideoViewHolder.getCoverView().setVisibility(View.GONE);
                         mVideoViewHolder.mMediaControllerOfList.setVideoTitle(mTitlte);
                         mVideoViewHolder.mPLVideoTextureView.setVideoPath(mVideoUrl);
                     }
@@ -151,11 +188,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             mImageView = (ImageView) itemView.findViewById(R.id.img_pic);
             mTxtLength = (TextView) itemView.findViewById(R.id.txt_length);
             mPLVideoTextureView = (PLVideoTextureView) itemView.findViewById(R.id.pl_video_texture_view);
-            View loadView = itemView.findViewById(R.id.LoadingView);
             mMediaControllerOfList = new MediaControllerOfList(mContext);
             mPLVideoTextureView.setMediaController(mMediaControllerOfList);
-            mPLVideoTextureView.setBufferingIndicator(loadView);
             mPLVideoTextureView.setDisplayAspectRatio(PLVideoView.ASPECT_RATIO_PAVED_PARENT);
+            mPLVideoTextureView.setBufferingIndicator( itemView.findViewById(R.id.LoadingView));
+            AVOptions options = new AVOptions();
+            options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+            mPLVideoTextureView.setAVOptions(options);
         }
     }
 }

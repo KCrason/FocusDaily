@@ -1,5 +1,6 @@
 package site.krason.focusdaily.fragments;
 
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -104,6 +105,7 @@ public class ImageFragment extends BaseFragment
     @Override
     public void initFragment(View view) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
 

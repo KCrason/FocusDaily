@@ -15,7 +15,6 @@
             android:id="@+id/pl_video_texture_view"
             android:layout_width="match_parent"
             android:layout_height="200dip">
-
         </com.pili.pldroid.player.widget.PLVideoTextureView>
 
         <include layout="@layout/include_loading_view_2"></include>
@@ -32,7 +31,6 @@
                 android:id="@+id/img_pic"
                 android:layout_width="match_parent"
                 android:layout_height="200dip"
-                android:background="#f2f2f2"
                 android:scaleType="centerCrop"/>
 
             <TextView

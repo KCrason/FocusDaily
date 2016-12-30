@@ -15,7 +15,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-import site.krason.focusdaily.activities.WebViewActivity;
 import site.krason.focusdaily.fragments.ImageFragment;
 import site.krason.focusdaily.fragments.JokeFragment;
 import site.krason.focusdaily.fragments.RecommendedFragment;
@@ -44,11 +43,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
-        mTemperature = (LinearLayout) findViewById(R.id.llayout_temperature);
-        mTemperature.setOnClickListener(this);
+//        mTemperature = (LinearLayout) findViewById(R.id.llayout_temperature);
+//        mTemperature.setOnClickListener(this);
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -111,11 +108,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.llayout_temperature:
-                WebViewActivity.actionStart(this, "https://e.newweather.com.cn/");
-                break;
-        }
+//        switch (view.getId()) {
+//            case R.id.llayout_temperature:
+//                WebViewActivity.actionStart(this, "https://e.newweather.com.cn/");
+//                break;
+//        }
     }
 
 

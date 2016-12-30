@@ -1,5 +1,6 @@
 package site.krason.focusdaily.fragments;
 
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,7 +83,13 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void LazyLoadDataToLocal() {
-        removeRootView();
+        String response = ACache.get(getContext()).getAsString("KEY_IMAGE_LIST");
+        JSONArray jsonArray = JSON.parseArray(response);
+        if (jsonArray.size() > 0) {
+            VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
+            mVideoListAdapter.setData(videoListBean.getItem());
+            removeRootView();
+        }
     }
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -92,6 +99,7 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Override
     public void initFragment(View view) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
 

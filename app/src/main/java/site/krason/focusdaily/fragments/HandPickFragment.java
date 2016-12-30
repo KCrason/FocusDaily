@@ -1,6 +1,7 @@
 package site.krason.focusdaily.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -77,6 +78,7 @@ public class HandPickFragment extends BaseFragment implements OnRecyclerLoadMore
     @Override
     public void initFragment(View view) {
         mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRootView = view.findViewById(R.id.llayout_root);
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
