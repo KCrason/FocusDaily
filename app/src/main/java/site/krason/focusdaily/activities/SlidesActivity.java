@@ -101,20 +101,22 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
 
             @Override
             public void onResponse(String response, int id) {
-                if (mSlidesFragmentPagerAdapter != null) {
+                if (mSlidesFragmentPagerAdapter != null && !TextUtils.isEmpty(response)) {
                     JSONObject jsonObject = JSON.parseObject(response);
-                    JSONObject jsonObjectBody = jsonObject.getJSONObject("body");
-                    mGalleryTitle = jsonObjectBody.getString("title");
-                    if (mTxtTitle != null) {
-                        mTxtTitle.setText(mGalleryTitle);
-                    }
-                    mSlidesBeen = JSON.parseArray(jsonObjectBody.getString("slides"), SlidesBean.class);
-                    mRecommendSlideBeen = JSON.parseArray(jsonObjectBody.getString("recommend"), RecommendSlideBean.class);
+                    if (jsonObject.containsKey("body")){
+                        JSONObject jsonObjectBody = jsonObject.getJSONObject("body");
+                        mGalleryTitle = jsonObjectBody.getString("title");
+                        if (mTxtTitle != null) {
+                            mTxtTitle.setText(mGalleryTitle);
+                        }
+                        mSlidesBeen = JSON.parseArray(jsonObjectBody.getString("slides"), SlidesBean.class);
+                        mRecommendSlideBeen = JSON.parseArray(jsonObjectBody.getString("recommend"), RecommendSlideBean.class);
 
-                    if (mSlidesBeen != null) {
-                        mSlidesFragmentPagerAdapter.setFragments(getFragments(mSlidesBeen.size(), mSlidesBeen));
-                        mSlidesFragmentPagerAdapter.notifyDataSetChanged();
-                        mTxtDescription.setText(1 + "/" + mSlidesBeen.size() + "  " + mSlidesBeen.get(0).getDescription());
+                        if (mSlidesBeen != null) {
+                            mSlidesFragmentPagerAdapter.setFragments(getFragments(mSlidesBeen.size(), mSlidesBeen));
+                            mSlidesFragmentPagerAdapter.notifyDataSetChanged();
+                            mTxtDescription.setText(1 + "/" + mSlidesBeen.size() + "  " + mSlidesBeen.get(0).getDescription());
+                        }
                     }
                 }
             }
