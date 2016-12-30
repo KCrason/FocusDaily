@@ -50,6 +50,9 @@
         <activity android:name=".activities.WebViewActivity"
             android:theme="@style/AppThemeBlack.NoActionBar"></activity>
 
+        <activity android:name=".activities.PreviewImagesActivty"
+            android:theme="@style/AppThemeBlack.NoActionBar"></activity>
+
     </application>
 
 </manifest>

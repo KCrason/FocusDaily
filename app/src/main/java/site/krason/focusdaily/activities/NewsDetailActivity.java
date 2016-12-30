@@ -1,7 +1,9 @@
 package site.krason.focusdaily.activities;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -47,12 +49,36 @@ public class NewsDetailActivity extends BaseActivity {
             mWebView.setWebViewClient(new MyWebViewClient());
             mWebView.setWebChromeClient(new MyWebChromeClient());
             mWebView.getSettings().setJavaScriptEnabled(true);
+            mWebView.addJavascriptInterface(new ImageListenerInterface(), "imageListener");
             String url = dataBean.getLink().getUrl();
             String type = dataBean.getType();
             if (type != null) {
                 HtmlUtils.createNewsOfIFeng(url, mWebView, type);
             }
         }
+    }
+
+    public class ImageListenerInterface {
+
+        @JavascriptInterface
+        public void openBigImage(String i, String[] urls) {
+            Intent intent = new Intent(NewsDetailActivity.this, PreviewImagesActivty.class);
+            intent.putExtra("key_urls", urls);
+            intent.putExtra("key_position", getIndex(urls, i));
+            startActivity(intent);
+        }
+    }
+
+
+    public int getIndex(String urls[], String url) {
+        int curPosition = 0;
+        for (int i = 0; i < urls.length; i++) {
+            if (url != null && url.equals(urls[i])) {
+                curPosition = i;
+                break;
+            }
+        }
+        return curPosition;
     }
 
 
@@ -74,6 +100,15 @@ public class NewsDetailActivity extends BaseActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            String script = "var imgs = document.getElementsByTagName(\"img\");\n" +
+                    "    var urls = new Array();\n" +
+                    "    for (var i = 0; i < imgs.length; i++) {\n" +
+                    "        urls[i] = imgs[i].getAttribute(\"src\");\n" +
+                    "        imgs[i].onclick = function () {\n" +
+                    "            imageListener.openBigImage(this.src, urls);\n" +
+                    "        }\n" +
+                    "    }";
+            view.loadUrl("javascript:" + script);
         }
     }
 }

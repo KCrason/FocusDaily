@@ -40,6 +40,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     }
 
     public void setData(List<VideoListBean.ItemBean> strings) {
+        ViewHolderManage.create().createVideoPlay();
         this.mDataBeen.clear();
         this.mDataBeen = strings;
         notifyDataSetChanged();
@@ -47,6 +48,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public void addData(List<VideoListBean.ItemBean> strings) {
         this.mDataBeen.addAll(strings);
+        ViewHolderManage.create().createVideoPlay();
         notifyDataSetChanged();
     }
 
@@ -152,12 +154,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             View loadView = itemView.findViewById(R.id.LoadingView);
             mMediaControllerOfList = new MediaControllerOfList(mContext);
             mPLVideoTextureView.setMediaController(mMediaControllerOfList);
-//            mPLVideoTextureView.setOnPreparedListener(new PLMediaPlayer.OnPreparedListener() {
-//                @Override
-//                public void onPrepared(PLMediaPlayer plMediaPlayer) {
-//                    plMediaPlayer.start();
-//                }
-//            });
             mPLVideoTextureView.setBufferingIndicator(loadView);
             mPLVideoTextureView.setDisplayAspectRatio(PLVideoView.ASPECT_RATIO_PAVED_PARENT);
         }

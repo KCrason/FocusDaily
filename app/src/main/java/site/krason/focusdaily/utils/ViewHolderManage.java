@@ -35,9 +35,11 @@ public class ViewHolderManage {
         if (mVideoViewHolders != null) {
             for (int i = 0; i < mVideoViewHolders.size(); i++) {
                 VideoListAdapter.VideoViewHolder videoViewHolder = mVideoViewHolders.get(i);
-                videoViewHolder.getMediaControllerOfList().hide();
-                videoViewHolder.getPLVideoTextureView().stopPlayback();
-                videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
+                if (videoViewHolder.getPLVideoTextureView().isPlaying()) {
+                    videoViewHolder.getMediaControllerOfList().hide();
+                    videoViewHolder.getPLVideoTextureView().stopPlayback();
+                    videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
+                }
             }
         }
     }
