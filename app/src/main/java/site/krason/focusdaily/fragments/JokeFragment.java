@@ -140,8 +140,8 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         if (jsonObject.containsKey("body")) {
             List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
             mJokeAdapter.setData(shortNewsBeen);
+            removeRootView();
         }
-        removeRootView();
     }
 
     @Override

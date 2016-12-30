@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -84,11 +85,13 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
     @Override
     public void LazyLoadDataToLocal() {
         String response = ACache.get(getContext()).getAsString("KEY_IMAGE_LIST");
-        JSONArray jsonArray = JSON.parseArray(response);
-        if (jsonArray.size() > 0) {
-            VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
-            mVideoListAdapter.setData(videoListBean.getItem());
-            removeRootView();
+        if (!TextUtils.isEmpty(response)) {
+            JSONArray jsonArray = JSON.parseArray(response);
+            if (jsonArray.size() > 0) {
+                VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
+                mVideoListAdapter.setData(videoListBean.getItem());
+                removeRootView();
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -47,8 +48,23 @@ public class MultiStatusView extends FrameLayout {
         }
     }
 
+    private boolean isCanRefresh;
+
+    public void setIsCanRefresh(boolean isCanRefresh) {
+        this.isCanRefresh = isCanRefresh;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (isCanRefresh) {
+            return super.dispatchTouchEvent(ev);
+        } else {
+            return true;
+        }
+    }
 
     public void addRootView(Context context) {
+        setIsCanRefresh(false);
         View view = LayoutInflater.from(context).inflate(R.layout.view_root_loading, null);
         mTextView1 = (TextView) view.findViewById(R.id.txt_1);
         mTextView2 = (TextView) view.findViewById(R.id.txt_2);

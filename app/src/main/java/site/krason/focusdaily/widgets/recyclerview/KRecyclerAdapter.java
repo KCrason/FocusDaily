@@ -149,10 +149,6 @@ public class KRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (mHeaderView == null) {
             return mViewHolderAdapter.getItemCount() + VIEW_TYPE_COUNT_NO_HEADER;
         }
-
         return mViewHolderAdapter.getItemCount() + VIEW_TYPE_COUNT;
     }
-
-
-
 }

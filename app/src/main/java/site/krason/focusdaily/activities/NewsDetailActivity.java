@@ -3,11 +3,13 @@ package site.krason.focusdaily.activities;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import me.shaohui.bottomdialog.BottomDialog;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
 import site.krason.focusdaily.fragments.RecommendedFragment;
@@ -37,6 +39,20 @@ public class NewsDetailActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id ){
+            case  R.id.nav_share:
+                BottomDialog.create(getSupportFragmentManager()).setLayoutRes(R.layout.dialog_show)
+                        .setViewListener(new BottomDialog.ViewListener() {
+                            @Override
+                            public void bindView(View v) {
+
+                            }
+                        })
+                        .show();
+                break;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,7 +100,7 @@ public class NewsDetailActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
         return true;
     }
 

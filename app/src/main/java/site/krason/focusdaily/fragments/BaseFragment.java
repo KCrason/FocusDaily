@@ -38,6 +38,7 @@ public abstract class BaseFragment extends Fragment {
 
     public void removeRootView() {
         if (mMultiStatusView != null && mMultiStatusView.getChildCount() >= 2) {
+            mMultiStatusView.setIsCanRefresh(true);
             mMultiStatusView.cleanAnimation();
             mMultiStatusView.removeViewAt(1);
         }

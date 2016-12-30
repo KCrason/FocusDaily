@@ -17,8 +17,7 @@
         android:alpha="0.5"
         android:gravity="center"
         android:text="你关心的"
-        android:textStyle="bold"
-        android:typeface="sans"
+        android:textStyle="bold|italic"
         android:textSize="24sp"
         />
 
@@ -31,6 +30,6 @@
         android:alpha="0.5"
         android:gravity="center"
         android:text="才是焦点"
-        android:textStyle="bold"
+        android:textStyle="bold|italic"
         android:textSize="24sp"/>
 </LinearLayout>

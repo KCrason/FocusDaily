@@ -94,7 +94,6 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        removeRootView();
                         Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
