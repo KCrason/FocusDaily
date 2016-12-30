@@ -97,6 +97,8 @@ public class KNewBean implements Serializable {
         private String commentsall;
         private LinkBean link;
 
+
+
         public PHVideoBean getPhvideo() {
             return phvideo;
         }
@@ -319,11 +321,17 @@ public class KNewBean implements Serializable {
         }
 
         public static class StyleBean implements Serializable {
-            /**
-             * type : slides
-             * images : ["http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/109197f5f6aada9_w500_h606.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/322c74fb4c4c080_w435_h518.jpg","http://d.ifengimg.com/w164_h113_q80/p2.ifengimg.com/yidian/2016_40/71c0f5e46c415d2_w640_h410.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/ec724afea17df05_w498_h711.jpg","http://d.ifengimg.com/w164_h113_q80/p3.ifengimg.com/yidian/2016_40/0dbfa1a76913c2d_w630_h410.jpg"]
-             * slideCount : 7
-             */
+
+            public List<String> getBackreason() {
+                return backreason;
+            }
+
+            public void setBackreason(List<String> backreason) {
+                this.backreason = backreason;
+            }
+
+
+            private List<String> backreason;
 
             private String type;
             private int slideCount;

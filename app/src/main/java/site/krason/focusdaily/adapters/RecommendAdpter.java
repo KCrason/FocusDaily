@@ -16,6 +16,7 @@ import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.interfaces.OnIntersterClickListener;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.DeletePopupWindow;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
@@ -25,7 +26,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCal
  * @email 535089696@qq.com
  */
 
-public class RecommendAdpter extends RecyclerView.Adapter {
+public class RecommendAdpter extends RecyclerView.Adapter implements OnIntersterClickListener {
 
     private final static int VIEW_TYPE_NO_PIC = 0;
     private final static int VIEW_TYPE_1_PIC = 1;
@@ -54,6 +55,15 @@ public class RecommendAdpter extends RecyclerView.Adapter {
     public void addData(KNewBean kNewBean) {
         this.mStrings.addAll(kNewBean.getItem());
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onIntersterClick(int position) {
+        if (position < mStrings.size()) {
+            mStrings.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, mStrings.size() - position);
+        }
     }
 
 
@@ -98,11 +108,11 @@ public class RecommendAdpter extends RecyclerView.Adapter {
             holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
-                    ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
+                    ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((NoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                 } else if (holder instanceof OnePicViewHolder) {
-                    ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
+                    ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     if (dataBean.getType().equals("topic2")) {
                         ((OnePicViewHolder) holder).mBaseInfo.setText("专题");
@@ -111,12 +121,12 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                     }
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
-                    ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
+                    ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((TwoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
-                    ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
+                    ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     String time = dataBean.getUpdateTime();
                     if (dataBean.getType().equals("slide")) {
@@ -138,7 +148,7 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                         Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
                     }
                 } else if (holder instanceof VideoViewHolder) {
-                    ((VideoViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position));
+                    ((VideoViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
                     ((VideoViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     if (dataBean.getPhvideo() != null) {
                         if (dataBean.getPhvideo().getChannelName() != null) {
@@ -146,10 +156,7 @@ public class RecommendAdpter extends RecyclerView.Adapter {
                         }
                         ((VideoViewHolder) holder).mLength.setText(KUtils.formatVideoDuration(dataBean.getPhvideo().getLength()));
                     }
-
-
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((VideoViewHolder) holder).imgBigPic);
-
                 }
             }
         }
@@ -163,33 +170,48 @@ public class RecommendAdpter extends RecyclerView.Adapter {
             if (dataBean != null) {
                 String type = dataBean.getType();
                 KNewBean.ItemBean.StyleBean styleBean = dataBean.getStyle();
-                if (styleBean == null) {
-                    if (TextUtils.isEmpty(dataBean.getThumbnail())) {
-                        return VIEW_TYPE_NO_PIC;
-                    } else {
-                        if (type != null) {
-                            if (type.equals("doc")) {
-                                return VIEW_TYPE_1_PIC;
-                            } else if (type.equals("phvideo")) {
-                                return VIEW_TYPE_VIDEO;
-                            } else if (type.equals("topic2")) {
-                                return VIEW_TYPE_1_PIC;
+                if (type != null) {
+                    if (type.equals("doc")) {
+                        if (styleBean == null) {
+                            if (TextUtils.isEmpty(dataBean.getThumbnail())) {
+                                return VIEW_TYPE_NO_PIC;
                             } else {
-                                return VIEW_TYPE_2_PIC;
+                                return VIEW_TYPE_1_PIC;
+                            }
+                        } else {
+                            int slideCount = styleBean.getSlideCount();
+                            if (slideCount >= 3) {
+                                return VIEW_TYPE_3_PIC;
+                            } else {
+                                if (TextUtils.isEmpty(dataBean.getThumbnail())) {
+                                    return VIEW_TYPE_NO_PIC;
+                                } else {
+                                    return VIEW_TYPE_1_PIC;
+                                }
                             }
                         }
-                    }
-                } else {
-                    int slideCount = styleBean.getSlideCount();
-                    switch (slideCount) {
-                        case 0:
+                    } else if (type.equals("phvideo")) {
+                        return VIEW_TYPE_VIDEO;
+                    } else if (type.equals("topic2")) {
+                        return VIEW_TYPE_1_PIC;
+                    } else if (type.equals("slide")) {
+                        int slideCount = styleBean.getSlideCount();
+                        switch (slideCount) {
+                            case 0:
+                                return VIEW_TYPE_NO_PIC;
+                            case 1:
+                                return VIEW_TYPE_1_PIC;
+                            case 2:
+                                return VIEW_TYPE_2_PIC;
+                            default:
+                                return VIEW_TYPE_3_PIC;
+                        }
+                    } else {
+                        if (TextUtils.isEmpty(dataBean.getThumbnail())) {
                             return VIEW_TYPE_NO_PIC;
-                        case 1:
+                        } else {
                             return VIEW_TYPE_1_PIC;
-                        case 2:
-                            return VIEW_TYPE_2_PIC;
-                        default:
-                            return VIEW_TYPE_3_PIC;
+                        }
                     }
                 }
             }
@@ -208,19 +230,19 @@ public class RecommendAdpter extends RecyclerView.Adapter {
     public class OnDeleteClickListener implements View.OnClickListener {
 
         private int position;
+        private List<String> tags;
 
-        public OnDeleteClickListener(int position) {
+        public OnDeleteClickListener(int position, List<String> tags) {
             this.position = position;
+            this.tags = tags;
         }
 
         @Override
         public void onClick(View view) {
-            new DeletePopupWindow(mContext).showPopupWindow(view);
-//            if (position < mStrings.size()) {
-//                mStrings.remove(position);
-//                notifyItemRemoved(position);
-//                notifyItemRangeChanged(position, mStrings.size() - position);
-//            }
+            new DeletePopupWindow(mContext)
+                    .setOnIntersterClickListener(RecommendAdpter.this)
+                    .setPosition(position)
+                    .setTags(tags).showPopupWindow(view);
         }
     }
 

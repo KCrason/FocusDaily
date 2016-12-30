@@ -41,7 +41,14 @@
             android:screenOrientation="landscape"
             android:theme="@style/FullScreenWindowStyle"></activity>
 
-        <activity android:name=".activities.ProjectActivity"></activity>
+        <activity android:name=".activities.ProjectActivity"
+            android:theme="@style/AppThemeBlack.NoActionBar"></activity>
+
+        <activity android:name=".activities.TextLiveActivity"
+            android:theme="@style/AppThemeBlack.NoActionBar"></activity>
+
+        <activity android:name=".activities.WebViewActivity"
+            android:theme="@style/AppThemeBlack.NoActionBar"></activity>
 
     </application>
 

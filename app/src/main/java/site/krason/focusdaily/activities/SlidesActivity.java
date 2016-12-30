@@ -13,6 +13,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -22,6 +23,7 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.shaohui.bottomdialog.BottomDialog;
 import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.bean.RecommendSlideBean;
@@ -55,7 +57,6 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
     private boolean isShowTiltleAndDescrition = true;
 
 
-
     private SlidesFragmentPagerAdapter mSlidesFragmentPagerAdapter;
 
     @Override
@@ -84,7 +85,7 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
         mSlidesFragmentPagerAdapter = new SlidesFragmentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSlidesFragmentPagerAdapter);
         if (getIntent() != null) {
-            String url =  getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
+            String url = getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
             if (!TextUtils.isEmpty(url)) {
                 getSlidesImages(url);
             }
@@ -165,11 +166,11 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
                     visible(mTxtDescription, mTxtDescription.getHeight(), 0, true);
                 }
             } else {
-                if (mRelativeLayoutTitleBar.getVisibility()==View.VISIBLE){
+                if (mRelativeLayoutTitleBar.getVisibility() == View.VISIBLE) {
                     visible(mRelativeLayoutTitleBar, 0, -mRelativeLayoutTitleBar.getHeight(), false);
                 }
 
-                if (mTxtDescription.getVisibility()==View.VISIBLE){
+                if (mTxtDescription.getVisibility() == View.VISIBLE) {
                     visible(mTxtDescription, 0, mTxtDescription.getHeight(), false);
                 }
             }
@@ -227,13 +228,44 @@ public class SlidesActivity extends BaseActivity implements ViewPager.OnPageChan
         view.startAnimation(translateAnimation);
     }
 
+    private BottomDialog mBottomDialog;
+
     @Override
     public void onClick(View view) {
+        if (mBottomDialog != null) {
+            mBottomDialog.dismiss();
+        }
         switch (view.getId()) {
             case R.id.img_back:
                 finish();
                 break;
+            case R.id.llayout_weixin:
+                Toast.makeText(this, "微信", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.llayout_moments:
+                Toast.makeText(this, "朋友圈", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.llayout_qq:
+                Toast.makeText(this, "qq", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.llayout_qzone:
+                Toast.makeText(this, "qq空间", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.llayout_other:
+                Toast.makeText(this, "其他", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.img_more:
+                mBottomDialog = BottomDialog.create(getSupportFragmentManager());
+                mBottomDialog.setViewListener(new BottomDialog.ViewListener() {
+                    @Override
+                    public void bindView(View view) {
+                        view.findViewById(R.id.llayout_weixin).setOnClickListener(SlidesActivity.this);
+                        view.findViewById(R.id.llayout_moments).setOnClickListener(SlidesActivity.this);
+                        view.findViewById(R.id.llayout_qq).setOnClickListener(SlidesActivity.this);
+                        view.findViewById(R.id.llayout_qzone).setOnClickListener(SlidesActivity.this);
+                        view.findViewById(R.id.llayout_other).setOnClickListener(SlidesActivity.this);
+                    }
+                }).setLayoutRes(R.layout.dialog_show).show();
                 break;
         }
     }

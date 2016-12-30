@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.alibaba.fastjson.JSON;
@@ -31,6 +30,7 @@ import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.NewsDetailActivity;
 import site.krason.focusdaily.activities.ProjectActivity;
 import site.krason.focusdaily.activities.SlidesActivity;
+import site.krason.focusdaily.activities.TextLiveActivity;
 import site.krason.focusdaily.activities.VideoActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
 import site.krason.focusdaily.bean.KNewBean;
@@ -315,9 +315,8 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 intent = new Intent(getActivity(), SlidesActivity.class);
             } else if (type.equals("topic2")) {
                 intent = new Intent(getActivity(), ProjectActivity.class);
-            } else {
-                //text_live直播
-                Log.d("KCrason", "你点击了其他");
+            } else if (type.equals("text_live")){
+                intent = new Intent(getActivity(), TextLiveActivity.class);
             }
         }
         if (intent != null) {

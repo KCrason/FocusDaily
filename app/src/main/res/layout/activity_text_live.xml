@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rlayout_cover_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dip">
+
+        <com.pili.pldroid.player.widget.PLVideoTextureView
+            android:id="@+id/pl_video_texture_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dip">
+
+        </com.pili.pldroid.player.widget.PLVideoTextureView>
+
+        <ImageView
+            android:id="@+id/img_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txt_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/txt_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="10dip"
+        android:textSize="14sp"/>
+
+    <site.krason.focusdaily.widgets.recyclerview.KReyccleView
+        android:id="@+id/recycle_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></site.krason.focusdaily.widgets.recyclerview.KReyccleView>
+
+</LinearLayout>

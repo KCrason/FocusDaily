@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llayout_weixin"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:padding="8dip"
+            android:src="@drawable/anm"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="56dip"
+            android:gravity="center_vertical"
+            android:padding="10dip"
+            android:text="微信"
+            android:textColor="@android:color/black"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llayout_moments"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:padding="8dip"
+            android:src="@drawable/ann"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="56dip"
+            android:gravity="center_vertical"
+            android:padding="10dip"
+            android:text="朋友圈"
+            android:textColor="@android:color/black"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_qq"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:padding="8dip"
+            android:src="@drawable/anj"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="56dip"
+            android:gravity="center_vertical"
+            android:padding="10dip"
+            android:text="QQ"
+            android:textColor="@android:color/black"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_qzone"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:padding="8dip"
+            android:src="@drawable/ank"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="56dip"
+            android:gravity="center_vertical"
+            android:padding="10dip"
+            android:text="QQ空间"
+            android:textColor="@android:color/black"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_other"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="56dip"
+            android:layout_height="56dip"
+            android:padding="8dip"
+            android:src="@drawable/ano"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="56dip"
+            android:gravity="center_vertical"
+            android:padding="10dip"
+            android:text="其他"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

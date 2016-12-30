@@ -35,9 +35,14 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="popwin_anim_style">
-        <item name="android:windowEnterAnimation">@animator/animator_popup_delete</item>
-        <item name="android:windowExitAnimation">@animator/animator_popup_delete</item>
+    <style name="popwin_anim_bottom_style">
+        <item name="android:windowEnterAnimation">@animator/animator_popup_delete_bottom_show</item>
+        <item name="android:windowExitAnimation">@animator/animator_popup_delete_bottom_hide</item>
+    </style>
+
+    <style name="popwin_anim_top_style">
+        <item name="android:windowEnterAnimation">@animator/animator_popup_delete_top_show</item>
+        <item name="android:windowExitAnimation">@animator/animator_popup_delete_top_hide</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
