@@ -68,7 +68,7 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
 
             @Override
             public void onResponse(String response, int id) {
-                ACache.get(getContext()).put("KEY_IMAGE_LIST", response);
+                ACache.get(getContext()).put("KEY_VIDEO_LIST", response);
                 JSONArray jsonArray = JSON.parseArray(response);
                 if (jsonArray.size() > 0) {
                     VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
@@ -84,7 +84,7 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void LazyLoadDataToLocal() {
-        String response = ACache.get(getContext()).getAsString("KEY_IMAGE_LIST");
+        String response = ACache.get(getContext()).getAsString("KEY_VIDEO_LIST");
         if (!TextUtils.isEmpty(response)) {
             JSONArray jsonArray = JSON.parseArray(response);
             if (jsonArray.size() > 0) {
