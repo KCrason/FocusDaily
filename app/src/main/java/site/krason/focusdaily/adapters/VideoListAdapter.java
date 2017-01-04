@@ -43,7 +43,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
     }
 
     public void setData(List<VideoListBean.ItemBean> strings) {
-        ViewHolderManage.create().createVideoPlay();
+        ViewHolderManage.create().pauseVideoPlay();
         this.mDataBeen.clear();
         this.mDataBeen = strings;
         notifyDataSetChanged();
@@ -51,7 +51,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public void addData(List<VideoListBean.ItemBean> strings) {
         this.mDataBeen.addAll(strings);
-        ViewHolderManage.create().createVideoPlay();
+        ViewHolderManage.create().pauseVideoPlay();
         notifyDataSetChanged();
     }
 
@@ -130,7 +130,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             if (KUtils.Network.isExistNetwork()) {
                 if (mVideoViewHolder != null) {
                     if (mCurPlayPosition != mPosition) {
-                        ViewHolderManage.create().createVideoPlay();
+                        ViewHolderManage.create().pauseVideoPlay();
                         mCurPlayPosition = mPosition;
                         mVideoViewHolder.mMediaControllerOfList.setVideoTitle(mTitlte);
                         mVideoViewHolder.mPLVideoTextureView.setVideoPath(mVideoUrl);

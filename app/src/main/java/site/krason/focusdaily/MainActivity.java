@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        ViewHolderManage.create().createVideoPlay();
+        ViewHolderManage.create().stopVideoPlay();
     }
 
     @Override

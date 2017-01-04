@@ -4,7 +4,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +17,22 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.IntersterTagAdapter;
 import site.krason.focusdaily.interfaces.OnIntersterClickListener;
+import site.krason.focusdaily.interfaces.SelectedCallBack;
 import site.krason.focusdaily.utils.KUtils;
 
 /**
  * Created by KCrason on 2016/12/17.
  */
 
-public class DeletePopupWindow extends PopupWindow implements PopupWindow.OnDismissListener, View.OnClickListener {
+public class DeletePopupWindow extends PopupWindow implements
+        PopupWindow.OnDismissListener, View.OnClickListener, SelectedCallBack {
 
     private Context mContext;
 
@@ -34,6 +41,7 @@ public class DeletePopupWindow extends PopupWindow implements PopupWindow.OnDism
     private NoScrollGridView mNoScrollGridView;
 
     private Button mBtnNoInterster;
+    private TextView mTxtReason;
 
     public DeletePopupWindow(Context context) {
         this.mContext = context;
@@ -68,8 +76,10 @@ public class DeletePopupWindow extends PopupWindow implements PopupWindow.OnDism
     private void initViews(View view) {
         mBtnNoInterster = (Button) view.findViewById(R.id.btn_not_interster);
         mBtnNoInterster.setOnClickListener(this);
+
+        mTxtReason = (TextView) view.findViewById(R.id.txt_reason);
         mNoScrollGridView = (NoScrollGridView) view.findViewById(R.id.noscroll_grid_view);
-        mIntersterTagAdapter = new IntersterTagAdapter(view.getContext());
+        mIntersterTagAdapter = new IntersterTagAdapter(view.getContext(), this);
         mNoScrollGridView.setAdapter(mIntersterTagAdapter);
     }
 
@@ -123,7 +133,7 @@ public class DeletePopupWindow extends PopupWindow implements PopupWindow.OnDism
     @Override
     public void onDismiss() {
         ValueAnimator valueAnimator = ObjectAnimator.ofFloat(0.7f, 1.0f);
-        valueAnimator.setDuration(300);
+        valueAnimator.setDuration(200);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -138,6 +148,18 @@ public class DeletePopupWindow extends PopupWindow implements PopupWindow.OnDism
         if (mOnIntersterClickListener != null) {
             dismiss();
             mOnIntersterClickListener.onIntersterClick(mPosition);
+        }
+    }
+
+    @Override
+    public void onSelected(int count) {
+        if (count <= 0) {
+            mTxtReason.setText("可选理由，精准屏蔽");
+        } else {
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder("已选" + count + "理由");
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.parseColor("#ed4040"));
+            spannableStringBuilder.setSpan(foregroundColorSpan,2,3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTxtReason.setText(spannableStringBuilder);
         }
     }
 }

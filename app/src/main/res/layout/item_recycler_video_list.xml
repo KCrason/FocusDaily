@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -40,12 +39,24 @@
                 android:textColor="@android:color/white"
                 android:textSize="17sp"/>
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="48dip"
                 android:layout_height="48dip"
-                android:layout_centerInParent="true"
-                android:padding="6dip"
-                android:src="@drawable/play"/>
+                android:layout_centerInParent="true">
+
+                <site.krason.focusdaily.widgets.TransparentCircle
+                    android:layout_width="48dip"
+                    android:layout_height="48dip"
+                    android:layout_centerInParent="true"/>
+
+                <ImageView
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
+                    android:src="@drawable/play"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="11dip"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_length"

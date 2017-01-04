@@ -145,9 +145,9 @@ public class KReyccleView extends RecyclerView {
                     int currentPlayPosition = ((VideoListAdapter) mOriginalAdapter).getCurPlayPosition();
                     if (currentPlayPosition != -1 && currentPlayPosition != firstVisiblePosition) {
                         if (dy > 0 && firstVisiblePosition > currentPlayPosition) {
-                            ViewHolderManage.create().createVideoPlay();
+                            ViewHolderManage.create().pauseVideoPlay();
                         } else if (dy < 0 && lastVisiblePosition < currentPlayPosition) {
-                            ViewHolderManage.create().createVideoPlay();
+                            ViewHolderManage.create().pauseVideoPlay();
                         }
                     }
                 }

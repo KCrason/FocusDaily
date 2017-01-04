@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.R;
+import site.krason.focusdaily.interfaces.SelectedCallBack;
 
 /**
  * @author Created by KCrason on 2016/12/30.
@@ -23,8 +25,11 @@ public class IntersterTagAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    public IntersterTagAdapter(Context context) {
+    private SelectedCallBack mSelectedCallBack;
+
+    public IntersterTagAdapter(Context context, SelectedCallBack selectedCallBack) {
         this.mContext = context;
+        this.mSelectedCallBack = selectedCallBack;
     }
 
     public void setData(List<String> strings) {
@@ -60,6 +65,8 @@ public class IntersterTagAdapter extends BaseAdapter {
         private CheckBox mCheckBoxTag;
     }
 
+    private int mSelected = 0;
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         TagViewHolder tagViewHolder;
@@ -71,6 +78,19 @@ public class IntersterTagAdapter extends BaseAdapter {
         } else {
             tagViewHolder = (TagViewHolder) view.getTag();
         }
+        tagViewHolder.mCheckBoxTag.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    mSelected++;
+                } else {
+                    mSelected--;
+                }
+                if (mSelectedCallBack != null) {
+                    mSelectedCallBack.onSelected(mSelected);
+                }
+            }
+        });
         tagViewHolder.mCheckBoxTag.setText(mStrings.get(i));
         return view;
     }

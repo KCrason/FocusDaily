@@ -32,14 +32,24 @@
                 android:background="#E5E5E5"
                 android:scaleType="centerCrop"/>
 
-
-            <ImageView
+            <RelativeLayout
                 android:layout_width="48dip"
                 android:layout_height="48dip"
-                android:layout_centerInParent="true"
-                android:padding="4dip"
-                android:src="@drawable/play"
-                />
+                android:layout_centerInParent="true">
+
+                <site.krason.focusdaily.widgets.TransparentCircle
+                    android:layout_width="48dip"
+                    android:layout_height="48dip"
+                    android:layout_centerInParent="true"/>
+
+                <ImageView
+                    android:layout_width="30dip"
+                    android:layout_height="30dip"
+                    android:src="@drawable/play"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="11dip"/>
+
+            </RelativeLayout>
 
 
             <TextView

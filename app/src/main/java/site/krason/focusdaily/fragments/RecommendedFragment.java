@@ -107,7 +107,6 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                             mScrollAdpter.setData(bannerBean);
                             isLoadComplete = true;
                             removeRootView();
-                            KUtils.showSnackbar("更新了" + bannerBean.getItem().size() + "条", mRootView);
                         } else {
                             KUtils.showSnackbar("暂无更新推荐", mRootView);
                         }

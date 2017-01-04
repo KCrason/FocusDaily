@@ -19,7 +19,6 @@ public class FullScreenPlayVideoActivity extends BaseActivity {
 
     public final static String KEY_PATH = "key_video_path";
 
-
     @Override
     protected boolean isExistToolbar() {
         return false;

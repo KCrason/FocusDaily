@@ -30,16 +30,25 @@ public class ViewHolderManage {
         mVideoViewHolders.add(viewHolder);
     }
 
-
-    public void createVideoPlay() {
+    public void stopVideoPlay(){
         if (mVideoViewHolders != null) {
             for (int i = 0; i < mVideoViewHolders.size(); i++) {
                 VideoListAdapter.VideoViewHolder videoViewHolder = mVideoViewHolders.get(i);
-                if (videoViewHolder.getPLVideoTextureView().isPlaying()) {
-                    videoViewHolder.getMediaControllerOfList().hide();
-                    videoViewHolder.getPLVideoTextureView().stopPlayback();
-                    videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
-                }
+                videoViewHolder.getMediaControllerOfList().hide();
+                videoViewHolder.getPLVideoTextureView().stopPlayback();
+                videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+
+    public void pauseVideoPlay() {
+        if (mVideoViewHolders != null) {
+            for (int i = 0; i < mVideoViewHolders.size(); i++) {
+                VideoListAdapter.VideoViewHolder videoViewHolder = mVideoViewHolders.get(i);
+                videoViewHolder.getMediaControllerOfList().hide();
+                videoViewHolder.getPLVideoTextureView().pause();
+                videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
             }
         }
     }
