@@ -126,10 +126,12 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRecyclerViewLoadMore() {
-
         if (KUtils.Network.isExistNetwork()) {
             mPageNow++;
-            OkHttpUtils.get().params(getParams(mPageNow)).url(UrlUtils.IFENG.IFENG_VIDEO_LIST).build().execute(new StringCallback() {
+            OkHttpUtils.get().params(getParams(mPageNow))
+                    .url(UrlUtils.IFENG.IFENG_VIDEO_LIST)
+                    .build()
+                    .execute(new StringCallback() {
                 @Override
                 public void onError(Call call, Exception e, int id) {
                 }

@@ -1,11 +1,7 @@
 package site.krason.focusdaily.activities;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -153,7 +149,6 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
         super.onConfigurationChanged(newConfig);
         Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
         int ori = mConfiguration.orientation; //获取屏幕方向
-        Log.d("KCrason", mScreenHeight + "//" + mScreenWidth);
         if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
             //横屏
             if (mListView != null && mMutilStatusVideoView != null) {
@@ -176,29 +171,6 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
             }
         }
     }
-
-
-    private void ainimation(int startWidth, int endWidth, int startHeight, final int endHeight) {
-        PropertyValuesHolder propertyValuesHolderWidth = PropertyValuesHolder.ofInt("width", startWidth, endWidth);
-        PropertyValuesHolder propertyValuesHolderHeight = PropertyValuesHolder.ofInt("height", startHeight, endHeight);
-        ValueAnimator valueAnimator = ObjectAnimator.ofPropertyValuesHolder(propertyValuesHolderWidth, propertyValuesHolderHeight);
-        valueAnimator.setDuration(5000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int width = (int) valueAnimator.getAnimatedValue("width");
-                int height = (int) valueAnimator.getAnimatedValue("height");
-                LinearLayout.LayoutParams layoutParams
-                        = (LinearLayout.LayoutParams) mMutilStatusVideoView.getLayoutParams();
-                layoutParams.height = height;
-                layoutParams.width = width;
-                mMutilStatusVideoView.setLayoutParams(layoutParams);
-            }
-        });
-        valueAnimator.start();
-    }
-
-
 
     private SingleVideoInfo mSingleVideoInfo;
 

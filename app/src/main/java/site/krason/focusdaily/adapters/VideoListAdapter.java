@@ -27,7 +27,7 @@ import site.krason.focusdaily.widgets.MediaControllerOfList;
 
 /**
  * @author Created by KCrason on 2016/12/27.
- * @email 535089696@qq.co
+ * @email 535089696@qq.com
  */
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoViewHolder> implements
@@ -39,7 +39,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
 
     public VideoListAdapter(Context context) {
         this.mContext = context;
-
     }
 
     public void setData(List<VideoListBean.ItemBean> strings) {
@@ -139,7 +138,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
             } else {
                 Toast.makeText(mContext, "网络不可用", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 

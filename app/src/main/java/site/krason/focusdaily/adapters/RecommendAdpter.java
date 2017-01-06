@@ -106,13 +106,24 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
         if (holder != null) {
             KNewBean.ItemBean dataBean = mStrings.get(position);
             holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
+            OnDeleteClickListener onDeleteClickListener;
+            if (dataBean.getStyle() == null) {
+                onDeleteClickListener = new OnDeleteClickListener(position, dataBean.getSource());
+            } else {
+                if (dataBean.getStyle().getBackreason() == null) {
+                    onDeleteClickListener = new OnDeleteClickListener(position, dataBean.getSource());
+                } else {
+                    onDeleteClickListener = new OnDeleteClickListener(position, dataBean.getStyle().getBackreason());
+                }
+            }
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
-                    ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
+
+                    ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((NoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                 } else if (holder instanceof OnePicViewHolder) {
-                    ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
+                    ((OnePicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((OnePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     if (dataBean.getType().equals("topic2")) {
                         ((OnePicViewHolder) holder).mBaseInfo.setText("专题");
@@ -121,12 +132,12 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                     }
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
-                    ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
+                    ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((TwoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                     Glide.with(mContext).load(dataBean.getThumbnail()).into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
-                    ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
+                    ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     String time = dataBean.getUpdateTime();
                     if (dataBean.getType().equals("slide")) {
@@ -148,7 +159,7 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                         Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
                     }
                 } else if (holder instanceof VideoViewHolder) {
-                    ((VideoViewHolder) holder).mNoInterest.setOnClickListener(new OnDeleteClickListener(position, dataBean.getStyle().getBackreason()));
+                    ((VideoViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((VideoViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     if (dataBean.getPhvideo() != null) {
                         if (dataBean.getPhvideo().getChannelName() != null) {
@@ -195,16 +206,20 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                     } else if (type.equals("topic2")) {
                         return VIEW_TYPE_1_PIC;
                     } else if (type.equals("slide")) {
-                        int slideCount = styleBean.getSlideCount();
-                        switch (slideCount) {
-                            case 0:
-                                return VIEW_TYPE_NO_PIC;
-                            case 1:
-                                return VIEW_TYPE_1_PIC;
-                            case 2:
-                                return VIEW_TYPE_2_PIC;
-                            default:
-                                return VIEW_TYPE_3_PIC;
+                        if (styleBean == null) {
+                            return VIEW_TYPE_1_PIC;
+                        } else {
+                            int slideCount = styleBean.getSlideCount();
+                            switch (slideCount) {
+                                case 0:
+                                    return VIEW_TYPE_NO_PIC;
+                                case 1:
+                                    return VIEW_TYPE_1_PIC;
+                                case 2:
+                                    return VIEW_TYPE_2_PIC;
+                                default:
+                                    return VIEW_TYPE_3_PIC;
+                            }
                         }
                     } else {
                         if (TextUtils.isEmpty(dataBean.getThumbnail())) {
@@ -232,9 +247,19 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
         private int position;
         private List<String> tags;
 
+
         public OnDeleteClickListener(int position, List<String> tags) {
             this.position = position;
             this.tags = tags;
+        }
+
+        public OnDeleteClickListener(int position, String source) {
+            this.position = position;
+            tags = new ArrayList<>();
+            tags.add(source);
+            tags.add("内容质量差");
+            tags.add("旧闻、重复");
+            tags.add("标题党");
         }
 
         @Override

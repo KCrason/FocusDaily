@@ -81,10 +81,41 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         if (!TextUtils.isEmpty(mType)) {
             if (mType.equals("focus")) {
                 defaultData();
+            } else if (mType.equals("recommend")) {
+                recommendData();
             } else {
                 refreshData();
             }
         }
+    }
+
+    private void recommendData() {
+        OkHttpUtils.get().url("http://api.irecommend.ifeng.com/irecommendList.php")
+                .params(getRecommendParams())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        if (!TextUtils.isEmpty(response)) {
+                            ACache.get(getContext()).put(getKey(), response);
+                            KNewBean bannerBean = JSON.parseObject(response, KNewBean.class);
+                            if (bannerBean != null) {
+                                mScrollAdpter.setData(bannerBean);
+                                isLoadComplete = true;
+                                removeRootView();
+                            } else {
+                                KUtils.showSnackbar("暂无更新推荐", mRootView);
+                            }
+                        }
+                    }
+                });
     }
 
     private void refreshData() {
@@ -161,6 +192,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         }
     }
 
+
     private Map<String, String> getParams(String action) {
         String id = "SYLB10,SYDT10,SYRECOMMEND";
         Map<String, String> stringMap = new HashMap<>();
@@ -201,7 +233,29 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     }
 
 
+    private Map<String, String> getRecommendParams() {
+        Map<String, String> stringMap = new HashMap<>();
+        stringMap.put("userId", "863055036432979");
+        stringMap.put("count", String.valueOf(6));
+        stringMap.put("province", "%E5%B9%BF%E4%B8%9C%E7%9C%81");
+        stringMap.put("city", "%E6%B7%B1%E5%9C%B3%E5%B8%82");
+        stringMap.put("gv", "5.4.0");
+        stringMap.put("av", "5.4.0");
+        stringMap.put("uid", "863055036432979");
+        stringMap.put("deviceid", "863055036432979");
+        stringMap.put("proid", "ifengnews");
+        stringMap.put("os", "android_22");
+        stringMap.put("df", "androidphone");
+        stringMap.put("vt", "5");
+        stringMap.put("screen", "1080x1920");
+        stringMap.put("publishid", "6102");
+        stringMap.put("nw", "wifi");
+        return stringMap;
+    }
+
+
     private KNewBean getKNewsBeanList(String result, int index) {
+
         JSONArray jsonArray = JSON.parseArray(result);
         if (jsonArray != null && jsonArray.size() > index) {
             JSONObject jsonObject = jsonArray.getJSONObject(index);
@@ -228,6 +282,8 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 key = "KEY_MOVIE";
             } else if (mType.equals("game")) {
                 key = "KEY_GAME";
+            } else if (mType.equals("recommend")) {
+                key = "KEY_RECOMMEND";
             }
         }
         return key;
@@ -236,7 +292,12 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void LazyLoadDataToLocal() {
         String result = ACache.get(getContext()).getAsString(getKey());
-        KNewBean kNewBean = getKNewsBeanList(result, 0);
+        KNewBean kNewBean;
+        if (mType.equals("recommend")) {
+            kNewBean = JSON.parseObject(result, KNewBean.class);
+        } else {
+            kNewBean = getKNewsBeanList(result, 0);
+        }
         if (kNewBean != null) {
             mScrollAdpter.setData(kNewBean);
             removeRootView();
@@ -272,25 +333,30 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void onRecyclerViewLoadMore() {
         if (KUtils.Network.isExistNetwork()) {
-            OkHttpUtils.get().url("http://api.iclient.ifeng.com/ClientNews")
-                    .params(getParams("down"))
-                    .build()
-                    .execute(new StringCallback() {
-                        @Override
-                        public void onError(Call call, Exception e, int id) {
-                        }
-
-                        @Override
-                        public void onResponse(String response, int id) {
-                            KNewBean kNewBean = getKNewsBeanList(response, 0);
-                            if (kNewBean == null) {
-                                mRecyclerView.setAllLoadComplete();
-                            } else {
-                                mRecyclerView.setCurrentLoadComplete();
-                                mScrollAdpter.addData(kNewBean);
+            String url = "http://api.iclient.ifeng.com/ClientNews";
+            if (mType.equals("recommend")) {
+                mRecyclerView.setAllLoadComplete();
+            } else {
+                OkHttpUtils.get().url(url)
+                        .params(getParams("down"))
+                        .build()
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
                             }
-                        }
-                    });
+
+                            @Override
+                            public void onResponse(String response, int id) {
+                                KNewBean kNewBean = getKNewsBeanList(response, 0);
+                                if (kNewBean == null) {
+                                    mRecyclerView.setAllLoadComplete();
+                                } else {
+                                    mRecyclerView.setCurrentLoadComplete();
+                                    mScrollAdpter.addData(kNewBean);
+                                }
+                            }
+                        });
+            }
         } else {
             mRecyclerView.setNetworkError();
         }
@@ -313,7 +379,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                 intent = new Intent(getActivity(), SlidesActivity.class);
             } else if (type.equals("topic2")) {
                 intent = new Intent(getActivity(), ProjectActivity.class);
-            } else if (type.equals("text_live")){
+            } else if (type.equals("text_live")) {
                 intent = new Intent(getActivity(), TextLiveActivity.class);
             }
         }
@@ -326,6 +392,10 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void onRefresh() {
         mRecyclerView.reload();
-        refreshData();
+        if (mType.equals("recommend")) {
+            recommendData();
+        } else {
+            refreshData();
+        }
     }
 }

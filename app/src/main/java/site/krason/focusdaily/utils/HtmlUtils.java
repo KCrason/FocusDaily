@@ -62,8 +62,10 @@ public class HtmlUtils {
         if (!TextUtils.isEmpty(updateTime)) {
             editTime = updateTime;
         }
-        editTime = editTime.replace("/", "-");
-        editTime = editTime.substring(5, editTime.length() - 3);
+        if (!TextUtils.isEmpty(editTime)) {
+            editTime = editTime.replace("/", "-");
+            editTime = editTime.substring(5, editTime.length() - 3);
+        }
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("<!DOCTYPE html>");
         stringBuffer.append("<html>");

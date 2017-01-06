@@ -16,7 +16,7 @@ public class ViewHolderManage {
 
     private static ViewHolderManage mViewHolderManage;
 
-    public static ViewHolderManage create() {
+    public synchronized static ViewHolderManage create() {
         if (mViewHolderManage == null) {
             mViewHolderManage = new ViewHolderManage();
         }
@@ -48,6 +48,7 @@ public class ViewHolderManage {
                 VideoListAdapter.VideoViewHolder videoViewHolder = mVideoViewHolders.get(i);
                 videoViewHolder.getMediaControllerOfList().hide();
                 videoViewHolder.getPLVideoTextureView().pause();
+                videoViewHolder.getPLVideoTextureView().stopPlayback();
                 videoViewHolder.getCoverView().setVisibility(View.VISIBLE);
             }
         }

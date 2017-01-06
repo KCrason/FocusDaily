@@ -38,6 +38,7 @@ public class TransparentCircle extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mPaint = new Paint();
+        mPaint.setAntiAlias(true);
         mPaint.setColor(Color.parseColor("#64000000"));
         int width = getWidth();
         canvas.drawCircle(width / 2, width / 2, width / 2, mPaint);
