@@ -74,7 +74,7 @@ public class TileView extends CardView {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener == null) {
+                if (mListener == null || !mMyChannelGirdAdapter.getEditStatus()) {
                     return;
                 }
                 mListener.onTileSelected(mPosition, mIDragEntity);
