@@ -5,19 +5,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 import com.alibaba.fastjson.JSON;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import site.krason.focusdaily.activities.ChannelEditorActivity;
 import site.krason.focusdaily.bean.ChannelBean;
 import site.krason.focusdaily.common.Constants;
@@ -66,20 +71,26 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.addOnPageChangeListener(this);
         kFragmentPagerAdapter = new KFragmentPagerAdapter(getSupportFragmentManager());
-        kFragmentPagerAdapter.setFragments(getFragments());
-        kFragmentPagerAdapter.setTitles(getTitles());
+
         mViewPager.setAdapter(kFragmentPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+
+        kFragmentPagerAdapter.setFragments(getFragments());
+        kFragmentPagerAdapter.setTitles(getTitles());
+        kFragmentPagerAdapter.notifyDataSetChanged();
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshChannelList(NotifyChannelRefresh notifyChannelRefresh) {
-        if (notifyChannelRefresh.getEventCode() == Constants.EVENT_CODE_SUCCESS) {
+        if (notifyChannelRefresh.getEventCode() == Constants.EVENT_CODE_SUCCESS && notifyChannelRefresh.getData().equals("LONGCLICK")) {
             List<String> stringList = getTitles();
             kFragmentPagerAdapter.setTitles(stringList);
-            kFragmentPagerAdapter.notifyFragments(getFragments());
-            mViewPager.setCurrentItem(0);
+            kFragmentPagerAdapter.setFragments(getFragments());
+            kFragmentPagerAdapter.notifyDataSetChanged();
+        } else {
+            mViewPager.setCurrentItem(Integer.parseInt(notifyChannelRefresh.getData()));
         }
     }
 
@@ -193,33 +204,6 @@ public class MainActivity extends AppCompatActivity
         return titles;
     }
 
-    private void sortFragment(List<String> strings, List<Fragment> fragmentList) {
-        List<Fragment> fragments = new ArrayList<>();
-        for (int i = 0; i < strings.size(); i++) {
-            String name = strings.get(i);
-            for (int j = 0; j < fragmentList.size(); j++) {
-                Fragment fragment = fragmentList.get(j);
-                if (fragment instanceof RecommendedFragment) {
-                    String typeName = ((RecommendedFragment) fragment).getKeyType();
-                    if (typeName != null && typeName.equals(name)) {
-                        fragments.add(fragment);
-                    }
-                } else if (fragment instanceof ImageFragment) {
-                    String typeName = ((ImageFragment) fragment).getKeyType();
-                    if (typeName != null && typeName.equals(name)) {
-                        fragments.add(fragment);
-                    }
-                } else if (fragment instanceof JokeOrQuotationsFragment) {
-                    String typeName = ((JokeOrQuotationsFragment) fragment).getKeyType();
-                    if (typeName != null && typeName.equals(name)) {
-                        fragments.add(fragment);
-                    }
-                }
-            }
-        }
-        kFragmentPagerAdapter.setFragments(fragments);
-    }
-
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -286,93 +270,93 @@ public class MainActivity extends AppCompatActivity
 
     public final class KFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        private List<String> mTitles;
+        int id = 1;
+        private Map<String, Integer> IdsMap = new HashMap<>();
+        private List<String> preIds = new ArrayList<>();
 
-        private List<Fragment> mFragments;
+        private List<String> mTitles = new ArrayList<>();
+
+        private List<Fragment> mFragments = new ArrayList<>();
 
         public KFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         public void setTitles(List<String> titles) {
-
+            this.mTitles.clear();
             this.mTitles = titles;
         }
 
         public void setFragments(List<Fragment> fragments) {
+            this.mFragments.clear();
             this.mFragments = fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (mFragments != null) {
-                return mFragments.get(position);
+            return mFragments.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return IdsMap.get(getPageTitle(position));
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            Fragment fragment = (Fragment) object;
+            String title = "";
+            if (fragment instanceof RecommendedFragment) {
+                title = ((RecommendedFragment) fragment).getKeyType();
+            } else if (fragment instanceof ImageFragment) {
+                title = ((RecommendedFragment) fragment).getKeyType();
+            } else if (fragment instanceof JokeOrQuotationsFragment) {
+                title = ((RecommendedFragment) fragment).getKeyType();
             }
-            return null;
+            int preId = preIds.indexOf(title);
+            int newId = -1;
+            int i = 0;
+            int size = getCount();
+            for (; i < size; i++) {
+                if (getPageTitle(i).equals(title)) {
+                    newId = i;
+                    break;
+                }
+            }
+            if (newId != -1 && newId == preId) {
+                return POSITION_UNCHANGED;
+            }
+            if (newId != -1) {
+                return newId;
+            }
+            return POSITION_NONE;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTitles.get(position);
         }
 
 
         @Override
-        public CharSequence getPageTitle(int position) {
-            if (mTitles != null) {
-                return mTitles.get(position);
-            }
-            return super.getPageTitle(position);
-        }
-
-
-        public void notifyFragments(List<Fragment> fragments) {
-            if (this.mFragments != null) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                for (Fragment f : this.mFragments) {
-                    ft.remove(f);
+        public void notifyDataSetChanged() {
+            for (String title : mTitles) {
+                if (!IdsMap.containsKey(title)) {
+                    IdsMap.put(title, id++);
                 }
-                ft.commitAllowingStateLoss();
             }
-            this.mFragments.clear();
-            this.mFragments = fragments;
-            notifyDataSetChanged();
+            super.notifyDataSetChanged();
+            preIds.clear();
+            int size = getCount();
+            for (int i = 0; i < size; i++) {
+                preIds.add((String) getPageTitle(i));
+            }
         }
-
-//        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-//            String curName = mTitles.get(position);
-//            for (int i = 0; i < mFragments.size(); i++) {
-//                Fragment xfragment = mFragments.get(i);
-//                if (xfragment instanceof RecommendedFragment) {
-//                    String typeName = ((RecommendedFragment) xfragment).getKeyType();
-//                    if (typeName != null && typeName.equals(curName)) {
-//                        Log.d("KCrason", typeName + "//" + position + "//" + xfragment);
-//                        fragment = xfragment;
-//                        break;
-//                    }
-//                } else if (xfragment instanceof JokeOrQuotationsFragment) {
-//                    String typeName = ((JokeOrQuotationsFragment) xfragment).getKeyType();
-//                    if (typeName != null && typeName.equals(curName)) {
-//                        Log.d("KCrason", typeName + "//" + position + "//" + xfragment);
-//                        fragment = xfragment;
-//                        break;
-//                    }
-//                } else if (xfragment instanceof ImageFragment) {
-//                    String typeName = ((ImageFragment) xfragment).getKeyType();
-//                    if (typeName != null && typeName.equals(curName)) {
-//                        Log.d("KCrason", typeName + "//" + position + "//" + xfragment);
-//                        fragment = xfragment;
-//                        break;
-//                    }
-//                }
-//            }
-//            return fragment;
-//        }
 
 
         @Override
         public int getCount() {
-            if (mFragments != null) {
-                return mFragments.size();
-            }
-            return 0;
+            return mTitles.size();
         }
     }
 }

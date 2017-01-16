@@ -3,7 +3,6 @@ package site.krason.focusdaily.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -56,7 +55,6 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
     }
 
 
-
     private NoScrollGridView mRecommendNoScrollGridView;
     private DragDropListView mDragDropListView;
 
@@ -81,7 +79,8 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
                 if (mMyChannelGirdAdapter.getEditStatus()) {
                     dealWithChannel(position, false);
                 } else {
-                    Log.d("KCrason", "XXXXXXXXXXXXXXX" + entity.getId());
+                    EventBus.getDefault().post(new NotifyChannelRefresh(Constants.EVENT_CODE_SUCCESS, String.valueOf(position)));
+                    finish();
                 }
             }
         }, mTxtEdit);
@@ -188,7 +187,8 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
         }
         ACache.get(this).put(Constants.RECOMMEND_CHANNEL_LIST, JSON.toJSONString(mRecommendIDragEntities));
 
-        EventBus.getDefault().post(new NotifyChannelRefresh(Constants.EVENT_CODE_SUCCESS, null));
+        EventBus.getDefault().post(new NotifyChannelRefresh(Constants.EVENT_CODE_SUCCESS, "LONGCLICK"));
+        finish();
     }
 
     private void dealWithChannel(int i, boolean isClickRecommend) {
@@ -206,7 +206,7 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
 
     @Override
     public void onItemClick(AdapterView<?> adaperView, View view, int i, long l) {
-        if (adaperView.getAdapter() instanceof RecommendChannelGirdAdapter) {
+        if (adaperView.getAdapter() instanceof RecommendChannelGirdAdapter && mMyChannelGirdAdapter.getEditStatus()) {
             if (channelBeanArrayListRecommend != null && i < channelBeanArrayListRecommend.size()) {
                 dealWithChannel(i, true);
             }
