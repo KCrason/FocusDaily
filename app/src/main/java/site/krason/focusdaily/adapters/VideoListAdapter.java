@@ -71,7 +71,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Vide
         holder.mPLVideoTextureView.setOnBufferingUpdateListener(this);
         holder.mPLVideoTextureView.setOnErrorListener(this);
         holder.mPLVideoTextureView.setOnSeekCompleteListener(this);
-        Glide.with(mContext).load(dataBean.getImage()).into(holder.mImageView);
+        Glide.with(mContext).load(dataBean.getImage()).asBitmap().into(holder.mImageView);
         holder.mTxtLength.setText(KUtils.formatVideoDuration(dataBean.getDuration()));
         holder.itemView.setOnClickListener(new VideoItemClick(position, dataBean.getVideo_url(), dataBean.getTitle(), holder));
     }

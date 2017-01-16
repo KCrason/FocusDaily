@@ -67,25 +67,7 @@ public class ProjectBean {
 
     public static class PodItemsBean{
 
-        /**
-         * count : 0
-         * updateTime : 2016-12-25 09:57:43
-         * hasSlide : true
-         * links : [{"type":"slide","url":"http://api.iclient.ifeng.com/ipadtestdoc?aid=cmpp_030100050471583","weburl":"http://share.iclient.ifeng.com/sharenews.f?aid=030100050471583"}]
-         * thumbnails : ["http://d.ifengimg.com/w155_h107_q75/p0.ifengimg.com/a/2016_53/99b777fc3b49fff_size61_w800_h541.jpg","http://d.ifengimg.com/w155_h107_q75/p1.ifengimg.com/a/2016_53/c1dca5dfaa1aedb_size72_w980_h653.jpg","http://d.ifengimg.com/w155_h107_q75/p1.ifengimg.com/a/2016_53/506c4c025b5ff79_size71_w980_h653.jpg"]
-         * intro :
-         * title : 辽宁舰领衔8艘军舰跨海训练 日舰机尾随拍摄
-         * hasVideo : false
-         * thumbnail : http://d.ifengimg.com/w640_h360_q75/p3.ifengimg.com/cmpp/2016/12/26/e5c61ce924385ca561ec9c60994eadcc_size334_w672_h390.jpg
-         * style : doc
-         * commentsUrl : http://news.ifeng.com/a/20161225/50471583_0.shtml
-         * shareUrl : http://inews.ifeng.com/030100050471583/share.shtml
-         * commentType : 0
-         * ago : 102128887
-         * documentId : news_slide_030100050471583
-         * commentCount : 116
-         * particpateCount : 151
-         */
+
 
         private int count;
         private String updateTime;

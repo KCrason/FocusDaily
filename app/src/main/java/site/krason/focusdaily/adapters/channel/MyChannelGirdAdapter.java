@@ -5,9 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import cc.solart.dragdrop.IDragEntity;
-import cc.solart.dragdrop.adapter.AbsTileAdapter;
 import site.krason.focusdaily.R;
+import site.krason.focusdaily.sortdrag.AbsTileAdapter;
+import site.krason.focusdaily.sortdrag.IDragEntity;
 import site.krason.focusdaily.widgets.TileView;
 
 /**
@@ -20,7 +20,7 @@ public class MyChannelGirdAdapter extends AbsTileAdapter {
     private TileView.OnSelectedListener mListener;
     private TextView mTextViewEdit;
 
-    public MyChannelGirdAdapter(Context context, DragDropListener dragDropListener,
+    public MyChannelGirdAdapter(Context context, AbsTileAdapter.DragDropListener dragDropListener,
                                 TileView.OnSelectedListener listener,
                                 TextView textViewEdit) {
         super(context, dragDropListener);

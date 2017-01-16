@@ -2,6 +2,7 @@ package site.krason.focusdaily.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,12 @@ public class ProjectAdapter extends BaseAdapter {
         }
         if (podItemsBean != null) {
             listViewHolder.mTextView.setText(podItemsBean.getTitle());
-            Glide.with(mContext).load(podItemsBean.getThumbnail()).into(listViewHolder.mImageView);
+            if (TextUtils.isEmpty(podItemsBean.getThumbnail())) {
+                listViewHolder.mImageView.setVisibility(View.GONE);
+            } else {
+                listViewHolder.mImageView.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(podItemsBean.getThumbnail()).asBitmap().into(listViewHolder.mImageView);
+            }
         }
         view.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,8 @@
 package site.krason.focusdaily.fragments;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -57,7 +59,29 @@ public class ImageFragment extends BaseFragment
         stringMap.put("nw", "wifi");
         return stringMap;
     }
+    private final static String KEY_TYPE = "key_type";
 
+    private String mType;
+
+
+    public String getKeyType(){
+        return  mType;
+    }
+
+
+    public static ImageFragment instance(String type) {
+        ImageFragment imageFragment = new ImageFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TYPE, type);
+        imageFragment.setArguments(bundle);
+        return imageFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mType = getArguments().getString(KEY_TYPE);
+    }
 
     private int mPageNow = 1;
 

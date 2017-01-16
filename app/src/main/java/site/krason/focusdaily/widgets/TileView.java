@@ -23,12 +23,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import cc.solart.dragdrop.DragDropListView;
-import cc.solart.dragdrop.IDragEntity;
-import cc.solart.dragdrop.adapter.AbsTileAdapter;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.channel.MyChannelGirdAdapter;
 import site.krason.focusdaily.bean.ChannelBean;
+import site.krason.focusdaily.sortdrag.AbsTileAdapter;
+import site.krason.focusdaily.sortdrag.DragDropListView;
+import site.krason.focusdaily.sortdrag.IDragEntity;
 
 
 /**
@@ -74,7 +74,7 @@ public class TileView extends CardView {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener == null || !mMyChannelGirdAdapter.getEditStatus()) {
+                if (mListener == null ) {
                     return;
                 }
                 mListener.onTileSelected(mPosition, mIDragEntity);

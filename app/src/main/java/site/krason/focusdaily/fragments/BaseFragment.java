@@ -17,6 +17,7 @@ import site.krason.focusdaily.widgets.recyclerview.MultiStatusView;
 public abstract class BaseFragment extends Fragment {
 
 
+
     public boolean isLoadComplete;
 
     public MultiStatusView mMultiStatusView;
@@ -35,6 +36,8 @@ public abstract class BaseFragment extends Fragment {
             mIsVisibleToUser = false;
         }
     }
+
+
 
     public void removeRootView() {
         if (mMultiStatusView != null && mMultiStatusView.getChildCount() >= 2) {

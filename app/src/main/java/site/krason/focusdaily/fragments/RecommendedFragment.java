@@ -1,5 +1,6 @@
 package site.krason.focusdaily.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import site.krason.focusdaily.activities.TextLiveActivity;
 import site.krason.focusdaily.activities.VideoActivity;
 import site.krason.focusdaily.adapters.RecommendAdpter;
 import site.krason.focusdaily.bean.KNewBean;
+import site.krason.focusdaily.common.UrlUtils;
 import site.krason.focusdaily.events.RefreshEvent;
 import site.krason.focusdaily.utils.ACache;
 import site.krason.focusdaily.utils.KUtils;
@@ -48,6 +50,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
 
 public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
         , OnRealItemClickCallBack<KNewBean.ItemBean>, SwipeRefreshLayout.OnRefreshListener {
+
     public final static String KEY_NEWS = "key_news";
 
     private KReyccleView mRecyclerView;
@@ -60,6 +63,14 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
     private final static String KEY_TYPE = "key_type";
 
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        mActivity = context;
+    }
+
     public static RecommendedFragment instance(String type) {
         RecommendedFragment recommendedFragment = new RecommendedFragment();
         Bundle bundle = new Bundle();
@@ -67,6 +78,12 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         recommendedFragment.setArguments(bundle);
         return recommendedFragment;
     }
+
+
+    public String getKeyType() {
+        return mType;
+    }
+
 
     private String mType;
 
@@ -76,17 +93,70 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         mType = getArguments().getString(KEY_TYPE);
     }
 
+    private int mPag = 1;
+
     @Override
     public void LazyLoadDataToService() {
         if (!TextUtils.isEmpty(mType)) {
-            if (mType.equals("focus")) {
+            if (mType.equals("头条") ||
+                    mType.equals("台湾") ||
+                    mType.equals("星座") ||
+                    mType.equals("读书") ||
+                    mType.equals("健康") ||
+                    mType.equals("电影") ||
+                    mType.equals("国际") ||
+                    mType.equals("港澳") ||
+                    mType.equals("家居") ||
+                    mType.equals("跑步")) {
                 defaultData();
-            } else if (mType.equals("recommend")) {
+            } else if (mType.equals("推荐")) {
                 recommendData();
+            } else if (mType.equals("科技") ||
+                    mType.equals("娱乐") ||
+                    mType.equals("时尚") ||
+                    mType.equals("旅游") ||
+                    mType.equals("国学") ||
+                    mType.equals("时政") ||
+                    mType.equals("青年") ||
+                    mType.equals("评论") ||
+                    mType.equals("政能量") ||
+                    mType.equals("智库") ||
+                    mType.equals("公益") ||
+                    mType.equals("体育") ||
+                    mType.equals("汽车") ||
+                    mType.equals("财经")) {
+                getPageData(mPag);
             } else {
                 refreshData();
             }
         }
+    }
+
+    private void getPageData(int page) {
+        OkHttpUtils.get().url(UrlUtils.IFENG.CLIENT_NEWS)
+                .params(getPageParams(page))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Snackbar.make(mRootView, "推荐失败!", Snackbar.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        ACache.get(mActivity).put(getKey(), response);
+                        KNewBean bannerBean = getKNewsBeanList(response, 0);
+                        if (bannerBean != null) {
+                            mScrollAdpter.setData(bannerBean);
+                            isLoadComplete = true;
+                            removeRootView();
+                        } else {
+                            KUtils.showSnackbar("暂无更新推荐", mRootView);
+                        }
+                    }
+                });
     }
 
     private void recommendData() {
@@ -104,7 +174,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                     public void onResponse(String response, int id) {
                         mSwipeRefreshLayout.setRefreshing(false);
                         if (!TextUtils.isEmpty(response)) {
-                            ACache.get(getContext()).put(getKey(), response);
+                            ACache.get(mActivity).put(getKey(), response);
                             KNewBean bannerBean = JSON.parseObject(response, KNewBean.class);
                             if (bannerBean != null) {
                                 mScrollAdpter.setData(bannerBean);
@@ -119,7 +189,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     }
 
     private void refreshData() {
-        OkHttpUtils.get().url("http://api.iclient.ifeng.com/ClientNews")
+        OkHttpUtils.get().url(UrlUtils.IFENG.CLIENT_NEWS)
                 .params(getParams("down"))
                 .build()
                 .execute(new StringCallback() {
@@ -132,7 +202,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
                     @Override
                     public void onResponse(String response, int id) {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        ACache.get(getContext()).put(getKey(), response);
+                        ACache.get(mActivity).put(getKey(), response);
                         KNewBean bannerBean = getKNewsBeanList(response, 0);
                         if (bannerBean != null) {
                             mScrollAdpter.setData(bannerBean);
@@ -147,7 +217,7 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
 
     private void defaultData() {
-        OkHttpUtils.get().url("http://api.iclient.ifeng.com/ClientNews")
+        OkHttpUtils.get().url(UrlUtils.IFENG.CLIENT_NEWS)
                 .params(getParams("default"))
                 .build()
                 .execute(new StringCallback() {
@@ -159,9 +229,11 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
                     @Override
                     public void onResponse(String response, int id) {
-                        ACache.get(getContext()).put(getKey(), response);
-                        mScrollAdpter.setData(getKNewsBeanList(response, 1));
-                        mScrollAdpter.addData(getKNewsBeanList(response, 2));
+                        ACache.get(mActivity).put(getKey(), response);
+                        if (mType.equals("头条")) {
+                            mScrollAdpter.setData(getKNewsBeanList(response, 1));
+                            mScrollAdpter.addData(getKNewsBeanList(response, 2));
+                        }
                         mScrollAdpter.addData(getKNewsBeanList(response, 0));
                         isLoadComplete = true;
                         removeRootView();
@@ -192,25 +264,93 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         }
     }
 
+    private Map<String, String> getPageParams(int page) {
+        String id = "KJ123";
+        Map<String, String> stringMap = new HashMap<>();
+        if (mType.equals("科技")) {
+            id = "KJ123";
+        } else if (mType.equals("娱乐")) {
+            id = "YL53";
+        } else if (mType.equals("时尚")) {
+            id = "SS78";
+        } else if (mType.equals("旅游")) {
+            id = "LY67";
+        } else if (mType.equals("国学")) {
+            id = "GXPD";
+        } else if (mType.equals("时政")) {
+            id = "SZPD";
+        } else if (mType.equals("青年")) {
+            id = "QN39";
+        } else if (mType.equals("暖新闻")) {
+            id = "NXWPD";
+        } else if (mType.equals("评论")) {
+            id = "PL40";
+        } else if (mType.equals("政能量")) {
+            id = "ZNL345";
+        } else if (mType.equals("智库")) {
+            id = "ZK30";
+        } else if (mType.equals("公益")) {
+            id = "GYPD";
+        } else if (mType.equals("体育")) {
+            id = "TY43";
+        } else if (mType.equals("汽车")) {
+            id = "QC45";
+        } else if (mType.equals("财经")) {
+            id = "CJ33";
+        }
+        stringMap.put("id", id);
+        stringMap.put("page", String.valueOf(page));
+        stringMap.put("gv", "5.4.0");
+        stringMap.put("av", "5.4.0");
+        stringMap.put("uid", "863055036432979");
+        stringMap.put("deviceid", "863055036432979");
+        stringMap.put("proid", "ifengnews");
+        stringMap.put("os", "android_22");
+        stringMap.put("df", "androidphone");
+        stringMap.put("vt", "5");
+        stringMap.put("screen", "1080x1920");
+        stringMap.put("publishid", "6102");
+        stringMap.put("nw", "wifi");
+        return stringMap;
+    }
+
 
     private Map<String, String> getParams(String action) {
         String id = "SYLB10,SYDT10,SYRECOMMEND";
         Map<String, String> stringMap = new HashMap<>();
         if (mType != null) {
-            if (mType.equals("focus")) {
+            if (mType.equals("头条")) {
                 id = "SYLB10,SYDT10,SYRECOMMEND";
-            } else if (mType.equals("world")) {
+            } else if (mType.equals("国际")) {
                 id = "GJPD";
-            } else if (mType.equals("social")) {
-                id = "SH133,FOCUSSH133";
-            } else if (mType.equals("digital")) {
-                id = "SM66,FOCUSSM66";
-            } else if (mType.equals("nba")) {
+            } else if (mType.equals("社会")) {
+                id = "SH133";
+            } else if (mType.equals("数码")) {
+                id = "SM66";
+            } else if (mType.equals("NBA")) {
                 id = "NBAPD";
-            } else if (mType.equals("movie")) {
+            } else if (mType.equals("电影")) {
                 id = "DYPD";
-            } else if (mType.equals("game")) {
-                id = "YX11,FOCUSYX11";
+            } else if (mType.equals("游戏")) {
+                id = "YX11";
+            } else if (mType.equals("军事")) {
+                id = "JS83";
+            } else if (mType.equals("历史")) {
+                id = "LS153";
+            } else if (mType.equals("台湾")) {
+                id = "TW73";
+            } else if (mType.equals("星座")) {
+                id = "XZ09";
+            } else if (mType.equals("读书")) {
+                id = "DS57";
+            } else if (mType.equals("健康")) {
+                id = "JK36";
+            } else if (mType.equals("港澳")) {
+                id = "GA18";
+            } else if (mType.equals("家居")) {
+                id = "JJPD";
+            } else if (mType.equals("跑步")) {
+                id = "PBPD";
             }
         }
         stringMap.put("id", id);
@@ -255,7 +395,6 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
 
 
     private KNewBean getKNewsBeanList(String result, int index) {
-
         JSONArray jsonArray = JSON.parseArray(result);
         if (jsonArray != null && jsonArray.size() > index) {
             JSONObject jsonObject = jsonArray.getJSONObject(index);
@@ -268,39 +407,97 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     private String getKey() {
         String key = "KEY_FOCUS";
         if (mType != null) {
-            if (mType.equals("focus")) {
+            if (mType.equals("头条")) {
                 key = "KEY_FOCUS";
-            } else if (mType.equals("world")) {
+            } else if (mType.equals("国际")) {
                 key = "KEY_WORLD";
-            } else if (mType.equals("social")) {
+            } else if (mType.equals("社会")) {
                 key = "KEY_SOCIAL";
-            } else if (mType.equals("ditigal")) {
+            } else if (mType.equals("数码")) {
                 key = "KEY_DITIGAL";
-            } else if (mType.equals("nba")) {
+            } else if (mType.equals("NBA")) {
                 key = "KEY_NBA";
-            } else if (mType.equals("movie")) {
+            } else if (mType.equals("电影")) {
                 key = "KEY_MOVIE";
-            } else if (mType.equals("game")) {
+            } else if (mType.equals("游戏")) {
                 key = "KEY_GAME";
-            } else if (mType.equals("recommend")) {
+            } else if (mType.equals("推荐")) {
                 key = "KEY_RECOMMEND";
+            } else if (mType.equals("科技")) {
+                key = "KEY_KEJI";
+            } else if (mType.equals("娱乐")) {
+                key = "KEY_YULE";
+            } else if (mType.equals("军事")) {
+                key = "KEY_JUNSHI";
+            } else if (mType.equals("历史")) {
+                key = "KEY_LISHI";
+            } else if (mType.equals("时尚")) {
+                key = "KEY_SHISHANG";
+            } else if (mType.equals("暖新闻")) {
+                key = "KEY_NUANXINWEN";
+            } else if (mType.equals("教育")) {
+                key = "KEY_JIAOYU";
+            } else if (mType.equals("港澳")) {
+                key = "KEY_GANGAO";
+            } else if (mType.equals("家居")) {
+                key = "KEY_JIAJU";
+            } else if (mType.equals("台湾")) {
+                key = "KEY_TAIWAN";
+            } else if (mType.equals("时政")) {
+                key = "KEY_SHIZHENG";
+            } else if (mType.equals("文化")) {
+                key = "KEY_WENHUA";
+            } else if (mType.equals("跑步")) {
+                key = "KEY_PAOBU";
+            } else if (mType.equals("星座")) {
+                key = "KEY_XINGZUO";
+            } else if (mType.equals("读书")) {
+                key = "KEY_DUSHU";
+            } else if (mType.equals("健康")) {
+                key = "KEY_JIANKANG";
+            } else if (mType.equals("青年")) {
+                key = "KEY_QINGNIAN";
+            } else if (mType.equals("智库")) {
+                key = "KEY_ZHIKU";
+            } else if (mType.equals("公益")) {
+                key = "KEY_GONGYI";
+            } else if (mType.equals("房产")) {
+                key = "KEY_FANGCHAN";
+            } else if (mType.equals("汽车")) {
+                key = "KEY_QICHE";
+            } else if (mType.equals("旅游")) {
+                key = "KEY_LVYOU";
+            } else if (mType.equals("评论")) {
+                key = "KEY_PINGLUAN";
+            } else if (mType.equals("政能量")) {
+                key = "KEY_ZHENGNENGLIANG";
+            } else if (mType.equals("国学")) {
+                key = "KEY_GUOXUE";
+            } else if (mType.equals("财经")) {
+                key = "KEY_CAIJING";
+            } else if (mType.equals("体育")) {
+                key = "KEY_TIYU";
             }
         }
         return key;
     }
 
+    private boolean isNeedLoadDataToLocal = false;
+
     @Override
     public void LazyLoadDataToLocal() {
-        String result = ACache.get(getContext()).getAsString(getKey());
-        KNewBean kNewBean;
-        if (mType.equals("recommend")) {
-            kNewBean = JSON.parseObject(result, KNewBean.class);
-        } else {
-            kNewBean = getKNewsBeanList(result, 0);
-        }
-        if (kNewBean != null) {
-            mScrollAdpter.setData(kNewBean);
-            removeRootView();
+        if (isLoadComplete && isNeedLoadDataToLocal) {
+            String result = ACache.get(mActivity).getAsString(getKey());
+            KNewBean kNewBean;
+            if (mType.equals("推荐")) {
+                kNewBean = JSON.parseObject(result, KNewBean.class);
+            } else {
+                kNewBean = getKNewsBeanList(result, 0);
+            }
+            if (kNewBean != null) {
+                mScrollAdpter.setData(kNewBean);
+                removeRootView();
+            }
         }
     }
 
@@ -313,14 +510,16 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         mRootView = view.findViewById(R.id.llayout_root);
         mRecyclerView = (KReyccleView) view.findViewById(R.id.recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
-        mScrollAdpter = new RecommendAdpter(getContext(), this);
+        mScrollAdpter = new RecommendAdpter(getContext(), this, mType);
         mRecyclerView.setAdapter(mScrollAdpter);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isNeedLoadDataToLocal = true;
         EventBus.getDefault().unregister(this);
     }
 
@@ -333,9 +532,24 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void onRecyclerViewLoadMore() {
         if (KUtils.Network.isExistNetwork()) {
-            String url = "http://api.iclient.ifeng.com/ClientNews";
-            if (mType.equals("recommend")) {
+            String url = UrlUtils.IFENG.CLIENT_NEWS;
+            if (mType.equals("推荐")) {
                 mRecyclerView.setAllLoadComplete();
+            } else if (mType.equals("科技") ||
+                    mType.equals("娱乐") ||
+                    mType.equals("时尚") ||
+                    mType.equals("旅游") ||
+                    mType.equals("国学") ||
+                    mType.equals("时政") ||
+                    mType.equals("青年") ||
+                    mType.equals("评论") ||
+                    mType.equals("政能量") ||
+                    mType.equals("智库") ||
+                    mType.equals("公益") ||
+                    mType.equals("体育") ||
+                    mType.equals("汽车") ||
+                    mType.equals("财经")) {
+                LoadMoreData(url);
             } else {
                 OkHttpUtils.get().url(url)
                         .params(getParams("down"))
@@ -360,6 +574,28 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
         } else {
             mRecyclerView.setNetworkError();
         }
+    }
+
+    private void LoadMoreData(String url) {
+        OkHttpUtils.get().url(url)
+                .params(getPageParams(++mPag))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        KNewBean kNewBean = getKNewsBeanList(response, 0);
+                        if (kNewBean == null) {
+                            mRecyclerView.setAllLoadComplete();
+                        } else {
+                            mRecyclerView.setCurrentLoadComplete();
+                            mScrollAdpter.addData(kNewBean);
+                        }
+                    }
+                });
     }
 
 
@@ -392,8 +628,23 @@ public class RecommendedFragment extends BaseFragment implements OnRecyclerLoadM
     @Override
     public void onRefresh() {
         mRecyclerView.reload();
-        if (mType.equals("recommend")) {
+        if (mType.equals("推荐")) {
             recommendData();
+        } else if (mType.equals("科技") ||
+                mType.equals("娱乐") ||
+                mType.equals("时尚") ||
+                mType.equals("旅游") ||
+                mType.equals("国学") ||
+                mType.equals("时政") ||
+                mType.equals("青年") ||
+                mType.equals("评论") ||
+                mType.equals("政能量") ||
+                mType.equals("智库") ||
+                mType.equals("公益") ||
+                mType.equals("体育") ||
+                mType.equals("汽车") ||
+                mType.equals("财经")) {
+            getPageData(1);
         } else {
             refreshData();
         }

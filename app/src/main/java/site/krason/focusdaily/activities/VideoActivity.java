@@ -3,6 +3,7 @@ package site.krason.focusdaily.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -66,6 +67,7 @@ public class VideoActivity extends BaseActivity implements PlayCallBack, OnTrans
 
     @Override
     public void initViews() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mGuid = getIntent().getStringExtra(RecommendedFragment.KEY_NEWS);
         processExtraData();
     }

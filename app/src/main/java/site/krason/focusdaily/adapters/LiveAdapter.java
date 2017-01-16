@@ -56,10 +56,10 @@ public class LiveAdapter extends RecyclerView.Adapter<LiveAdapter.LiveListViewHo
         LiveListBean liveListBean = mLiveListBeen.get(position);
         holder.mTextViewContent.setText(liveListBean.getContent());
         holder.mTextViewTime.setText(liveListBean.getCreate_date());
-        Glide.with(mContext).load(liveListBean.getHost_avatar()).into(holder.mImageViewAvatar);
+        Glide.with(mContext).load(liveListBean.getHost_avatar()).asBitmap().into(holder.mImageViewAvatar);
         holder.mTextViewName.setText(liveListBean.getHost_name());
         if (liveListBean.getImg() != null && liveListBean.getImg().size() > 0) {
-            Glide.with(mContext).load(liveListBean.getImg().get(0).getO_src()).into(holder.mImageViewPic);
+            Glide.with(mContext).load(liveListBean.getImg().get(0).getO_src()).asBitmap().into(holder.mImageViewPic);
         }
     }
 

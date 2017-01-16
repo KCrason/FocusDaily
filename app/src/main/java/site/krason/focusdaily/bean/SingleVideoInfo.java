@@ -8,37 +8,7 @@ import java.io.Serializable;
  */
 
 public class SingleVideoInfo implements Serializable{
-    /**
-     * videoURLLow : http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/20/4426073-280-099-2009.mp4
-     * videoURLMid : http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/20/4426073-280-099-2009.mp4
-     * videoSizeLow : 8461
-     * videoSizeMid : 8461
-     * videoURLHigh : http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/20/4426073-102-078-2009.mp4
-     * videoSizeHigh : 23072
-     * audioURL : http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/20/4426073-543-066-2009.mp3
-     * GUID : 0150d63c-7c69-4f64-acc1-9a9df5e9ce54
-     * praise : 53
-     * tread : 4
-     * playTime : 201417
-     * imgURL : http://d.ifengimg.com/w200_h150/p1.ifengimg.com/a/2016_52/90db92526f73119.jpg
-     * smallImgURL : http://d.ifengimg.com/w120_h90/p1.ifengimg.com/a/2016_52/90db92526f73119.jpg
-     * largeImgURL : http://d.ifengimg.com/w480_h360/p1.ifengimg.com/a/2016_52/90db92526f73119.jpg
-     * richText :
-     * videoPublishTime : 2016-12-20 20:09:00
-     * shareURL : http://share.iclient.ifeng.com/sharenews.f?guid=0150d63c-7c69-4f64-acc1-9a9df5e9ce54
-     * type : phvideo
-     * id :
-     * statisticID : 51-54
-     * title : 评：美军“卖乖”拿回潜航器 新加坡该学学
-     * videoLength : 00:03:21
-     * longTitle : 评：美军“卖乖”拿回潜航器 新加坡该学学
-     * columnName : 新闻今日谈
-     * CP : 凤凰卫视
-     * collect :
-     * lastPlayedTime :
-     * status : 1
-     * columnId : 22
-     */
+
 
     private String videoURLLow;
     private String videoURLMid;

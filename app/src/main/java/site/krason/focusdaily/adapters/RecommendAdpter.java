@@ -26,7 +26,8 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCal
  * @email 535089696@qq.com
  */
 
-public class RecommendAdpter extends RecyclerView.Adapter implements OnIntersterClickListener {
+public class
+RecommendAdpter extends RecyclerView.Adapter implements OnIntersterClickListener {
 
     private final static int VIEW_TYPE_NO_PIC = 0;
     private final static int VIEW_TYPE_1_PIC = 1;
@@ -40,14 +41,32 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
     private List<KNewBean.ItemBean> mStrings = new ArrayList<>();
 
     private OnRealItemClickCallBack<KNewBean.ItemBean> mDataBeanOnRealItemClickCallBack;
+    private String mType;
 
-    public RecommendAdpter(Context context, OnRealItemClickCallBack<KNewBean.ItemBean> dataBeanOnRealItemClickCallBack) {
+    public RecommendAdpter(Context context, OnRealItemClickCallBack<KNewBean.ItemBean> dataBeanOnRealItemClickCallBack, String type) {
         this.mContext = context;
+        this.mType = type;
         this.mDataBeanOnRealItemClickCallBack = dataBeanOnRealItemClickCallBack;
     }
 
 
     public void setData(KNewBean kNewBean) {
+        if (mType.equals("科技") ||
+                mType.equals("娱乐") ||
+                mType.equals("时尚") ||
+                mType.equals("旅游") ||
+                mType.equals("国学") ||
+                mType.equals("时政") ||
+                mType.equals("青年") ||
+                mType.equals("评论") ||
+                mType.equals("政能量") ||
+                mType.equals("智库") ||
+                mType.equals("公益") ||
+                mType.equals("体育") ||
+                mType.equals("汽车") ||
+                mType.equals("财经")) {
+            this.mStrings.clear();
+        }
         this.mStrings.addAll(0, kNewBean.getItem());
         notifyDataSetChanged();
     }
@@ -118,7 +137,6 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
             }
             if (dataBean != null) {
                 if (holder instanceof NoPicViewHolder) {
-
                     ((NoPicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((NoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((NoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
@@ -130,12 +148,12 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                     } else {
                         ((OnePicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
                     }
-                    Glide.with(mContext).load(dataBean.getThumbnail()).into(((OnePicViewHolder) holder).imgOnePic);
+                    Glide.with(mContext).load(dataBean.getThumbnail()).asBitmap().into(((OnePicViewHolder) holder).imgOnePic);
                 } else if (holder instanceof TwoPicViewHolder) {
                     ((TwoPicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((TwoPicViewHolder) holder).mTitle.setText(dataBean.getTitle());
                     ((TwoPicViewHolder) holder).mBaseInfo.setText(KUtils.filterStringValue(dataBean.getSource()) + "  " + KUtils.betweenOf2Days(dataBean.getUpdateTime()));
-                    Glide.with(mContext).load(dataBean.getThumbnail()).into(((TwoPicViewHolder) holder).imgBigPic);
+                    Glide.with(mContext).load(dataBean.getThumbnail()).asBitmap().into(((TwoPicViewHolder) holder).imgBigPic);
                 } else if (holder instanceof ThreePicViewHolder) {
                     ((ThreePicViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
                     ((ThreePicViewHolder) holder).mTitle.setText(dataBean.getTitle());
@@ -154,9 +172,9 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                         }
                     }
                     if (dataBean.getStyle().getImages().size() >= 3) {
-                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(0)).into(((ThreePicViewHolder) holder).imgOnePic);
-                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(1)).into(((ThreePicViewHolder) holder).imgTwoPic);
-                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).into(((ThreePicViewHolder) holder).imgThreePic);
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(0)).asBitmap().into(((ThreePicViewHolder) holder).imgOnePic);
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(1)).asBitmap().into(((ThreePicViewHolder) holder).imgTwoPic);
+                        Glide.with(mContext).load(dataBean.getStyle().getImages().get(2)).asBitmap().into(((ThreePicViewHolder) holder).imgThreePic);
                     }
                 } else if (holder instanceof VideoViewHolder) {
                     ((VideoViewHolder) holder).mNoInterest.setOnClickListener(onDeleteClickListener);
@@ -167,7 +185,7 @@ public class RecommendAdpter extends RecyclerView.Adapter implements OnInterster
                         }
                         ((VideoViewHolder) holder).mLength.setText(KUtils.formatVideoDuration(dataBean.getPhvideo().getLength()));
                     }
-                    Glide.with(mContext).load(dataBean.getThumbnail()).into(((VideoViewHolder) holder).imgBigPic);
+                    Glide.with(mContext).load(dataBean.getThumbnail()).asBitmap().into(((VideoViewHolder) holder).imgBigPic);
                 }
             }
         }

@@ -1,6 +1,7 @@
 package site.krason.focusdaily.bean;
 
-import cc.solart.dragdrop.IDragEntity;
+
+import site.krason.focusdaily.sortdrag.IDragEntity;
 
 /**
  * @author Created by KCrason on 2017/1/5.

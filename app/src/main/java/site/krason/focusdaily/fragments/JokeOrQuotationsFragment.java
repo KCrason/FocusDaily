@@ -1,5 +1,6 @@
 package site.krason.focusdaily.fragments;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,7 +34,7 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  * @email 535089696@qq.com
  */
 
-public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
+public class JokeOrQuotationsFragment extends BaseFragment implements OnRecyclerLoadMoreLisener
         , OnRealItemClickCallBack<ShortNewsBean>, SwipeRefreshLayout.OnRefreshListener {
 
     private KReyccleView mRecyclerView;
@@ -44,6 +45,9 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
 
     private View mRootView;
 
+    private final static String KEY_TYPE = "key_type";
+
+    private String mType;
 
     @Override
     public void LazyLoadDataToService() {
@@ -54,10 +58,14 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         Map<String, String> stringMap = new HashMap<>();
         String type = "joke";
         if (mType != null) {
-            if (mType.equals("joke")) {
+            if (mType.equals("段子")) {
                 type = "joke";
-            } else if (mType.equals("yulu")) {
+            } else if (mType.equals("语录")) {
                 type = "phil";
+            } else if (mType.equals("萌物")) {
+                type = "pet";
+            } else if (mType.equals("美女")) {
+                type = "beauty";
             }
         }
         stringMap.put("type", type);
@@ -77,17 +85,28 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         return stringMap;
     }
 
+
+    private Activity mActivity;
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        mActivity = context;
+    }
+
+    public String getKeyType(){
+        return  mType;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mType = getArguments().getString(KEY_TYPE);
     }
 
-    private final static String KEY_TYPE = "key_type";
-    private String mType;
 
-    public static JokeFragment instance(String type) {
-        JokeFragment jokeFragment = new JokeFragment();
+    public static JokeOrQuotationsFragment instance(String type) {
+        JokeOrQuotationsFragment jokeFragment = new JokeOrQuotationsFragment();
         Bundle bundle = new Bundle();
         bundle.putString(KEY_TYPE, type);
         jokeFragment.setArguments(bundle);
@@ -97,10 +116,14 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
     private String getKey() {
         String key = "KEY_JOKE";
         if (mType != null) {
-            if (mType.equals("joke")) {
+            if (mType.equals("段子")) {
                 key = "KEY_JOKE";
-            } else if (mType.equals("yulu")) {
+            } else if (mType.equals("语录")) {
                 key = "KEY_YULU";
+            } else if (mType.equals("萌物")) {
+                key = "KEY_MENGWU";
+            } else if (mType.equals("美女")) {
+                key = "KEY_MEINV";
             }
         }
         return key;
@@ -112,13 +135,13 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
         OkHttpUtils.get().params(getParams(mPageNow)).url(UrlUtils.IFENG.CLIENT_SHORT_NEWS).build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
-                Snackbar.make(mRootView, "推荐失败！", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mRootView, "推荐失败", Snackbar.LENGTH_SHORT).show();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                ACache.get(getContext()).put(getKey(), response);
+                ACache.get(mActivity).put(getKey(), response);
                 JSONObject jsonObject = JSON.parseObject(response);
                 if (jsonObject.containsKey("body")) {
                     List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
@@ -129,18 +152,27 @@ public class JokeFragment extends BaseFragment implements OnRecyclerLoadMoreLise
                 }
             }
         });
+    }
 
+    private boolean isNeedLoadDataToLocal = false;
+
+    @Override
+    public void onDestroyView() {
+        isNeedLoadDataToLocal = true;
+        super.onDestroyView();
 
     }
 
     @Override
     public void LazyLoadDataToLocal() {
-        String cache = ACache.get(getContext()).getAsString(getKey());
-        JSONObject jsonObject = JSON.parseObject(cache);
-        if (jsonObject.containsKey("body")) {
-            List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
-            mJokeAdapter.setData(shortNewsBeen);
-            removeRootView();
+        if (isLoadComplete && isNeedLoadDataToLocal) {
+            String cache = ACache.get(mActivity).getAsString(getKey());
+            JSONObject jsonObject = JSON.parseObject(cache);
+            if (jsonObject.containsKey("body")) {
+                List<ShortNewsBean> shortNewsBeen = JSON.parseArray(jsonObject.getString("body"), ShortNewsBean.class);
+                mJokeAdapter.setData(shortNewsBeen);
+                removeRootView();
+            }
         }
     }
 

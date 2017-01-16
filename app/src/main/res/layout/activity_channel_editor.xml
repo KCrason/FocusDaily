@@ -5,42 +5,43 @@
             android:layout_height="match_parent"
             android:background="#f2f2f2">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dip"
-            android:paddingLeft="16dip"
-            android:paddingRight="16dip"
-            android:paddingTop="10dip">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="我的频道"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:paddingBottom="10dip"
+                android:paddingLeft="16dip"
+                android:paddingRight="16dip"
+                android:paddingTop="10dip">
 
-            <TextView
-                android:id="@+id/txt_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="编辑"
-                android:textSize="16sp"/>
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="我的频道"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txt_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="编辑"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
 
-            <cc.solart.dragdrop.DragDropListView
+
+            <site.krason.focusdaily.sortdrag.DragDropListView
                 android:id="@+id/drag_drop_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,45 +55,47 @@
                 android:padding="10dp"
                 android:verticalSpacing="10dip"
                 app:fixed_type="true">
-            </cc.solart.dragdrop.DragDropListView>
+            </site.krason.focusdaily.sortdrag.DragDropListView>
 
-            <FrameLayout
-                android:id="@+id/activity_overlay"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dip"
+                android:layout_marginTop="16dip"
+                android:text="频道推荐"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"/>
+
+            <site.krason.focusdaily.widgets.NoScrollGridView
+                android:id="@+id/noscroll_grid_view_recommend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:fadingEdge="none"
+                android:horizontalSpacing="10dip"
+                android:nestedScrollingEnabled="true"
+                android:numColumns="4"
+                android:padding="10dp"
+                android:verticalSpacing="10dip">
 
-                <ImageView
-                    android:id="@+id/tile_drag_shadow_overlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:visibility="gone"/>
-            </FrameLayout>
-        </RelativeLayout>
+            </site.krason.focusdaily.widgets.NoScrollGridView>
+
+        </LinearLayout>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dip"
-            android:layout_marginTop="16dip"
-            android:text="频道推荐"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"/>
-
-        <site.krason.focusdaily.widgets.NoScrollGridView
-            android:id="@+id/noscroll_grid_view_recommend"
+        <FrameLayout
+            android:id="@+id/activity_overlay"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:fadingEdge="none"
-            android:horizontalSpacing="10dip"
-            android:nestedScrollingEnabled="true"
-            android:numColumns="4"
-            android:padding="10dp"
-            android:verticalSpacing="10dip">
+            android:layout_height="match_parent">
 
-        </site.krason.focusdaily.widgets.NoScrollGridView>
+            <ImageView
+                android:id="@+id/tile_drag_shadow_overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:visibility="gone"/>
+        </FrameLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

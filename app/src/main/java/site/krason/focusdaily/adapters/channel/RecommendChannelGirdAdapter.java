@@ -59,7 +59,7 @@ public class RecommendChannelGirdAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ChannelBean channelBean = mChannelBeen.get(i);
+        ChannelBean channelBean =mChannelBeen.get(i);
         ChannelViewHolder channelViewHolder;
         if (view == null) {
             channelViewHolder = new ChannelViewHolder();

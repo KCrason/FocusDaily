@@ -8,24 +8,7 @@ import java.util.List;
  */
 
 public class LiveContentBean {
-    /**
-     * create_date : 2016-12-27 17:46:52
-     * lcat_id : 0
-     * lcat_name : 图文直播频道
-     * uid : 1
-     * id : 102835
-     * name : 查干湖冬捕 开渔了
-     * start_date : 2016-12-28 09:00:00
-     * end_date : 2016-12-28 10:30:00
-     * order : 1
-     * online_num : 144735
-     * host_name :
-     * is_available : 1
-     * description : 43天时间，260万斤捕捞目标，2017查干湖冬捕的大幕马上就要正式拉开，近千年的“祭湖、醒网”仪式即将在今天上午举行。神圣的仪式究竟是什么样？第一网鱼会是“红网”吗？今年的“头鱼”又回拍出何等寓意吉祥的数字？查干湖冬捕的鱼要怎么买怎么吃？请各位凤凰网友跟随风直播的镜头一探究竟吧。
-     * r_id : 2369
-     * server_time : 2016-12-28 10:12:49
-     * extra : {"guests_name":"","vurl":"","hasvideo":true,"isvr":false,"videoLive":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/28/4437758-102-086-0913.mp4##http://ips.ifeng.com/video19.ifeng.com/video09/2016/12/28/4437758-102-086-0913.mp4","vpic":"http://p1.ifengimg.com/a/2016_53/4f40c04f6ccda6d.png","videoid":"","online_support":"","auto_sync_lroom_id":"","lcat_spread_txt":"","lcat_spread_url":"","spread_link_type":"","custom_type":"","other_live_url":"","label_pic":"","o_hosts":[{"id":"72880141","name":"风直播","avatar":"http://p2.ifengimg.com/508df9aec9e2a/face/14828871646527.jpg","check":"","type":"1"},{"id":"52747381","name":"风直播","avatar":"http://p2.ifengimg.com/508df9aec9e2a/face/14828312416991.jpg","check":"","type":"1"}]}
-     */
+
 
     private String create_date;
     private String lcat_id;

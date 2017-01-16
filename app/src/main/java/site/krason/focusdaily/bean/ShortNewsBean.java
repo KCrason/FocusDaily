@@ -8,30 +8,6 @@ import java.util.List;
  */
 
 public class ShortNewsBean {
-    /**
-     * id : shortNews_243018
-     * type : shortNews
-     * content :
-     * title : 凤凰新闻搞笑段子
-     * shareTitle : 凤凰新闻搞笑段子:
-     * cid : 2
-     * thumbnail : http://d.ifengimg.com/w166/p3.ifengimg.com/ifengiclient/ipic/2016102521/swoole_location_d1fcb0be4c3553e1d853e8cdfe5005cb_615598891_size37_w500_h412.jpg
-     * cThumbnail : http://d.ifengimg.com/w166_h120/p3.ifengimg.com/ifengiclient/ipic/2016102521/swoole_location_d1fcb0be4c3553e1d853e8cdfe5005cb_615598891_size37_w500_h412.jpg
-     * source :
-     * status : 1
-     * shareUrl : http://share.iclient.ifeng.com/news/sharenews.f?&fromType=spider&aid=243018
-     * commentsUrl : http://share.iclient.ifeng.com/news/sharenews.f?&fromType=spider&aid=243018
-     * ctime : 2016-10-25 21:50:09
-     * utime : 2016-12-26 08:44:19
-     * img : [{"url":"http://d.ifengimg.com/mw480/p3.ifengimg.com/ifengiclient/ipic/2016102521/swoole_location_d1fcb0be4c3553e1d853e8cdfe5005cb_615598891_size37_w500_h412.jpg","size":{"width":"480","height":"396"}}]
-     * staticImg :
-     * link : {"type":"shortNews","url":"http://api.iclient.ifeng.com/clientShortNewsDetail?id=243018"}
-     * praise : 23
-     * tread : 2
-     * comments : 0
-     * commentsall : 0
-     * likes : 25
-     */
 
     private String id;
     private String type;

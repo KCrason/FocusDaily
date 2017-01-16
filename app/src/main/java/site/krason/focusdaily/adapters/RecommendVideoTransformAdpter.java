@@ -40,7 +40,7 @@ public class RecommendVideoTransformAdpter extends TransformAdapter<RelativeVide
         txtTitle.setText(guidRelativeVideoInfoBean.getName());
         baseInfo.setText(guidRelativeVideoInfoBean.getColumnName() +"    "+ KUtils.transformPlayCount(guidRelativeVideoInfoBean.getPlayTime()));
         int size = guidRelativeVideoInfoBean.getFiles().size();
-        Glide.with(mContext).load(guidRelativeVideoInfoBean.getFiles().get(size - 3).getMediaUrl()).into(imageView);
+        Glide.with(mContext).load(guidRelativeVideoInfoBean.getFiles().get(size - 3).getMediaUrl()).asBitmap().into(imageView);
         txtDuration.setText(KUtils.formatVideoDuration(guidRelativeVideoInfoBean.getDuration()));
     }
 }

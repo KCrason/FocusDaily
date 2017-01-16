@@ -59,7 +59,7 @@ public class ImageAdpter extends RecyclerView.Adapter<ImageAdpter.ImageViewHolde
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         final ImageListBean.ItemBean dataBean = mDataBeen.get(position);
         holder.mTextView.setText(dataBean.getTitle());
-        Glide.with(mContext).load(dataBean.getThumbnail()).into(holder.mImageView);
+        Glide.with(mContext).load(dataBean.getThumbnail()).asBitmap().into(holder.mImageView);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

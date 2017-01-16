@@ -3,6 +3,7 @@ package site.krason.focusdaily.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -11,17 +12,24 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.solart.dragdrop.DragDropListView;
-import cc.solart.dragdrop.IDragEntity;
-import cc.solart.dragdrop.adapter.AbsTileAdapter;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.channel.MyChannelGirdAdapter;
 import site.krason.focusdaily.adapters.channel.RecommendChannelGirdAdapter;
 import site.krason.focusdaily.bean.ChannelBean;
-import site.krason.focusdaily.database.KDataBaseHelper;
+import site.krason.focusdaily.common.Constants;
+import site.krason.focusdaily.events.NotifyChannelRefresh;
+import site.krason.focusdaily.sortdrag.AbsTileAdapter;
+import site.krason.focusdaily.sortdrag.DragDropListView;
+import site.krason.focusdaily.sortdrag.IDragEntity;
+import site.krason.focusdaily.utils.ACache;
+import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.NoScrollGridView;
 import site.krason.focusdaily.widgets.TileView;
 
@@ -31,6 +39,7 @@ import site.krason.focusdaily.widgets.TileView;
  */
 
 public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapter.DragDropListener, View.OnClickListener, AdapterView.OnItemClickListener {
+
     @Override
     protected boolean isExistToolbar() {
         return false;
@@ -46,8 +55,7 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
         context.startActivity(intent);
     }
 
-    private List<String> mMyStrings = new ArrayList<>();
-    private List<String> mRecommendStrings = new ArrayList<>();
+
 
     private NoScrollGridView mRecommendNoScrollGridView;
     private DragDropListView mDragDropListView;
@@ -70,7 +78,11 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
         mMyChannelGirdAdapter = new MyChannelGirdAdapter(this, this, new TileView.OnSelectedListener() {
             @Override
             public void onTileSelected(int position, IDragEntity entity) {
-                dealWithChannel(position, false);
+                if (mMyChannelGirdAdapter.getEditStatus()) {
+                    dealWithChannel(position, false);
+                } else {
+                    Log.d("KCrason", "XXXXXXXXXXXXXXX" + entity.getId());
+                }
             }
         }, mTxtEdit);
         mDragDropListView.setVerticalScrollBarEnabled(false);
@@ -100,15 +112,9 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
             @Override
             public void run() {
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) frameLayout.getLayoutParams();
-                layoutParams.height = mDragDropListView.getMeasuredHeight();
-                layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                layoutParams.height = KUtils.getScreenHeight();
+                layoutParams.width = KUtils.getScreenWidth();
                 frameLayout.setLayoutParams(layoutParams);
-
-                mDragDropListView.setVerticalScrollBarEnabled(false);
-                mDragDropListView.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_RIGHT);
-                mDragDropListView.setScrollBarStyle(ListView.SCROLLBARS_OUTSIDE_OVERLAY);
-                mDragDropListView.getDragDropController().addOnDragDropListener(mMyChannelGirdAdapter);
-                mDragDropListView.setDragShadowOverlay(mDragShadowOverlay);
             }
         });
     }
@@ -117,12 +123,11 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
     private List<IDragEntity> channelBeanArrayListMe;
 
     private List<IDragEntity> getChannelBeen() {
-        List<ChannelBean> channelBeanList = KDataBaseHelper.form().getAllChannel(new String[]{"1"});
+        List<ChannelBean> channelBeanList = JSON.parseArray(ACache.get(this).getAsString(Constants.MY_CHANNEL_LIST), ChannelBean.class);
         channelBeanArrayListMe = new ArrayList<>();
         for (int i = 0; i < channelBeanList.size(); i++) {
             ChannelBean channelBean = new ChannelBean();
             channelBean.setId(channelBeanList.get(i).getId());
-            mMyStrings.add(channelBeanList.get(i).getChannelName());
             channelBean.setChannelName(channelBeanList.get(i).getChannelName());
             channelBeanArrayListMe.add(channelBean);
         }
@@ -130,15 +135,7 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
     }
 
     private List<ChannelBean> getChannelBeenRecommend() {
-        List<ChannelBean> channelBeanList = KDataBaseHelper.form().getAllChannel(new String[]{"0"});
-        channelBeanArrayListRecommend = new ArrayList<>();
-        for (int i = 0; i < channelBeanList.size(); i++) {
-            ChannelBean channelBean = new ChannelBean();
-            channelBean.setId(channelBeanList.get(i).getId());
-            mRecommendStrings.add(channelBeanList.get(i).getChannelName());
-            channelBean.setChannelName(channelBeanList.get(i).getChannelName());
-            channelBeanArrayListRecommend.add(channelBean);
-        }
+        channelBeanArrayListRecommend = JSON.parseArray(ACache.get(this).getAsString(Constants.RECOMMEND_CHANNEL_LIST), ChannelBean.class);
         return channelBeanArrayListRecommend;
     }
 
@@ -147,9 +144,10 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
         return mDragDropListView;
     }
 
+
     @Override
     public void onDataSetChangedForResult(ArrayList<IDragEntity> list) {
-
+//        this.channelBeanArrayListMe = list;
     }
 
     @Override
@@ -159,39 +157,51 @@ public class ChannelEditorActivity extends BaseActivity implements AbsTileAdapte
                 if (mMyChannelGirdAdapter.getEditStatus()) {
                     mTxtEdit.setText("编辑");
                     mMyChannelGirdAdapter.setIsEdit(false);
+                    mMyChannelGirdAdapter.notifyDataSetChanged();
+                    savaChannelData(mMyChannelGirdAdapter.getEntityList(), channelBeanArrayListRecommend);
                 } else {
                     mTxtEdit.setText("完成");
                     mMyChannelGirdAdapter.setIsEdit(true);
+                    mMyChannelGirdAdapter.notifyDataSetChanged();
                 }
-                mMyChannelGirdAdapter.notifyDataSetChanged();
                 break;
         }
     }
 
+
+    private void savaChannelData(List<IDragEntity> iMyDragEntities, List<ChannelBean> channelBeanList) {
+        List<IDragEntity> mMyIDragEntities = new ArrayList<>();
+        List<IDragEntity> mRecommendIDragEntities = new ArrayList<>();
+        for (int i = 0; i < iMyDragEntities.size(); i++) {
+            ChannelBean channelBean = new ChannelBean();
+            channelBean.setId(iMyDragEntities.get(i).getId());
+            channelBean.setChannelName(((ChannelBean) iMyDragEntities.get(i)).getChannelName());
+            mMyIDragEntities.add(channelBean);
+        }
+        ACache.get(this).put(Constants.MY_CHANNEL_LIST, JSON.toJSONString(mMyIDragEntities));
+
+        for (int i = 0; i < channelBeanList.size(); i++) {
+            ChannelBean channelBean = new ChannelBean();
+            channelBean.setId(channelBeanList.get(i).getId());
+            channelBean.setChannelName(channelBeanList.get(i).getChannelName());
+            mRecommendIDragEntities.add(channelBean);
+        }
+        ACache.get(this).put(Constants.RECOMMEND_CHANNEL_LIST, JSON.toJSONString(mRecommendIDragEntities));
+
+        EventBus.getDefault().post(new NotifyChannelRefresh(Constants.EVENT_CODE_SUCCESS, null));
+    }
+
     private void dealWithChannel(int i, boolean isClickRecommend) {
         if (isClickRecommend) {
-            mMyStrings.add(channelBeanArrayListRecommend.get(i).getChannelName());
-            mRecommendStrings.remove(i);
-
-            ChannelBean channelBean = new ChannelBean();
-            channelBean.setIsRecommend(0);
-            channelBean.setChannelName(channelBeanArrayListRecommend.get(i).getChannelName());
-            channelBeanArrayListMe.add(channelBean);
+            channelBeanArrayListMe.add(channelBeanArrayListRecommend.get(i));
             channelBeanArrayListRecommend.remove(i);
         } else {
-            mMyStrings.remove(i);
-            mRecommendStrings.add(((ChannelBean) channelBeanArrayListMe.get(i)).getChannelName());
-
-            ChannelBean channelBean = new ChannelBean();
-            channelBean.setIsRecommend(1);
-            channelBean.setChannelName(((ChannelBean) channelBeanArrayListMe.get(i)).getChannelName());
-            channelBeanArrayListRecommend.add(channelBean);
+            channelBeanArrayListRecommend.add((ChannelBean) channelBeanArrayListMe.get(i));
             channelBeanArrayListMe.remove(i);
         }
+
         mMyChannelGirdAdapter.setData(channelBeanArrayListMe);
         mRecommendChannelGirdAdapter.setData(channelBeanArrayListRecommend);
-
-        refreshDragShadowOverlayHeight(mFrameLayout);
     }
 
     @Override

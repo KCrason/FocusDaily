@@ -63,7 +63,7 @@ public class GalleryRecommendAdapter extends RecyclerView.Adapter<GalleryRecomme
                     holder.mTextView.setText(recommendSlideBean.getTitle());
                 }
                 if (holder.mImageView != null) {
-                    Glide.with(mContext).load(recommendSlideBean.getThumbnail()).into(holder.mImageView);
+                    Glide.with(mContext).load(recommendSlideBean.getThumbnail()).asBitmap().into(holder.mImageView);
                 }
             }
         }

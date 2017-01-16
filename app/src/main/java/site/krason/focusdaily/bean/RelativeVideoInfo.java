@@ -19,27 +19,7 @@ public class RelativeVideoInfo {
     }
 
     public static class GuidRelativeVideoInfoBean {
-        /**
-         * guid : 5c3af7ab-f3b7-42ff-8afc-1196f8685986
-         * name : 超好听翻唱李荣浩的“不将就”即使折磨，也要一起走到白首！
-         * praise : 0
-         * tread : 0
-         * playTime : 5599
-         * type : phvideo
-         * createDate : 2016-09-08 07:39:09
-         * duration : 321
-         * columnName : 生活大爆炸
-         * columnId : 8326
-         * seTitle :
-         * cpName : 今日头条
-         * searchPath : 57-59
-         * shareUrl : http://share.iclient.ifeng.com/sharenews.f?guid=5c3af7ab-f3b7-42ff-8afc-1196f8685986
-         * newShareUrl :
-         * commentNo : 0
-         * commentsAll : 0
-         * files : [{"useType":280,"filesize":13473,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-280-068-232858.mp4","spliteTime":""},{"useType":102,"filesize":21479,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-102-009-232857.mp4","spliteTime":""},{"useType":103,"filesize":36752,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-544-080-232859.mp4","spliteTime":""},{"useType":549,"filesize":13795,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-549-137-232859.mp4","spliteTime":""},{"useType":301,"filesize":0,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-280-068-232858.ts","spliteTime":""},{"useType":302,"filesize":0,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-102-009-232857.ts","spliteTime":""},{"useType":303,"filesize":0,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-544-080-232859.ts","spliteTime":""},{"useType":274,"filesize":2511,"mediaUrl":"http://ips.ifeng.com/video19.ifeng.com/video09/2016/09/26/595625-535-066-232858.mp3","spliteTime":""},{"useType":130,"filesize":0,"mediaUrl":"http://d.ifengimg.com/w480_h360_q80/p3.ifengimg.com/a/2016_52/ef0d42eb212b325.jpg","spliteTime":""},{"useType":140,"filesize":0,"mediaUrl":"http://d.ifengimg.com/w120_h90_q80/p3.ifengimg.com/a/2016_52/ef0d42eb212b325.jpg","spliteTime":""},{"useType":150,"filesize":0,"mediaUrl":"http://d.ifengimg.com/w200_h150_q80/p3.ifengimg.com/a/2016_52/ef0d42eb212b325.jpg","spliteTime":""}]
-         * itemId : 3813721
-         */
+
 
         private String guid;
         private String name;

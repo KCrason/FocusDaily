@@ -3,6 +3,7 @@ package site.krason.focusdaily.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,13 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
     public void onBindViewHolder(final HandPickViewHolder holder, int position) {
         final ShortNewsBean dataBean = mDataBeen.get(position);
         holder.itemView.setOnClickListener(new OnRecyclerItemClick(dataBean));
-        holder.mTextView.setText(dataBean.getContent());
+        if (TextUtils.isEmpty(dataBean.getContent())) {
+            holder.mImageView.setVisibility(View.GONE);
+        } else {
+            holder.mImageView.setVisibility(View.VISIBLE);
+            holder.mTextView.setText(dataBean.getContent());
+        }
+
 
         holder.mTxtPraise.setText(dataBean.getPraise());
         holder.mTxtTread.setText(dataBean.getTread());
@@ -77,7 +84,7 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
                 }
             });
             setImageSize(holder.mImageView, dataBean.getImg().get(0).getSize().getWidth(), dataBean.getImg().get(0).getSize().getHeight());
-            Glide.with(mContext).load(dataBean.getImg().get(0).getUrl()).into(holder.mImageView);
+            Glide.with(mContext).load(dataBean.getImg().get(0).getUrl()).asBitmap().into(holder.mImageView);
         }
     }
 
