@@ -38,8 +38,6 @@ public class HomePageFragment extends Fragment
     private TabLayout mTabLayout;
 
     private int mCurPosition;
-
-
     private ImageView mImageViewAdd;
 
 
@@ -57,6 +55,13 @@ public class HomePageFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home_page, container, false);
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViews(view);
     }
 
     @Override

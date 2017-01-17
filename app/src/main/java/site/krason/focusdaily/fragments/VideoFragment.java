@@ -1,11 +1,15 @@
 package site.krason.focusdaily.fragments;
 
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -30,14 +34,10 @@ import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMore
  * @email 535089696@qq.com
  */
 
-public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreLisener {
+public class VideoFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreLisener {
 
     private View mRootView;
 
-    @Override
-    public void LazyLoadDataToService() {
-        refreshData();
-    }
 
     private Map<String, String> getParams(int page) {
         Map<String, String> stringMap = new HashMap<>();
@@ -73,8 +73,6 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
                 if (jsonArray.size() > 0) {
                     VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
                     mVideoListAdapter.setData(videoListBean.getItem());
-                    isLoadComplete = true;
-                    removeRootView();
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -82,25 +80,11 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
     }
 
 
-    @Override
-    public void LazyLoadDataToLocal() {
-        String response = ACache.get(getContext()).getAsString("KEY_VIDEO_LIST");
-        if (!TextUtils.isEmpty(response)) {
-            JSONArray jsonArray = JSON.parseArray(response);
-            if (jsonArray.size() > 0) {
-                VideoListBean videoListBean = JSON.parseObject(jsonArray.getString(0), VideoListBean.class);
-                mVideoListAdapter.setData(videoListBean.getItem());
-                removeRootView();
-            }
-        }
-    }
-
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private KReyccleView mRecyclerView;
     private VideoListAdapter mVideoListAdapter;
 
-    @Override
-    public void initFragment(View view) {
+    private void initFragment(View view) {
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ed4040"));
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -111,11 +95,20 @@ public class VideoFragment extends BaseFragment implements SwipeRefreshLayout.On
         mRecyclerView.setOnRecyclerLoadMoreListener(this);
         mVideoListAdapter = new VideoListAdapter(getContext());
         mRecyclerView.setAdapter(mVideoListAdapter);
+
+        refreshData();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_video,container,false);
     }
 
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_video;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initFragment(view);
     }
 
     @Override

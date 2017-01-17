@@ -35,8 +35,7 @@
                 android:id="@+id/txt_home_page"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dip"
-                android:button="@null"
+                android:layout_marginTop="2dip"
                 android:text="首页"
                 android:textSize="12sp"/>
         </LinearLayout>
@@ -61,8 +60,7 @@
                 android:id="@+id/txt_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dip"
-                android:button="@null"
+                android:layout_marginTop="2dip"
                 android:text="视频"
                 android:textSize="12sp"/>
 
@@ -88,8 +86,7 @@
                 android:id="@+id/txt_weitoutiao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dip"
-                android:button="@null"
+                android:layout_marginTop="2dip"
                 android:text="微焦点"
                 android:textSize="12sp"/>
 
@@ -115,8 +112,7 @@
                 android:id="@+id/txt_my"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dip"
-                android:button="@null"
+                android:layout_marginTop="2dip"
                 android:text="我的"
                 android:textSize="12sp"/>
 

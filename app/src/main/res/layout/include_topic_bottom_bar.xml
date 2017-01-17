@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="32dip"
+              android:layout_marginLeft="48dip"
+              android:layout_marginRight="8dip"
+              android:layout_marginTop="8dip"
+              android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/llayout_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical">
+
+        <ImageView
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:padding="8dip"
+            android:src="@drawable/share"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分享"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llayout_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical">
+
+        <ImageView
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:padding="8dip"
+            android:src="@drawable/favorites"/>
+
+        <TextView
+            android:id="@+id/txt_favorites_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="点赞"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical">
+
+        <ImageView
+            android:layout_width="32dip"
+            android:layout_height="32dip"
+            android:padding="8dip"
+            android:src="@drawable/comments"/>
+
+        <TextView
+            android:id="@+id/txt_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="评论"/>
+    </LinearLayout>
+
+</LinearLayout>

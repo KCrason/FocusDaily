@@ -45,4 +45,5 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.youth.banner:banner:1.4.5'  //最新版本
     compile 'me.shaohui:bottomdialog:1.1.9'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }

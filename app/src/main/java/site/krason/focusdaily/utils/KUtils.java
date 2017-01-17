@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -29,6 +31,33 @@ public class KUtils {
     public static int dip2px(int dipValue) {
         float scale = KApplication.sContext.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
+    }
+
+    public static String betweenOf2Days2(String date) {
+        try {
+            Date date1 = new Date(date);
+            Date date2 = new Date();
+            long ls = (date2.getTime() - date1.getTime()) / 1000;
+            int days = (int) (ls / SECONDS_OF_DAY);
+            int hour = (int) (ls - (days * SECONDS_OF_DAY)) / SECONDS_OF_HOUR;
+            int minute = (int) ((ls - days * SECONDS_OF_DAY - hour * SECONDS_OF_HOUR) / SECONDS_OF_MIBUTE);
+
+            if (days > 0) {
+                return days + "天前";
+            } else if (hour > 0) {
+                return hour + "小时前";
+            } else {
+                if (minute >= 1) {
+                    return minute + "分钟前";
+                } else {
+                    return "刚刚";
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "刚刚";
     }
 
     public static String betweenOf2Days(String date) {
@@ -81,6 +110,28 @@ public class KUtils {
             return "";
         } else {
             return value;
+        }
+    }
+
+    public static void showSwipeRefresh(final SwipeRefreshLayout swipeRefreshLayout) {
+        if (swipeRefreshLayout != null) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
+    }
+
+    public static void hideSwipeRefresh(final SwipeRefreshLayout swipeRefreshLayout) {
+        if (swipeRefreshLayout != null) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         }
     }
 
