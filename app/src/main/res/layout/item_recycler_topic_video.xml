@@ -2,21 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:background="@android:color/white"
               android:orientation="vertical">
 
     <include layout="@layout/include_user_information"></include>
 
-    <RelativeLayout
+
+    <TextView
+        android:id="@+id/txt_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dip"
+        android:layout_marginLeft="52dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="8dip"
+        android:textColor="@android:color/background_dark"
+        android:textSize="16sp"
+        />
 
-        <ImageView
-            android:id="@+id/img_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/img_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dip"
+        android:layout_marginLeft="52dip"
+        android:layout_marginRight="8dip"
+        android:background="#f2f2f2"
+        />
 
-    <include
-        layout="@layout/include_topic_bottom_bar"></include>
+    <include layout="@layout/include_topic_bottom_bar"></include>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:layout_marginBottom="4dip"
+        android:layout_marginTop="4dip"
+        android:background="#f2f2f2"></View>
 </LinearLayout>

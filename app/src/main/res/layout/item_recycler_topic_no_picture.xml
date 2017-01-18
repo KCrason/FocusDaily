@@ -11,9 +11,10 @@
         android:id="@+id/txt_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="48dip"
+        android:layout_marginLeft="52dip"
         android:layout_marginRight="8dip"
         android:layout_marginTop="8dip"
+        android:lineSpacingExtra="4dip"
         android:textColor="@android:color/background_dark"
         android:textSize="16sp"
         />
@@ -23,5 +24,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dip"
+        android:layout_marginBottom="4dip"
+        android:layout_marginTop="4dip"
         android:background="#f2f2f2"></View>
 </LinearLayout>

@@ -1,11 +1,13 @@
 package site.krason.focusdaily.bean;
 
+import java.io.Serializable;
+
 /**
  * @author Created by KCrason on 2017/1/17.
  * @email 535089696@qq.com
  */
 
-public class ImageBean {
+public class ImageBean implements Serializable{
 
     private String url;
 

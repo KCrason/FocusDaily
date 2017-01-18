@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
               android:id="@+id/llayout_root"
+              android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@android:color/white"
               android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        android:background="#ed4040">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="焦点视频"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -13,9 +28,9 @@
 
         <site.krason.focusdaily.widgets.recyclerview.KReyccleView
             android:id="@+id/recycle_view"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></site.krason.focusdaily.widgets.recyclerview.KReyccleView>
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"></site.krason.focusdaily.widgets.recyclerview.KReyccleView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.SlidesActivity;
+import site.krason.focusdaily.bean.ImageBean;
 import site.krason.focusdaily.bean.ImageListBean;
 import site.krason.focusdaily.utils.KUtils;
 
@@ -64,7 +66,13 @@ public class ImageAdpter extends RecyclerView.Adapter<ImageAdpter.ImageViewHolde
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, SlidesActivity.class);
-                intent.putExtra(KEY_NEWS, dataBean.getLinks().get(0).getUrl());
+                List<ImageBean> imageBeanList = new ArrayList<>();
+                ImageBean imageBean = new ImageBean();
+                imageBean.setUrl(dataBean.getLinks().get(0).getUrl());
+                imageBean.setWidth(0);
+                imageBean.setHeight(0);
+                imageBeanList.add(imageBean);
+                intent.putExtra(KEY_NEWS, (Serializable) imageBeanList);
                 mContext.startActivity(intent);
             }
         });

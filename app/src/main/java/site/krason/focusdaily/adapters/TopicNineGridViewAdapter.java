@@ -27,6 +27,12 @@ public class TopicNineGridViewAdapter implements NineGridView.NineGridAdapter<Im
         this.mContext = context;
     }
 
+    private boolean isLoadImage;
+
+    public void isLoadImage(boolean isLoadImage) {
+        this.isLoadImage = isLoadImage;
+    }
+
     @Override
     public int getCount() {
         if (mImageBeanList == null) {
@@ -42,7 +48,11 @@ public class TopicNineGridViewAdapter implements NineGridView.NineGridAdapter<Im
 
     private ImageView getImageView() {
         ImageView imageView = new ImageView(mContext);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        if (mImageBeanList.size() <= 1) {
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        } else {
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
         imageView.setBackgroundColor(Color.parseColor("#f2f2f2"));
         return imageView;
     }

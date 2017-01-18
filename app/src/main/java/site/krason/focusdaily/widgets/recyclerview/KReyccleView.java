@@ -7,12 +7,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import site.krason.focusdaily.adapters.VideoListAdapter;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.utils.ViewHolderManage;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRecyclerLoadMoreLisener;
+import site.krason.focusdaily.widgets.recyclerview.interfaces.OnScrollStatusListener;
 
 /**
  * @author Created by KCrason on 2016/12/13.
@@ -117,6 +119,12 @@ public class KReyccleView extends RecyclerView {
         }
     }
 
+    private OnScrollStatusListener mOnLoadImageListener;
+
+    public void setOnLoadImageListener(OnScrollStatusListener onLoadImageListener) {
+        this.mOnLoadImageListener = onLoadImageListener;
+    }
+
 
     /**
      * 所有数据已经加载完成的显示状态
@@ -154,23 +162,52 @@ public class KReyccleView extends RecyclerView {
             }
         }
 
+        private int mFirstVisiblePosition;
+        private int mItemCount;
+
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             mLayoutManager = recyclerView.getLayoutManager();
             if (mLayoutManager instanceof LinearLayoutManager || mLayoutManager instanceof GridLayoutManager) {
                 mLastVisiblePosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+                mFirstVisiblePosition = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
             } else if (mLayoutManager instanceof GridLayoutManager) {
                 mLastVisiblePosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
+                mFirstVisiblePosition = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
             } else if (mLayoutManager instanceof StaggeredGridLayoutManager) {
                 int into[] = new int[((StaggeredGridLayoutManager) mLayoutManager).getSpanCount()];
                 ((StaggeredGridLayoutManager) mLayoutManager).findLastVisibleItemPositions(into);
+                ((StaggeredGridLayoutManager) mLayoutManager).findFirstVisibleItemPositions(into);
                 mLastVisiblePosition = getLastPosition(into);
+                mFirstVisiblePosition = getFirstPosition(into);
             }
+
+            if (mLastVisiblePosition >= mLayoutManager.getItemCount() - 1) {
+                mItemCount = mLastVisiblePosition - mFirstVisiblePosition;
+                Log.d("KCrason", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + mItemCount + "//" + mLastVisiblePosition + "//" + mLayoutManager.getItemCount());
+            } else {
+                mItemCount = mLastVisiblePosition - mFirstVisiblePosition + 1;
+                Log.d("KCrason", "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" + mItemCount);
+            }
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (mOnLoadImageListener != null) {
+                    mOnLoadImageListener.onScrollStatus(true, mFirstVisiblePosition, mItemCount);
+                }
+            } else {
+                if (mOnLoadImageListener != null) {
+                    mOnLoadImageListener.onScrollStatus(false, mFirstVisiblePosition, mItemCount);
+                }
+            }
+
+
             if (mLayoutManager.getChildCount() > 0 && mLastVisiblePosition >= mLayoutManager.getItemCount() - 1) {
                 startOnLoadMore();
             }
         }
+
+
     }
 
     /**
@@ -187,6 +224,16 @@ public class KReyccleView extends RecyclerView {
             }
         }
         return lastPosition;
+    }
+
+    private int getFirstPosition(int[] into) {
+        int firstPositon = into[0];
+        for (int value : into) {
+            if (value < firstPositon) {
+                firstPositon = value;
+            }
+        }
+        return firstPositon;
     }
 
     @Override

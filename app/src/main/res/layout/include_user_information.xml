@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dip"
+        android:layout_marginLeft="8dip"
         android:orientation="vertical">
 
         <TextView

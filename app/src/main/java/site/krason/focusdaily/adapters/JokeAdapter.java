@@ -12,11 +12,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.activities.PreviewImagesActivty;
+import site.krason.focusdaily.bean.ImageBean;
 import site.krason.focusdaily.bean.ShortNewsBean;
 import site.krason.focusdaily.utils.KUtils;
 import site.krason.focusdaily.widgets.recyclerview.interfaces.OnRealItemClickCallBack;
@@ -78,7 +80,13 @@ public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.HandPickViewHo
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, PreviewImagesActivty.class);
-                    intent.putExtra("key_urls", new String[]{dataBean.getImg().get(0).getUrl()});
+                    List<ImageBean> imageBeanList = new ArrayList<>();
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setUrl(dataBean.getImg().get(0).getUrl());
+                    imageBean.setWidth(0);
+                    imageBean.setHeight(0);
+                    imageBeanList.add(imageBean);
+                    intent.putExtra("key_urls", (Serializable) imageBeanList);
                     intent.putExtra("key_position", 0);
                     mContext.startActivity(intent);
                 }

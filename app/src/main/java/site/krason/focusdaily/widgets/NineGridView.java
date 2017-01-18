@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import site.krason.focusdaily.R;
-import site.krason.focusdaily.utils.KUtils;
 
 
 public class NineGridView extends ViewGroup {
@@ -127,12 +126,12 @@ public class NineGridView extends ViewGroup {
             if (mSingleWidth == 0) {
                 mChildWidth = availableWidth * 2 / 5;
             } else {
-                mChildWidth = KUtils.dip2px(mSingleWidth);
+                mChildWidth = availableWidth / 2;
             }
             if (mSingleHeight == 0) {
                 mChildHeight = mChildWidth;
             } else {
-                mChildHeight = KUtils.dip2px(mSingleHeight);
+                mChildHeight = (int) ((mSingleHeight / (float) mSingleWidth) * mChildWidth);
             }
         } else {
             mChildWidth = (availableWidth - mSpace * (mColumns - 1)) / 3;

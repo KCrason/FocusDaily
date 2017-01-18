@@ -29,18 +29,25 @@
             android:src="@drawable/refresh"/>
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <site.krason.focusdaily.widgets.recyclerview.MultiStatusView
+        android:id="@+id/mutil_status_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <site.krason.focusdaily.widgets.recyclerview.KReyccleView
-            android:id="@+id/recycle_view"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </site.krason.focusdaily.widgets.recyclerview.KReyccleView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <site.krason.focusdaily.widgets.recyclerview.KReyccleView
+                android:id="@+id/recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical">
+
+            </site.krason.focusdaily.widgets.recyclerview.KReyccleView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </site.krason.focusdaily.widgets.recyclerview.MultiStatusView>
 
 
 </LinearLayout>

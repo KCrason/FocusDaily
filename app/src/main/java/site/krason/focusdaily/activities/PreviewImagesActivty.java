@@ -2,8 +2,11 @@ package site.krason.focusdaily.activities;
 
 import android.support.v4.view.ViewPager;
 
+import java.util.List;
+
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.PreviewImagesAdapter;
+import site.krason.focusdaily.bean.ImageBean;
 
 /**
  * @author Created by KCrason on 2016/12/30.
@@ -28,9 +31,9 @@ public class PreviewImagesActivty extends BaseActivity {
     @Override
     public void initViews() {
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        String urls[] = getIntent().getStringArrayExtra("key_urls");
+        List<ImageBean> imageBeanList = (List<ImageBean>) getIntent().getSerializableExtra("key_urls");
         int curPosition = getIntent().getIntExtra("key_position", -1);
-        PreviewImagesAdapter previewImagesAdapter = new PreviewImagesAdapter(this, urls);
+        PreviewImagesAdapter previewImagesAdapter = new PreviewImagesAdapter(this, imageBeanList);
         mViewPager.setAdapter(previewImagesAdapter);
         if (curPosition >= 0) {
             mViewPager.setCurrentItem(curPosition);

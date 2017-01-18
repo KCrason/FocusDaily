@@ -2,6 +2,8 @@ package site.krason.focusdaily.bean;
 
 import java.util.List;
 
+import site.krason.focusdaily.utils.KUtils;
+
 /**
  * @author Created by KCrason on 2017/1/17.
  * @email 535089696@qq.com
@@ -25,16 +27,6 @@ public class TopicBean {
         private int attitudes_count;
         private int comments_count;
         private UserBean user;
-
-        public PageInfoBean getPage_info() {
-            return page_info;
-        }
-
-        public void setPage_info(PageInfoBean page_info) {
-            this.page_info = page_info;
-        }
-
-        private PageInfoBean page_info;
 
         public UserBean getUser() {
             return user;
@@ -77,7 +69,7 @@ public class TopicBean {
         }
 
         public void setCreated_at(String created_at) {
-            this.created_at = created_at;
+            this.created_at = KUtils.betweenOf2Days2(created_at);
         }
 
         public String getSource() {
@@ -123,19 +115,6 @@ public class TopicBean {
             private String profile_image_url;
 
         }
-
-        public static class PageInfoBean {
-            public String getPage_pic() {
-                return page_pic;
-            }
-
-            public void setPage_pic(String page_pic) {
-                this.page_pic = page_pic;
-            }
-
-            private String page_pic;
-
-        }
     }
 
 
@@ -149,6 +128,16 @@ public class TopicBean {
 
 
     private List<ImageBean> mImageBeanList;
+
+    public List<ImageBean> getLargeImageBeanList() {
+        return mLargeImageBeanList;
+    }
+
+    public void setLargeImageBeanList(List<ImageBean> largeImageBeanList) {
+        mLargeImageBeanList = largeImageBeanList;
+    }
+
+    private List<ImageBean> mLargeImageBeanList;
 
 
 }
