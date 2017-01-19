@@ -14,16 +14,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import okhttp3.Call;
 import site.krason.focusdaily.R;
 import site.krason.focusdaily.adapters.TopicAdapter;
@@ -123,9 +120,31 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private int mPage = 1;
 
     private void getTopicData(final boolean isLoadMore) {
-
-
-        OkHttpUtils.get().url("http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_9999_-_ctg1_9999&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_9999_-_ctg1_9999&need_head_cards=1")
+        String url;
+        switch ((int) (Math.random() * 6)) {
+            case 0:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&scenes=0&uicode=10000327&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8999_-_ctg1_8999_home&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&lfid=231091&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8999_-_ctg1_8999_home&luicode=10000010&need_head_cards=0";
+                break;
+            case 1:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_9999_-_ctg1_9999&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_9999_-_ctg1_9999&need_head_cards=1";
+                break;
+            case 2:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8998_-_ctg1_8998&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8998_-_ctg1_8998&need_head_cards=1";
+                break;
+            case 3:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8997_-_ctg1_8997&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8997_-_ctg1_8997&need_head_cards=1";
+                break;
+            case 4:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8899_-_ctg1_8899&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8899_-_ctg1_8899&need_head_cards=1";
+                break;
+            case 5:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&uicode=10000011&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8799_-_ctg1_8799&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8799_-_ctg1_8799&need_head_cards=1";
+                break;
+            default:
+                url = "http://api.weibo.cn/2/cardlist?networktype=wifi&extparam=discover&scenes=0&uicode=10000327&moduleID=708&wb_version=3314&c=android&i=6bf3ab0&s=64909e49&ua=OPPO-OPPO%20R9m__weibo__6.12.3__android__android5.1&wm=9847_0002&aid=01An7W2Qrb2ly23qoLunLFgKKZdtuvA8z4ykaaSXOI2MlMkR4.&fid=102803_ctg1_8999_-_ctg1_8999_home&uid=5220533979&v_f=2&v_p=42&from=106C395010&gsid=_2A251ZTUwDeTxGeNM6VIU8y3FzDWIHXVUM8_4rDV6PUJbkdAKLU3YkWo-zKVVphhgObyY_xxcf_CAF1cC_A..&imsi=460000930389157&lang=zh_CN&lfid=231091&page=" + mPage + "&skin=default&count=20&oldwm=9893_0044&sflag=1&containerid=102803_ctg1_8999_-_ctg1_8999_home&luicode=10000010&need_head_cards=0";
+                break;
+        }
+        OkHttpUtils.get().url(url)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -210,6 +229,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         mKReyccleView.setCancleLoadMore(true);
+        mKReyccleView.reload();
         mPage = 1;
         getTopicData(false);
     }
