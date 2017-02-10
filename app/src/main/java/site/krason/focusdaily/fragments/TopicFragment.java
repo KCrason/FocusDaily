@@ -190,7 +190,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 jsonObject2.containsKey("pic_infos")) {
                             JSONObject jsonObject3 = jsonObject2.getJSONObject("pic_infos");
                             List<ImageBean> imageBeanList = new ArrayList<>();
-                            List<ImageBean> imageBeanList1 = new ArrayList<ImageBean>();
+                            List<ImageBean> imageBeanList1 = new ArrayList<>();
                             for (int j = 0; j < mBlogBean.getPic_ids().size(); j++) {
                                 String key = mBlogBean.getPic_ids().get(j);
                                 JSONObject jsonObject4 = jsonObject3.getJSONObject(key);
